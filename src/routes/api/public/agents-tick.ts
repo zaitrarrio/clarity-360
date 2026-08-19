@@ -74,7 +74,16 @@ export const Route = createFileRoute("/api/public/agents-tick")({
               domain_key: action?.domain_key ?? null,
               severity: "info",
               title: `${action?.title ?? schedule.action_key} ran automatically`,
-              body: artifact.artifactBody.slice(0, 400),
+              body: artifact.artifactBody
+                .replace(/^#{1,6}\s*/gm, "")
+                .replace(/\*\*|[*_>`]|^-{3,}$/gm, "")
+                .split("\n")
+                .map((line) => line.trim())
+                .filter(Boolean)
+                .slice(0, 4)
+                .join(" · ")
+                .slice(0, 320),
+
               suggested_action_key: schedule.action_key,
               status: "new",
             });
