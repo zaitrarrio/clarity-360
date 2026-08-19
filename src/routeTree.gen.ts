@@ -10,33 +10,115 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ActionsRouteImport } from './routes/actions'
+import { Route as AgendaRouteImport } from './routes/agenda'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as PlanRouteImport } from './routes/plan'
+import { Route as ApiClaraRouteImport } from './routes/api/clara'
+import { Route as ApiPublicAgentsTickRouteImport } from './routes/api/public/agents-tick'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ActionsRoute = ActionsRouteImport.update({
+  id: '/actions',
+  path: '/actions',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AgendaRoute = AgendaRouteImport.update({
+  id: '/agenda',
+  path: '/agenda',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PlanRoute = PlanRouteImport.update({
+  id: '/plan',
+  path: '/plan',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiClaraRoute = ApiClaraRouteImport.update({
+  id: '/api/clara',
+  path: '/api/clara',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicAgentsTickRoute = ApiPublicAgentsTickRouteImport.update({
+  id: '/api/public/agents-tick',
+  path: '/api/public/agents-tick',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/actions': typeof ActionsRoute
+  '/agenda': typeof AgendaRoute
+  '/auth': typeof AuthRoute
+  '/plan': typeof PlanRoute
+  '/api/clara': typeof ApiClaraRoute
+  '/api/public/agents-tick': typeof ApiPublicAgentsTickRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/actions': typeof ActionsRoute
+  '/agenda': typeof AgendaRoute
+  '/auth': typeof AuthRoute
+  '/plan': typeof PlanRoute
+  '/api/clara': typeof ApiClaraRoute
+  '/api/public/agents-tick': typeof ApiPublicAgentsTickRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/actions': typeof ActionsRoute
+  '/agenda': typeof AgendaRoute
+  '/auth': typeof AuthRoute
+  '/plan': typeof PlanRoute
+  '/api/clara': typeof ApiClaraRoute
+  '/api/public/agents-tick': typeof ApiPublicAgentsTickRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/actions'
+    | '/agenda'
+    | '/auth'
+    | '/plan'
+    | '/api/clara'
+    | '/api/public/agents-tick'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/actions'
+    | '/agenda'
+    | '/auth'
+    | '/plan'
+    | '/api/clara'
+    | '/api/public/agents-tick'
+  id:
+    | '__root__'
+    | '/'
+    | '/actions'
+    | '/agenda'
+    | '/auth'
+    | '/plan'
+    | '/api/clara'
+    | '/api/public/agents-tick'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ActionsRoute: typeof ActionsRoute
+  AgendaRoute: typeof AgendaRoute
+  AuthRoute: typeof AuthRoute
+  PlanRoute: typeof PlanRoute
+  ApiClaraRoute: typeof ApiClaraRoute
+  ApiPublicAgentsTickRoute: typeof ApiPublicAgentsTickRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +130,59 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/actions': {
+      id: '/actions'
+      path: '/actions'
+      fullPath: '/actions'
+      preLoaderRoute: typeof ActionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/agenda': {
+      id: '/agenda'
+      path: '/agenda'
+      fullPath: '/agenda'
+      preLoaderRoute: typeof AgendaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/plan': {
+      id: '/plan'
+      path: '/plan'
+      fullPath: '/plan'
+      preLoaderRoute: typeof PlanRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/clara': {
+      id: '/api/clara'
+      path: '/api/clara'
+      fullPath: '/api/clara'
+      preLoaderRoute: typeof ApiClaraRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/agents-tick': {
+      id: '/api/public/agents-tick'
+      path: '/api/public/agents-tick'
+      fullPath: '/api/public/agents-tick'
+      preLoaderRoute: typeof ApiPublicAgentsTickRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ActionsRoute: ActionsRoute,
+  AgendaRoute: AgendaRoute,
+  AuthRoute: AuthRoute,
+  PlanRoute: PlanRoute,
+  ApiClaraRoute: ApiClaraRoute,
+  ApiPublicAgentsTickRoute: ApiPublicAgentsTickRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
