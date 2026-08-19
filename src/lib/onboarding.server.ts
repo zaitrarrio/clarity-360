@@ -7,7 +7,7 @@ export type Correction = {
   where: string;
   assumed: string;
   choice: string;
-  result?: string;
+  result?: string | undefined;
 };
 
 export type Decision = {
