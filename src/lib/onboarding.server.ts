@@ -118,11 +118,11 @@ Return JSON:
    {"id":"kebab-id","kicker":"Route to market|Sourcing|Capacity|Pricing|…",
     "question":"a binary question, under 70 characters",
     "why":"two sentences on why this is theirs to decide and what it drives",
-    "options":[
-      {"key":"a","label":"short label","tail":"one sentence on what this road looks like in practice",
-       "effects":[{"sign":"+|−|!","text":"a specific consequence, naming a report where useful"}]},
-      {"key":"b","label":"…","tail":"…","effects":[…]}
-    ]}
+     "options":[
+       {"key":"a","label":"short label","tail":"one sentence on what this road looks like in practice",
+        "effects":[{"sign":"+","text":"a specific consequence, naming a report where useful"}]},
+       {"key":"b","label":"the other road","tail":"one sentence","effects":[{"sign":"!","text":"a specific consequence"}]}
+     ]}
  ],
  "inferred": [{"k":"parameter","v":"what you have inferred","why":"which answer let you infer it"}]}
 
