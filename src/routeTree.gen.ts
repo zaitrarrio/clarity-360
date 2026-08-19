@@ -14,6 +14,7 @@ import { Route as ActionsRouteImport } from './routes/actions'
 import { Route as AgendaRouteImport } from './routes/agenda'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as DraftRouteImport } from './routes/draft'
+import { Route as ForksRouteImport } from './routes/forks'
 import { Route as IntakeRouteImport } from './routes/intake'
 import { Route as PlanRouteImport } from './routes/plan'
 import { Route as ApiClaraRouteImport } from './routes/api/clara'
@@ -44,6 +45,11 @@ const DraftRoute = DraftRouteImport.update({
   path: '/draft',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ForksRoute = ForksRouteImport.update({
+  id: '/forks',
+  path: '/forks',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IntakeRoute = IntakeRouteImport.update({
   id: '/intake',
   path: '/intake',
@@ -71,6 +77,7 @@ export interface FileRoutesByFullPath {
   '/agenda': typeof AgendaRoute
   '/auth': typeof AuthRoute
   '/draft': typeof DraftRoute
+  '/forks': typeof ForksRoute
   '/intake': typeof IntakeRoute
   '/plan': typeof PlanRoute
   '/api/clara': typeof ApiClaraRoute
@@ -82,6 +89,7 @@ export interface FileRoutesByTo {
   '/agenda': typeof AgendaRoute
   '/auth': typeof AuthRoute
   '/draft': typeof DraftRoute
+  '/forks': typeof ForksRoute
   '/intake': typeof IntakeRoute
   '/plan': typeof PlanRoute
   '/api/clara': typeof ApiClaraRoute
@@ -94,6 +102,7 @@ export interface FileRoutesById {
   '/agenda': typeof AgendaRoute
   '/auth': typeof AuthRoute
   '/draft': typeof DraftRoute
+  '/forks': typeof ForksRoute
   '/intake': typeof IntakeRoute
   '/plan': typeof PlanRoute
   '/api/clara': typeof ApiClaraRoute
@@ -107,6 +116,7 @@ export interface FileRouteTypes {
     | '/agenda'
     | '/auth'
     | '/draft'
+    | '/forks'
     | '/intake'
     | '/plan'
     | '/api/clara'
@@ -118,6 +128,7 @@ export interface FileRouteTypes {
     | '/agenda'
     | '/auth'
     | '/draft'
+    | '/forks'
     | '/intake'
     | '/plan'
     | '/api/clara'
@@ -129,6 +140,7 @@ export interface FileRouteTypes {
     | '/agenda'
     | '/auth'
     | '/draft'
+    | '/forks'
     | '/intake'
     | '/plan'
     | '/api/clara'
@@ -141,6 +153,7 @@ export interface RootRouteChildren {
   AgendaRoute: typeof AgendaRoute
   AuthRoute: typeof AuthRoute
   DraftRoute: typeof DraftRoute
+  ForksRoute: typeof ForksRoute
   IntakeRoute: typeof IntakeRoute
   PlanRoute: typeof PlanRoute
   ApiClaraRoute: typeof ApiClaraRoute
@@ -184,6 +197,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DraftRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/forks': {
+      id: '/forks'
+      path: '/forks'
+      fullPath: '/forks'
+      preLoaderRoute: typeof ForksRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/intake': {
       id: '/intake'
       path: '/intake'
@@ -221,6 +241,7 @@ const rootRouteChildren: RootRouteChildren = {
   AgendaRoute: AgendaRoute,
   AuthRoute: AuthRoute,
   DraftRoute: DraftRoute,
+  ForksRoute: ForksRoute,
   IntakeRoute: IntakeRoute,
   PlanRoute: PlanRoute,
   ApiClaraRoute: ApiClaraRoute,

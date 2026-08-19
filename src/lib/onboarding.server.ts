@@ -2,51 +2,9 @@ import { streamText } from "ai";
 import { gateway, CLARA_MODEL } from "./clarity.server";
 import { industryByKey, type Seed } from "./industries";
 
-export type Correction = {
-  flagId: string;
-  where: string;
-  assumed: string;
-  choice: string;
-  result?: string | undefined;
-};
+export type * from "./onboarding.types";
 
-export type Decision = {
-  forkId: string;
-  question: string;
-  choice: string;
-};
-
-export type Flag = {
-  id: string;
-  tag: string;
-  where: string;
-  assumed: string;
-  why: string;
-  fixes: { key: string; label: string; result: string }[];
-};
-
-export type DraftRound = {
-  coverage: number;
-  headline: string;
-  note: string;
-  flags: Flag[];
-  ripple: { name: string; note: string }[];
-};
-
-export type Fork = {
-  id: string;
-  kicker: string;
-  question: string;
-  why: string;
-  options: { key: string; label: string; tail: string; effects: { sign: string; text: string }[] }[];
-};
-
-export type ForkRound = {
-  coverage: number;
-  headline: string;
-  forks: Fork[];
-  inferred: { k: string; v: string; why: string }[];
-};
+import type { Correction, Decision, DraftRound, ForkRound } from "./onboarding.types";
 
 function extractJson<T>(text: string): T {
   const fenced = text.match(/```(?:json)?\s*([\s\S]*?)```/);
