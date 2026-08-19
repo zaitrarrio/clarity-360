@@ -20,6 +20,19 @@ async function complete(system: string, prompt: string): Promise<string> {
   return result.text;
 }
 
+/** Models occasionally emit malformed JSON; one retry with a stricter nudge fixes nearly all of it. */
+async function completeJson<T>(system: string, prompt: string): Promise<T> {
+  try {
+    return extractJson<T>(await complete(system, prompt));
+  } catch {
+    const retry = await complete(
+      system,
+      `${prompt}\n\nYour previous answer was not parseable JSON. Return the object again, strictly valid: double-quoted keys, escaped inner quotes, no trailing commas, no markdown.`,
+    );
+    return extractJson<T>(retry);
+  }
+}
+
 function seedBlock(seed: Seed): string {
   const industry = industryByKey(seed.industryKey);
   return `Business name: ${seed.name}
@@ -48,7 +61,8 @@ load-bearing standard, 0-100. Start around 55-70 for a typical seed, rise as ans
 when the remaining unknowns genuinely would not change the plan. Never jump more than about 15 points a round.
 
 Everything you write is concrete: real numbers, real local comparables, real programme and licence names.
-Return ONLY JSON. No prose, no code fences.`;
+Return ONLY one valid JSON object. No prose, no code fences, no trailing commas, no comments.
+Every string must be plain text on a single line with any internal double quotes escaped — prefer single quotes inside strings.`;
 
 export async function draftRound(input: { seed: Seed; corrections: Correction[] }): Promise<DraftRound> {
   const { seed, corrections } = input;
@@ -58,7 +72,7 @@ export async function draftRound(input: { seed: Seed; corrections: Correction[] 
         .join("\n")
     : "None yet — this is the first pass.";
 
-  const text = await complete(
+  const parsed = await completeJson<DraftRound>(
     `${SHARED_RULES}
 
 APPROACH: "We draft, you correct." You have already drafted the whole plan. You now show the founder the
@@ -84,7 +98,6 @@ Give exactly 3 flags this round, ordered most load-bearing first, each with 2-3 
 Do not repeat any assumption they have already corrected. Give 4-7 ripple entries.`,
   );
 
-  const parsed = extractJson<DraftRound>(text);
   return {
     coverage: Math.max(0, Math.min(100, Math.round(parsed.coverage ?? 60))),
     headline: parsed.headline ?? "Here is a first pass.",
@@ -100,7 +113,7 @@ export async function forkRound(input: { seed: Seed; decisions: Decision[] }): P
     ? decisions.map((d) => `- ${d.question} → ${d.choice}`).join("\n")
     : "None yet — this is the first decision.";
 
-  const text = await complete(
+  const parsed = await completeJson<ForkRound>(
     `${SHARED_RULES}
 
 APPROACH: "Discover your plan." You put the founder in front of genuine forks — binary decisions where both
@@ -130,7 +143,6 @@ Give exactly 2 forks this round, each with exactly 2 options and 3-4 effects per
 Never repeat a decision already made; build on them. Give 0-3 inferred entries.`,
   );
 
-  const parsed = extractJson<ForkRound>(text);
   return {
     coverage: Math.max(0, Math.min(100, Math.round(parsed.coverage ?? 60))),
     headline: parsed.headline ?? "",
