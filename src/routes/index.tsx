@@ -59,7 +59,7 @@ function Landing() {
           See a live plan
         </Link>
         <Link
-          to="/auth"
+          to="/intake"
           className="rounded-full bg-ember px-4 py-2 text-[13px] font-medium text-primary-foreground no-underline shadow-ember"
         >
           Start
@@ -78,7 +78,7 @@ function Landing() {
           </p>
           <div className="mt-9 flex flex-wrap items-center gap-3">
             <Link
-              to="/auth"
+              to="/intake"
               className="rounded-full bg-ember px-6 py-3 text-[14px] font-medium text-primary-foreground no-underline shadow-ember"
             >
               Build my plan
@@ -153,13 +153,13 @@ function Landing() {
           Tell Clara what you're building.
         </h2>
         <p className="mx-auto mt-4 max-w-lg text-[15.5px] font-light text-muted-foreground">
-          Eight questions. Then a plan that keeps moving whether or not you're looking at it.
+          Six fields, then either correct our draft or make the calls only you can make. Then a plan that keeps moving whether or not you're looking at it.
         </p>
         <Link
-          to="/auth"
+          to="/intake"
           className="mt-8 inline-block rounded-full bg-ember px-7 py-3 text-[14px] font-medium text-primary-foreground no-underline shadow-ember"
         >
-          Start the intake
+          Build my plan
         </Link>
       </section>
 
