@@ -344,24 +344,17 @@ function IntakePage() {
               </Field>
             </div>
 
-            <div className="grid gap-6 sm:grid-cols-2">
-              <Field label="Zip code or online" hint="A trade area changes the plan more than almost anything else.">
-                <input
-                  value={seed.location}
-                  onChange={(e) => set({ location: e.target.value })}
-                  placeholder="78665 — or Online"
-                  className={inputBase}
-                />
-              </Field>
-              <Field label="Website (optional)">
-                <input
-                  value={seed.website}
-                  onChange={(e) => set({ website: e.target.value })}
-                  placeholder="littleliveoak.com"
-                  className={inputBase}
-                />
-              </Field>
-            </div>
+            <MarketFields market={seed.market} onChange={setMarket} />
+
+            <Field label="Website (optional)">
+              <input
+                value={seed.website}
+                onChange={(e) => set({ website: e.target.value })}
+                placeholder="littleliveoak.com"
+                className={inputBase}
+              />
+            </Field>
+
 
             <Field label="Objective">
               <select
