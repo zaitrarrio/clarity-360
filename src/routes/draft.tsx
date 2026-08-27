@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { Logo } from "@/components/clarity/AppHeader";
 import { buildPlanFromIntake } from "@/lib/clarity.functions";
 import { nextDraftRound } from "@/lib/onboarding.functions";
-import { readStoredSeed, seedIndustryLabel, type Seed } from "@/lib/industries";
+import { marketLines, readStoredSeed, seedIndustryLabel, type Seed } from "@/lib/industries";
 import type { Correction, DraftRound } from "@/lib/onboarding.types";
 
 export const Route = createFileRoute("/draft")({
