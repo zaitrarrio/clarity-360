@@ -417,7 +417,7 @@ function IntakePage() {
             </div>
             {!ready ? (
               <p className="mt-4 text-[12.5px] font-light text-muted-foreground">
-                Fill in the six fields above — the website is the only optional one.
+                Fill in the fields above — the website, audience note and primary market are the only optional ones.
               </p>
             ) : null}
           </div>
