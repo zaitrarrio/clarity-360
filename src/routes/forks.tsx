@@ -102,7 +102,15 @@ function ForksPage() {
           industry: seedIndustryLabel(seed),
           answers: [
             { key: "stage", stage: "Seed", question: "Where are you today?", answer: seed.stage },
-            { key: "location", stage: "Seed", question: "Zip code or online?", answer: seed.location },
+            ...marketLines(seed.market).map((line, i) => {
+              const [label, ...rest] = line.split(": ");
+              return {
+                key: `market_${i + 1}`,
+                stage: "Seed",
+                question: label ?? "Market",
+                answer: rest.join(": "),
+              };
+            }),
             { key: "website", stage: "Seed", question: "Website", answer: seed.website },
             { key: "objective", stage: "Seed", question: "What should this plan get you?", answer: seed.objective },
             ...decisions.map((d, i) => ({
