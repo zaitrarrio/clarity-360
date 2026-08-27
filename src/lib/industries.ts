@@ -240,12 +240,100 @@ export function industryByKey(key: string): Industry | undefined {
   return INDUSTRIES.find((i) => i.key === key);
 }
 
+export type ReachModel = "on_premise" | "service_area" | "online" | "hybrid";
+
+export const REACH_MODELS: { key: ReachModel; label: string; hint: string }[] = [
+  { key: "on_premise", label: "On-premise — customers come to us", hint: "Restaurant, salon, studio, daycare" },
+  { key: "service_area", label: "We go to them — service area", hint: "HVAC, landscaping, cleaning, mobile" },
+  { key: "online", label: "Online — regional or global", hint: "E-commerce, SaaS, creator, remote services" },
+  { key: "hybrid", label: "Hybrid — a base plus online reach", hint: "Store or studio with online sales" },
+];
+
+export const TRADE_AREA_RADII = [
+  "Walk-in / immediate neighbourhood",
+  "Within 5 miles",
+  "Within 15 miles",
+  "Whole metro",
+];
+
+export const SERVICE_RADII = ["Within 10 miles", "Within 25 miles", "Within 50 miles", "Statewide"];
+
+export const REGIONS = [
+  "United States",
+  "Canada",
+  "UK & Ireland",
+  "European Union",
+  "LATAM",
+  "APAC",
+  "MENA",
+  "Africa",
+  "Global",
+];
+
+export type Market = {
+  reach: ReachModel | "";
+  baseLocation: string;
+  serviceAreas: string[];
+  radius: string;
+  regions: string[];
+  primaryRegion: string;
+  audienceNote: string;
+};
+
+export const EMPTY_MARKET: Market = {
+  reach: "",
+  baseLocation: "",
+  serviceAreas: [],
+  radius: "",
+  regions: [],
+  primaryRegion: "",
+  audienceNote: "",
+};
+
+export function needsBase(reach: Market["reach"]): boolean {
+  return reach === "on_premise" || reach === "service_area" || reach === "hybrid";
+}
+
+export function needsServiceAreas(reach: Market["reach"]): boolean {
+  return reach === "service_area" || reach === "hybrid";
+}
+
+export function needsRegions(reach: Market["reach"]): boolean {
+  return reach === "online" || reach === "hybrid";
+}
+
+export function marketComplete(market: Market): boolean {
+  if (!market.reach) return false;
+  if (needsBase(market.reach) && !market.baseLocation.trim()) return false;
+  if (market.reach === "service_area" && market.serviceAreas.length === 0 && !market.radius) return false;
+  if (needsRegions(market.reach) && market.regions.length === 0) return false;
+  return true;
+}
+
+export function marketLines(market: Market): string[] {
+  const reach = REACH_MODELS.find((r) => r.key === market.reach);
+  const lines: string[] = [];
+  if (reach) lines.push(`Reach model: ${reach.label}`);
+  if (market.baseLocation.trim()) lines.push(`Based in: ${market.baseLocation.trim()}`);
+  if (market.serviceAreas.length) lines.push(`Service area: ${market.serviceAreas.join(", ")}`);
+  if (market.radius) lines.push(`Customer travel / crew radius: ${market.radius}`);
+  if (market.regions.length) lines.push(`Markets served: ${market.regions.join(", ")}`);
+  if (market.primaryRegion) lines.push(`Primary market: ${market.primaryRegion}`);
+  if (market.audienceNote.trim()) lines.push(`Audience: ${market.audienceNote.trim()}`);
+  return lines;
+}
+
+export function marketSummary(market: Market): string {
+  const lines = marketLines(market);
+  return lines.length ? lines.join(" · ") : "Market not specified";
+}
+
 export type Seed = {
   name: string;
   stage: string;
   industryKey: string;
   subcategory: string;
-  location: string;
+  market: Market;
   website: string;
   objective: string;
 };
@@ -255,7 +343,7 @@ export const EMPTY_SEED: Seed = {
   stage: "",
   industryKey: "",
   subcategory: "",
-  location: "",
+  market: EMPTY_MARKET,
   website: "",
   objective: "",
 };
@@ -271,7 +359,7 @@ export function seedSummary(seed: Seed): string {
     `Business: ${seed.name}`,
     `Stage: ${seed.stage}`,
     `Industry: ${seedIndustryLabel(seed)}`,
-    `Where: ${seed.location}`,
+    ...marketLines(seed.market),
     seed.website ? `Website: ${seed.website}` : null,
     `Objective: ${seed.objective}`,
   ]
@@ -281,13 +369,25 @@ export function seedSummary(seed: Seed): string {
 
 export const SEED_STORAGE_KEY = "c360.seed";
 
+/** Older stored seeds carried a single free-text `location`; fold it into the market shape. */
+function normaliseSeed(parsed: Seed & { location?: string }): Seed {
+  const market: Market = { ...EMPTY_MARKET, ...(parsed.market ?? {}) };
+  if (!parsed.market && parsed.location) {
+    const online = /online/i.test(parsed.location);
+    market.reach = online ? "online" : "on_premise";
+    if (online) market.regions = ["United States"];
+    else market.baseLocation = parsed.location;
+  }
+  return { ...EMPTY_SEED, ...parsed, market };
+}
+
 export function readStoredSeed(): Seed | null {
   if (typeof window === "undefined") return null;
   try {
     const raw = window.sessionStorage.getItem(SEED_STORAGE_KEY);
     if (!raw) return null;
-    const parsed = JSON.parse(raw) as Seed;
-    return parsed?.name ? parsed : null;
+    const parsed = JSON.parse(raw) as Seed & { location?: string };
+    return parsed?.name ? normaliseSeed(parsed) : null;
   } catch {
     return null;
   }
@@ -297,3 +397,4 @@ export function storeSeed(seed: Seed) {
   if (typeof window === "undefined") return;
   window.sessionStorage.setItem(SEED_STORAGE_KEY, JSON.stringify(seed));
 }
+
