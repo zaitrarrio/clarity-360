@@ -2,6 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useRef, useState } from "react";
 import { Logo } from "@/components/clarity/AppHeader";
+import { supabase } from "@/integrations/supabase/client";
 import { buildPlanFromIntake } from "@/lib/clarity.functions";
 import { nextDraftRound } from "@/lib/onboarding.functions";
 import { marketLines, readStoredSeed, seedIndustryLabel, type Seed } from "@/lib/industries";
@@ -102,6 +103,13 @@ function DraftPage() {
     setBuilding(true);
     setError(null);
     try {
+      const { data: session } = await supabase.auth.getSession();
+      if (!session.session) {
+        setBuilding(false);
+        setError("Create an account to save your plan — taking you to sign-in.");
+        navigate({ to: "/auth" });
+        return;
+      }
       const result = await build({
         data: {
           name: seed.name,
