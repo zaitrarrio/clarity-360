@@ -5,11 +5,21 @@ import {
   EMPTY_SEED,
   INDUSTRIES,
   OBJECTIVES,
+  REACH_MODELS,
+  REGIONS,
+  SERVICE_RADII,
   STAGES,
+  TRADE_AREA_RADII,
   industryByKey,
+  marketComplete,
+  needsBase,
+  needsRegions,
+  needsServiceAreas,
   storeSeed,
+  type Market,
   type Seed,
 } from "@/lib/industries";
+
 
 export const Route = createFileRoute("/intake")({
   head: () => ({
