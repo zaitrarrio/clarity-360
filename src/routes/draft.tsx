@@ -102,6 +102,13 @@ function DraftPage() {
     setBuilding(true);
     setError(null);
     try {
+      const { data: session } = await supabase.auth.getSession();
+      if (!session.session) {
+        setBuilding(false);
+        setError("Create an account to save your plan — taking you to sign-in.");
+        navigate({ to: "/auth" });
+        return;
+      }
       const result = await build({
         data: {
           name: seed.name,
