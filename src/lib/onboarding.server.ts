@@ -1,6 +1,6 @@
 import { streamText } from "ai";
 import { gateway, CLARA_MODEL } from "./clarity.server";
-import { industryByKey, type Seed } from "./industries";
+import { industryByKey, marketLines, type Seed } from "./industries";
 
 export type * from "./onboarding.types";
 
@@ -39,7 +39,8 @@ function seedBlock(seed: Seed): string {
 Stage: ${seed.stage}
 Category: ${industry?.label ?? "General"}
 Subcategory: ${seed.subcategory || "unspecified"}
-Where: ${seed.location}
+Market and footprint:
+${marketLines(seed.market).map((l) => `- ${l}`).join("\n") || "- not specified"}
 Website: ${seed.website || "none given"}
 Objective: ${seed.objective}
 
@@ -52,9 +53,11 @@ const SHARED_RULES = `You are Clara, the analyst behind Clarity 360. You special
 to one specific business.
 
 You already know industry norms. Never ask about anything a competent analyst could assume from the category,
-the stage and the location. Only surface what is SPECIALISED to this business relative to its industry norms —
-the parameters where this business could plausibly differ from the standard, and where the difference changes
-what the plan IS rather than just re-weighting it.
+the stage and the market footprint. Treat the footprint as load-bearing: an on-premise trade area, a crew
+service radius and a set of online markets each imply different demand density, CAC geography, staffing,
+compliance and channel risk — reason from the one given. Only surface what is SPECIALISED to this business
+relative to its industry norms — the parameters where this business could plausibly differ from the standard,
+and where the difference changes what the plan IS rather than just re-weighting it.
 
 "coverage" is your honest projection of how much of the seven-section plan you could now write to a
 load-bearing standard, 0-100. Start around 55-70 for a typical seed, rise as answers land, and only pass 90

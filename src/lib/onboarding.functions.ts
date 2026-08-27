@@ -1,15 +1,26 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 
+const MarketSchema = z.object({
+  reach: z.enum(["on_premise", "service_area", "online", "hybrid", ""]),
+  baseLocation: z.string().default(""),
+  serviceAreas: z.array(z.string()).default([]),
+  radius: z.string().default(""),
+  regions: z.array(z.string()).default([]),
+  primaryRegion: z.string().default(""),
+  audienceNote: z.string().default(""),
+});
+
 const SeedSchema = z.object({
   name: z.string().min(1),
   stage: z.string().min(1),
   industryKey: z.string().min(1),
   subcategory: z.string(),
-  location: z.string().min(1),
+  market: MarketSchema,
   website: z.string(),
   objective: z.string().min(1),
 });
+
 
 const DraftInput = z.object({
   seed: SeedSchema,

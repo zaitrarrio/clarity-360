@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { Logo } from "@/components/clarity/AppHeader";
 import { buildPlanFromIntake } from "@/lib/clarity.functions";
 import { nextDraftRound } from "@/lib/onboarding.functions";
-import { readStoredSeed, seedIndustryLabel, type Seed } from "@/lib/industries";
+import { marketLines, readStoredSeed, seedIndustryLabel, type Seed } from "@/lib/industries";
 import type { Correction, DraftRound } from "@/lib/onboarding.types";
 
 export const Route = createFileRoute("/draft")({
@@ -108,7 +108,15 @@ function DraftPage() {
           industry: seedIndustryLabel(seed),
           answers: [
             { key: "stage", stage: "Seed", question: "Where are you today?", answer: seed.stage },
-            { key: "location", stage: "Seed", question: "Zip code or online?", answer: seed.location },
+            ...marketLines(seed.market).map((line, i) => {
+              const [label, ...rest] = line.split(": ");
+              return {
+                key: `market_${i + 1}`,
+                stage: "Seed",
+                question: label ?? "Market",
+                answer: rest.join(": "),
+              };
+            }),
             { key: "website", stage: "Seed", question: "Website", answer: seed.website },
             { key: "objective", stage: "Seed", question: "What should this plan get you?", answer: seed.objective },
             ...corrections.map((c, i) => ({
