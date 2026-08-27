@@ -1,6 +1,6 @@
 import { streamText } from "ai";
 import { gateway, CLARA_MODEL } from "./clarity.server";
-import { industryByKey, type Seed } from "./industries";
+import { industryByKey, marketLines, type Seed } from "./industries";
 
 export type * from "./onboarding.types";
 
