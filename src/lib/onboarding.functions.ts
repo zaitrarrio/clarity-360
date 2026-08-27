@@ -2,7 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 
 const MarketSchema = z.object({
-  reach: z.string(),
+  reach: z.enum(["on_premise", "service_area", "online", "hybrid", ""]),
   baseLocation: z.string().default(""),
   serviceAreas: z.array(z.string()).default([]),
   radius: z.string().default(""),
