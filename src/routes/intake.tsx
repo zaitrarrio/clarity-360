@@ -59,15 +59,208 @@ function Field({ label, hint, children }: { label: string; hint?: string; childr
   );
 }
 
+
+function Chip({
+  label,
+  active,
+  onClick,
+}: {
+  label: string;
+  active: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`rounded-full border px-3 py-1.5 text-[12.5px] font-light transition-colors ${
+        active
+          ? "border-ember bg-ember/10 text-foreground"
+          : "border-border bg-card text-muted-foreground hover:border-ember/50"
+      }`}
+    >
+      {label}
+    </button>
+  );
+}
+
+function MarketFields({
+  market,
+  onChange,
+}: {
+  market: Market;
+  onChange: (patch: Partial<Market>) => void;
+}) {
+  const [areaDraft, setAreaDraft] = useState("");
+
+  function addArea() {
+    const value = areaDraft.trim();
+    if (!value || market.serviceAreas.includes(value)) return setAreaDraft("");
+    onChange({ serviceAreas: [...market.serviceAreas, value] });
+    setAreaDraft("");
+  }
+
+  function toggleRegion(region: string) {
+    const next = market.regions.includes(region)
+      ? market.regions.filter((r) => r !== region)
+      : [...market.regions, region];
+    const patch: Partial<Market> = { regions: next };
+    if (market.primaryRegion && !next.includes(market.primaryRegion)) patch.primaryRegion = "";
+    onChange(patch);
+  }
+
+  const radiusOptions = market.reach === "on_premise" ? TRADE_AREA_RADII : SERVICE_RADII;
+
+  return (
+    <div className="rounded-2xl border border-border bg-card/50 p-5">
+      <div className={fieldLabel}>Audience &amp; footprint</div>
+      <p className="mt-2 text-[12.5px] font-light leading-relaxed text-muted-foreground">
+        Where the business sits and where its customers come from change the plan more than almost anything else.
+      </p>
+
+      <div className="mt-5 grid gap-5">
+        <Field label="Reach model">
+          <select
+            value={market.reach}
+            onChange={(e) => onChange({ reach: e.target.value as Market["reach"] })}
+            className={selectBase}
+            style={{ backgroundImage: caret }}
+          >
+            <option value="">How do customers reach you?</option>
+            {REACH_MODELS.map((r) => (
+              <option key={r.key} value={r.key}>
+                {r.label} — {r.hint}
+              </option>
+            ))}
+          </select>
+        </Field>
+
+        {needsBase(market.reach) ? (
+          <Field label="Base location" hint="City and state, or zip — where the business physically sits.">
+            <input
+              value={market.baseLocation}
+              onChange={(e) => onChange({ baseLocation: e.target.value })}
+              placeholder="Round Rock, TX 78665"
+              className={inputBase}
+            />
+          </Field>
+        ) : null}
+
+        {needsServiceAreas(market.reach) ? (
+          <Field label="Service area" hint="Add the zips or cities you actually serve.">
+            <div className="mt-2 flex gap-2">
+              <input
+                value={areaDraft}
+                onChange={(e) => setAreaDraft(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    addArea();
+                  }
+                }}
+                placeholder="78665, Georgetown, Pflugerville…"
+                className={`${inputBase} mt-0`}
+              />
+              <button
+                type="button"
+                onClick={addArea}
+                className="mt-0 shrink-0 rounded-xl border border-border px-4 font-mono text-[10px] uppercase tracking-[0.12em] text-foreground transition-colors hover:border-ember"
+              >
+                Add
+              </button>
+            </div>
+            {market.serviceAreas.length ? (
+              <div className="mt-3 flex flex-wrap gap-2">
+                {market.serviceAreas.map((a) => (
+                  <Chip
+                    key={a}
+                    label={`${a} ×`}
+                    active
+                    onClick={() => onChange({ serviceAreas: market.serviceAreas.filter((x) => x !== a) })}
+                  />
+                ))}
+              </div>
+            ) : null}
+          </Field>
+        ) : null}
+
+        {market.reach && market.reach !== "online" ? (
+          <Field
+            label={market.reach === "on_premise" ? "Trade-area radius" : "Crew radius"}
+            hint={
+              market.reach === "on_premise"
+                ? "How far customers realistically travel to you."
+                : "How far crews will travel from base."
+            }
+          >
+            <select
+              value={market.radius}
+              onChange={(e) => onChange({ radius: e.target.value })}
+              className={selectBase}
+              style={{ backgroundImage: caret }}
+            >
+              <option value="">Choose a radius</option>
+              {radiusOptions.map((r) => (
+                <option key={r} value={r}>
+                  {r}
+                </option>
+              ))}
+            </select>
+          </Field>
+        ) : null}
+
+        {needsRegions(market.reach) ? (
+          <Field label="Markets served" hint="Pick every region you sell into today.">
+            <div className="mt-2 flex flex-wrap gap-2">
+              {REGIONS.map((r) => (
+                <Chip key={r} label={r} active={market.regions.includes(r)} onClick={() => toggleRegion(r)} />
+              ))}
+            </div>
+            {market.regions.length > 1 ? (
+              <select
+                value={market.primaryRegion}
+                onChange={(e) => onChange({ primaryRegion: e.target.value })}
+                className={selectBase}
+                style={{ backgroundImage: caret }}
+              >
+                <option value="">Primary market (optional)</option>
+                {market.regions.map((r) => (
+                  <option key={r} value={r}>
+                    {r}
+                  </option>
+                ))}
+              </select>
+            ) : null}
+          </Field>
+        ) : null}
+
+        {market.reach ? (
+          <Field label="Who are your customers? (optional)">
+            <input
+              value={market.audienceNote}
+              onChange={(e) => onChange({ audienceNote: e.target.value })}
+              placeholder="Dual-income parents within 10 minutes of the campus"
+              className={inputBase}
+            />
+          </Field>
+        ) : null}
+      </div>
+    </div>
+  );
+}
+
 function IntakePage() {
   const navigate = useNavigate();
   const [seed, setSeed] = useState<Seed>(EMPTY_SEED);
   const industry = industryByKey(seed.industryKey);
 
   const set = (patch: Partial<Seed>) => setSeed((s) => ({ ...s, ...patch }));
+  const setMarket = (patch: Partial<Market>) =>
+    setSeed((s) => ({ ...s, market: { ...s.market, ...patch } }));
 
   const ready =
-    seed.name.trim() && seed.stage && seed.industryKey && seed.location.trim() && seed.objective;
+    seed.name.trim() && seed.stage && seed.industryKey && marketComplete(seed.market) && seed.objective;
+
 
   function go(path: "/draft" | "/forks") {
     storeSeed(seed);
