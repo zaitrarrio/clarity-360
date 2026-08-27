@@ -39,7 +39,8 @@ function seedBlock(seed: Seed): string {
 Stage: ${seed.stage}
 Category: ${industry?.label ?? "General"}
 Subcategory: ${seed.subcategory || "unspecified"}
-Where: ${seed.location}
+Market and footprint:
+${marketLines(seed.market).map((l) => `- ${l}`).join("\n") || "- not specified"}
 Website: ${seed.website || "none given"}
 Objective: ${seed.objective}
 
