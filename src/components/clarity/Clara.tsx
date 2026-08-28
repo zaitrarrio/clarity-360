@@ -82,7 +82,7 @@ export function Clara({
   }
 
   return (
-    <div className={`flex flex-col overflow-hidden rounded-xl border border-border bg-card ${compact ? "h-[520px] xl:h-[calc(100vh-100px)]" : "h-full"}`}>
+    <div className={`flex flex-col overflow-hidden rounded-xl border border-border bg-card ${compact ? "mb-10 h-[520px] xl:mb-0 xl:h-[calc(100vh-100px)]" : "h-full"}`}>
       <div className="flex items-center gap-2.5 border-b border-border px-4 py-3">
         <span className="clara-orb" />
         <div className="min-w-0">
@@ -139,7 +139,11 @@ export function Clara({
           e.preventDefault();
           send(input);
         }}
-        className="flex shrink-0 items-center gap-2 border-t border-border bg-card px-2 py-1"
+        className={`flex shrink-0 items-center gap-2 border-t border-border bg-card px-2 py-1 ${
+          compact
+            ? "fixed inset-x-0 bottom-0 z-40 shadow-lift xl:static xl:z-auto xl:shadow-none"
+            : ""
+        }`}
       >
         <textarea
           value={input}
