@@ -234,7 +234,7 @@ function ForksPage() {
                 <div className="flex flex-wrap items-center gap-4 pt-2">
                   <button
                     onClick={() => void finish()}
-                    className="rounded-full bg-ember px-6 py-3 text-[14px] font-medium text-primary-foreground"
+                    className="rounded-full bg-ember px-6 py-3 text-[14px] font-medium text-on-ember"
                   >
                     Build it →
                   </button>
@@ -355,7 +355,7 @@ function ForksPage() {
               <button
                 onClick={advance}
                 disabled={!choice}
-                className="rounded-full bg-ember px-6 py-3 text-[14px] font-medium text-primary-foreground disabled:opacity-40"
+                className="rounded-full bg-ember px-6 py-3 text-[14px] font-medium text-on-ember disabled:opacity-55"
               >
                 {index + 1 < (round?.forks.length ?? 0)
                   ? "Next decision →"
@@ -378,7 +378,7 @@ function ForksPage() {
             <p className="text-[14px] font-light text-destructive">{error}</p>
             <button
               onClick={() => seed && void load(seed, decisions)}
-              className="mt-5 rounded-full bg-ember px-6 py-2.5 text-[13.5px] font-medium text-primary-foreground"
+              className="mt-5 rounded-full bg-ember px-6 py-2.5 text-[13.5px] font-medium text-on-ember"
             >
               Try again
             </button>

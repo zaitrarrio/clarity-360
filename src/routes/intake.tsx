@@ -333,7 +333,7 @@ function IntakePage() {
                   value={seed.subcategory}
                   onChange={(e) => set({ subcategory: e.target.value })}
                   disabled={!industry}
-                  className={`${selectBase} disabled:opacity-45`}
+                  className={`${selectBase} disabled:opacity-60`}
                   style={{ backgroundImage: caret }}
                 >
                   <option value="">{industry ? "Choose a domain" : "Pick an industry first"}</option>
@@ -384,7 +384,7 @@ function IntakePage() {
               <button
                 disabled={!ready}
                 onClick={() => go("/draft")}
-                className="group rounded-2xl border border-border bg-card p-6 text-left transition-colors hover:border-ember disabled:opacity-40 disabled:hover:border-border"
+                className="group rounded-2xl border border-border bg-card p-6 text-left transition-colors hover:border-ember disabled:opacity-55 disabled:hover:border-border"
               >
                 <div className="font-mono text-[9.5px] uppercase tracking-[0.14em] text-ember-deep">Approach one</div>
                 <div className="mt-3 font-display text-[24px] font-medium leading-tight text-foreground">
@@ -402,7 +402,7 @@ function IntakePage() {
               <button
                 disabled={!ready}
                 onClick={() => go("/forks")}
-                className="group rounded-2xl border border-border bg-card p-6 text-left transition-colors hover:border-ember disabled:opacity-40 disabled:hover:border-border"
+                className="group rounded-2xl border border-border bg-card p-6 text-left transition-colors hover:border-ember disabled:opacity-55 disabled:hover:border-border"
               >
                 <div className="font-mono text-[9.5px] uppercase tracking-[0.14em] text-ember-deep">Approach two</div>
                 <div className="mt-3 font-display text-[24px] font-medium leading-tight text-foreground">

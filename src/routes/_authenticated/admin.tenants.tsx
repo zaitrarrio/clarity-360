@@ -129,7 +129,7 @@ function TenantsAdmin() {
               <button
                 onClick={() => add.mutate()}
                 disabled={!slug.trim() || !name.trim() || add.isPending}
-                className="mt-4 rounded-full bg-ember-soft px-5 py-2 text-[13px] font-semibold text-ink shadow-ember hover:bg-ember hover:text-primary-foreground disabled:opacity-50"
+                className="mt-4 rounded-full bg-ember-soft px-5 py-2 text-[13px] font-semibold text-on-ember shadow-ember hover:bg-ember hover:text-on-ember disabled:opacity-50"
               >
                 {add.isPending ? "Creating…" : "Create workspace"}
               </button>

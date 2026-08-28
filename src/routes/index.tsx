@@ -60,7 +60,7 @@ function Landing() {
         </Link>
         <Link
           to="/intake"
-          className="rounded-full bg-ember px-4 py-2 text-[13px] font-medium text-primary-foreground no-underline shadow-ember"
+          className="rounded-full bg-ember px-4 py-2 text-[13px] font-medium text-on-ember no-underline shadow-ember"
         >
           Start
         </Link>
@@ -79,7 +79,7 @@ function Landing() {
           <div className="mt-9 flex flex-wrap items-center gap-3">
             <Link
               to="/intake"
-              className="rounded-full bg-ember px-6 py-3 text-[14px] font-medium text-primary-foreground no-underline shadow-ember"
+              className="rounded-full bg-ember px-6 py-3 text-[14px] font-medium text-on-ember no-underline shadow-ember"
             >
               Build my plan
             </Link>
@@ -157,7 +157,7 @@ function Landing() {
         </p>
         <Link
           to="/intake"
-          className="mt-8 inline-block rounded-full bg-ember px-7 py-3 text-[14px] font-medium text-primary-foreground no-underline shadow-ember"
+          className="mt-8 inline-block rounded-full bg-ember px-7 py-3 text-[14px] font-medium text-on-ember no-underline shadow-ember"
         >
           Build my plan
         </Link>

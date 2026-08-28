@@ -267,7 +267,7 @@ function BrandingSettings() {
               <button
                 onClick={() => mutation.mutate()}
                 disabled={mutation.isPending}
-                className="rounded-full bg-ember-soft px-5 py-2 text-[13px] font-semibold text-ink shadow-ember hover:bg-ember hover:text-primary-foreground disabled:opacity-50"
+                className="rounded-full bg-ember-soft px-5 py-2 text-[13px] font-semibold text-on-ember shadow-ember hover:bg-ember hover:text-on-ember disabled:opacity-50"
               >
                 {mutation.isPending ? "Saving…" : "Save branding"}
               </button>

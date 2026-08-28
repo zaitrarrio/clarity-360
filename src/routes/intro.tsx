@@ -84,7 +84,7 @@ function Intro() {
           <div className="mt-9 flex flex-wrap gap-3">
             <Link
               to="/intake"
-              className="rounded-full bg-ember-soft px-6 py-2.5 text-[13.5px] font-semibold text-ink no-underline shadow-ember hover:bg-ember hover:text-primary-foreground"
+              className="rounded-full bg-ember-soft px-6 py-2.5 text-[13.5px] font-semibold text-on-ember no-underline shadow-ember hover:bg-ember hover:text-on-ember"
             >
               Build a plan
             </Link>

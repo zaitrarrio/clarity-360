@@ -157,7 +157,7 @@ export function Clara({
         <button
           type="submit"
           disabled={busy || !input.trim()}
-          className="rounded-full bg-ember px-3.5 py-1.5 text-[12.5px] font-medium text-primary-foreground disabled:opacity-40"
+          className="rounded-full bg-ember px-3.5 py-1.5 text-[12.5px] font-medium text-on-ember disabled:opacity-55"
         >
           Send
         </button>
