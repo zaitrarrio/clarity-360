@@ -7,7 +7,7 @@ import { buildPlanFromIntake } from "@/lib/clarity.functions";
 import { nextDraftRound } from "@/lib/onboarding.functions";
 import { marketLines, readStoredSeed, seedIndustryLabel, type Seed } from "@/lib/industries";
 import type { Correction, DraftRound } from "@/lib/onboarding.types";
-import { clearProgress, readProgress, saveProgress, savedAtLabel } from "@/lib/progress";
+import { clearProgressEverywhere, resumeProgress, saveProgress, savedAtLabel, syncProgress } from "@/lib/progress";
 
 export const Route = createFileRoute("/draft")({
   head: () => ({
@@ -60,31 +60,44 @@ function DraftPage() {
   const [resumed, setResumed] = useState<string | null>(null);
 
   useEffect(() => {
-    const stored = readStoredSeed();
-    if (!stored) {
-      navigate({ to: "/intake" });
-      return;
-    }
-    setSeed(stored);
     if (started.current) return;
     started.current = true;
-    const saved = readProgress("draft", stored.name);
-    if (saved?.round) {
-      setRound(saved.round);
-      setPass(saved.pass);
-      setCorrections(saved.corrections);
-      setPicked(saved.picked);
-      setResumed(savedAtLabel(saved.savedAt));
-      setBusy(false);
-      return;
-    }
-    void load(stored, []);
+    void (async () => {
+      const stored = readStoredSeed();
+      const resumedState = await resumeProgress("draft", stored?.name ?? null);
+      if (resumedState?.progress.round) {
+        setSeed(resumedState.seed);
+        setRound(resumedState.progress.round);
+        setPass(resumedState.progress.pass);
+        setCorrections(resumedState.progress.corrections);
+        setPicked(resumedState.progress.picked);
+        setResumed(savedAtLabel(resumedState.progress.savedAt));
+        setBusy(false);
+        return;
+      }
+      if (!stored) {
+        navigate({ to: "/intake" });
+        return;
+      }
+      setSeed(stored);
+      void load(stored, []);
+    })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     if (!seed || !round) return;
-    saveProgress({ mode: "draft", seedName: seed.name, savedAt: Date.now(), pass, round, corrections, picked });
+    const progress = {
+      mode: "draft" as const,
+      seedName: seed.name,
+      savedAt: Date.now(),
+      pass,
+      round,
+      corrections,
+      picked,
+    };
+    saveProgress(progress);
+    syncProgress(progress, seed);
   }, [seed, round, pass, corrections, picked]);
 
   async function load(currentSeed: Seed, history: Correction[]) {
@@ -154,7 +167,7 @@ function DraftPage() {
         },
       });
       if (result?.businessId) {
-        clearProgress();
+        void clearProgressEverywhere();
         navigate({ to: "/plan" });
       }
     } catch (e) {
