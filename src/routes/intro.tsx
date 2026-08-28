@@ -82,12 +82,13 @@ function Intro() {
           </p>
 
           <div className="mt-9 flex flex-wrap gap-3">
-            <Link
-              to="/intake"
-              className="rounded-full bg-ember-soft px-6 py-2.5 text-[13.5px] font-semibold text-on-ember no-underline shadow-ember hover:bg-ember hover:text-on-ember"
+            <button
+              type="button"
+              onClick={getStarted}
+              className="rounded-full bg-ember-soft px-6 py-2.5 text-[13.5px] font-semibold text-on-ember shadow-ember hover:bg-ember"
             >
-              Build a plan
-            </Link>
+              Get started
+            </button>
             <Link
               to="/plan"
               className="rounded-full border border-border px-6 py-2.5 text-[13.5px] font-medium text-foreground no-underline hover:bg-card"
@@ -95,6 +96,7 @@ function Intro() {
               See a live plan
             </Link>
           </div>
+
 
           <div className="mt-16 grid gap-px overflow-hidden rounded-2xl border border-border/70 bg-border/60 sm:grid-cols-3">
             {PILLARS.map((p) => (
