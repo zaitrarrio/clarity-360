@@ -1,6 +1,14 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { brandInitial, brandWordmark, useTenant } from "@/lib/tenant";
 
 const NAV = [
@@ -87,12 +95,38 @@ export function AppHeader({ businessName }: { businessName?: string | undefined 
       </Link>
 
       {email ? (
-        <button
-          onClick={() => supabase.auth.signOut()}
-          className="rounded-full border border-border px-3 py-1.5 text-[12.5px] text-muted-foreground hover:text-foreground"
-        >
-          Sign out
-        </button>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <button
+              aria-label="Account menu"
+              className="grid h-8 w-8 place-items-center rounded-full border border-border bg-card text-[12px] font-medium uppercase text-foreground transition-colors hover:border-ember/40 hover:bg-ember/10"
+            >
+              {email.charAt(0)}
+            </button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-60">
+            <DropdownMenuLabel className="font-normal">
+              <span className="block text-[11px] uppercase tracking-wide text-muted-foreground">
+                Signed in as
+              </span>
+              <span className="block truncate text-[13px] text-foreground">{email}</span>
+            </DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem asChild>
+              <Link to="/settings/branding">Workspace branding</Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <Link to="/admin/tenants">Platform admin</Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <Link to="/intake">Build a plan</Link>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onSelect={() => void supabase.auth.signOut()}>
+              Sign out
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       ) : (
         <Link
           to="/auth"
