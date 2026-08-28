@@ -82,7 +82,7 @@ export function Clara({
   }
 
   return (
-    <div className={`flex flex-col overflow-hidden rounded-xl border border-border bg-card ${compact ? "h-[520px]" : "h-full"}`}>
+    <div className={`relative flex flex-col overflow-hidden rounded-xl border border-border bg-card ${compact ? "h-[520px]" : "h-full"}`}>
       <div className="flex items-center gap-2.5 border-b border-border px-4 py-3">
         <span className="clara-orb" />
         <div className="min-w-0">
@@ -93,7 +93,7 @@ export function Clara({
         </div>
       </div>
 
-      <div ref={scrollRef} className="flex-1 space-y-4 overflow-y-auto px-4 py-4">
+      <div ref={scrollRef} className="h-1/2 space-y-4 overflow-y-auto px-4 py-4">
         {messages.map((m, i) =>
           m.role === "user" ? (
             <div key={i} className="ml-auto max-w-[85%] rounded-xl rounded-br-sm bg-ink px-3.5 py-2.5 text-[13.5px] font-light text-background">
@@ -139,8 +139,7 @@ export function Clara({
           e.preventDefault();
           send(input);
         }}
-        className="flex items-end gap-2 border-t border-border p-3"
-      >
+        className="sticky bottom-0 mt-auto flex items-end gap-2 border-t border-border bg-card p-3"
         <textarea
           value={input}
           onChange={(e) => setInput(e.target.value)}
