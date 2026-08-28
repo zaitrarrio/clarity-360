@@ -134,10 +134,16 @@ function PlanPage() {
               This report hasn't been written yet. Ask Clara to fill it in.
             </p>
           )}
+          <aside className="mt-8 xl:hidden">
+            <Clara businessId={businessId} section={meta?.label ?? null} compact />
+          </aside>
         </main>
 
-        <aside className="xl:sticky xl:top-[76px] xl:h-[calc(100vh-100px)] xl:self-start">
-          <Clara businessId={businessId} section={meta?.label ?? null} compact />
+        <aside
+          className="fixed bottom-6 z-40 hidden h-[calc(100vh-100px)] w-[380px] xl:flex"
+          style={{ right: "max(1.75rem, calc((100vw - 1500px) / 2 + 1.75rem))" }}
+        >
+          <Clara businessId={businessId} section={meta?.label ?? null} />
         </aside>
       </div>
     </div>
