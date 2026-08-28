@@ -261,18 +261,21 @@ function ForksPage() {
             </p>
 
             <div className="mt-8 grid gap-4 md:grid-cols-2">
-              {fork.options.map((o) => {
+              {fork.options.map((o, oi) => {
                 const on = choice === o.key;
                 return (
                   <button
                     key={o.key}
                     onClick={() => setChoice(o.key)}
-                    className={`rounded-2xl border p-6 text-left transition-colors ${
+                    className={`relative rounded-2xl border p-6 pt-9 text-left transition-colors ${
                       on ? "border-ember bg-ember/8" : "border-border bg-card hover:border-ember/50"
                     }`}
                   >
+                    <span className="absolute left-6 top-4 font-mono text-[10px] tracking-[0.12em] text-muted-foreground">
+                      {oi + 1}.
+                    </span>
                     {on ? (
-                      <span className="font-mono text-[9.5px] uppercase tracking-[0.12em] text-ember-deep">Chosen</span>
+                      <span className="absolute right-6 top-4 font-mono text-[9.5px] uppercase tracking-[0.12em] text-ember-deep">Chosen</span>
                     ) : null}
                     <div className="mt-1 font-display text-[24px] font-medium leading-tight text-foreground">
                       {o.label}

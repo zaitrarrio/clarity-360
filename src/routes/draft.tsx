@@ -233,14 +233,15 @@ function DraftPage() {
                           </p>
                         </div>
                       ) : (
-                        <div className="mt-4 flex flex-wrap gap-2">
-                          {flag.fixes.map((fix) => (
+                        <div className="mt-4 grid gap-2">
+                          {flag.fixes.map((fix, fi) => (
                             <button
                               key={fix.key}
                               onClick={() => pick(flag.id, flag.where, flag.assumed, fix.label, fix.result)}
-                              className="rounded-full border border-border px-4 py-2 text-[13px] font-light text-foreground transition-colors hover:border-ember"
+                              className="flex items-baseline gap-3 rounded-xl border border-border px-4 py-2.5 text-left text-[13px] font-light text-foreground transition-colors hover:border-ember"
                             >
-                              {fix.label}
+                              <span className="font-mono text-[11px] text-ember">{fi + 1}.</span>
+                              <span>{fix.label}</span>
                             </button>
                           ))}
                         </div>
