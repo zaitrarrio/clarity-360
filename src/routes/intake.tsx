@@ -19,6 +19,7 @@ import {
   type Market,
   type Seed,
 } from "@/lib/industries";
+import { clearProgress } from "@/lib/progress";
 
 
 export const Route = createFileRoute("/intake")({
@@ -263,6 +264,7 @@ function IntakePage() {
 
 
   function go(path: "/draft" | "/forks") {
+    clearProgress();
     storeSeed(seed);
     navigate({ to: path });
   }
