@@ -150,17 +150,23 @@ async function requirePlatformAdmin(userId: string) {
 export const listTenants = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    await requirePlatformAdmin(context.userId);
+    const { isPlatformAdmin } = await import("./tenant.server");
+    // Non-admins get an empty, allowed:false result rather than a thrown error
+    // so the screen can render a clear message instead of blanking out.
+    if (!(await isPlatformAdmin(context.userId))) return { allowed: false as const, tenants: [] };
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: tenants } = await supabaseAdmin
       .from("tenants")
       .select("id, slug, name, status, is_default, created_at")
       .order("created_at");
     const { data: domains } = await supabaseAdmin.from("tenant_domains").select("tenant_id, host, verified");
-    return (tenants ?? []).map((t) => ({
-      ...t,
-      domains: (domains ?? []).filter((d) => d.tenant_id === t.id),
-    }));
+    return {
+      allowed: true as const,
+      tenants: (tenants ?? []).map((t) => ({
+        ...t,
+        domains: (domains ?? []).filter((d) => d.tenant_id === t.id),
+      })),
+    };
   });
 
 export const createTenant = createServerFn({ method: "POST" })
