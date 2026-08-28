@@ -12,7 +12,7 @@ import { useEffect, type ReactNode } from "react";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { getTenant } from "../lib/tenant.functions";
-import { DEFAULT_TENANT, TenantContext, brandName, brandingCss } from "../lib/tenant";
+import { DEFAULT_TENANT, TenantContext, brandName, brandingCss, isDarkTenant } from "../lib/tenant";
 
 function NotFoundComponent() {
   return (
@@ -125,8 +125,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 });
 
 function RootShell({ children }: { children: ReactNode }) {
+  const data = Route.useLoaderData();
+  const dark = isDarkTenant(data?.tenant ?? DEFAULT_TENANT);
   return (
-    <html lang="en">
+    <html lang="en" className={dark ? "dark" : undefined}>
       <head>
         <HeadContent />
       </head>

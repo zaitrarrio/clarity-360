@@ -7,6 +7,8 @@ export type TenantBranding = {
   logoUrl?: string;
   faviconUrl?: string;
   footerText?: string;
+  /** "dark" renders the whole workspace in dark mode by default. */
+  colorScheme?: "light" | "dark";
   colors?: Partial<Record<ThemeToken, string>>;
   fontDisplay?: string;
   fontSans?: string;
@@ -108,6 +110,12 @@ export function brandingCss(tenant: Tenant): string {
   if (b.fontDisplay?.trim()) lines.push(`--font-display: ${b.fontDisplay};`);
   if (b.fontSans?.trim()) lines.push(`--font-sans: ${b.fontSans};`);
   if (!lines.length) return "";
-  return `:root{${lines.join("")}}`;
+  const body = lines.join("");
+  // `:root.dark` outranks the base `.dark` block so tenant colors win in dark mode too.
+  return `:root{${body}}:root.dark{${body}}`;
+}
+
+export function isDarkTenant(tenant: Tenant): boolean {
+  return tenant.branding.colorScheme === "dark";
 }
 
