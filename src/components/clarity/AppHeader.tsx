@@ -1,6 +1,7 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { brandInitial, brandWordmark, useTenant } from "@/lib/tenant";
 
 const NAV = [
   { to: "/plan", n: "01", label: "The plan" },
@@ -9,17 +10,29 @@ const NAV = [
 ] as const;
 
 export function Logo({ size = "md" }: { size?: "sm" | "md" }) {
+  const tenant = useTenant();
+  const { lead, tail } = brandWordmark(tenant);
+  const logoUrl = tenant.branding.logoUrl;
+
   return (
     <Link to="/" className="flex items-center gap-2 no-underline">
-      <div
-        className={`grid place-items-center rounded-[7px] bg-ink font-display font-semibold text-ember-soft ${
-          size === "sm" ? "h-[22px] w-[22px] text-[13px]" : "h-6 w-6 text-[13px]"
-        }`}
-      >
-        C
-      </div>
+      {logoUrl ? (
+        <img
+          src={logoUrl}
+          alt=""
+          className={size === "sm" ? "h-[22px] w-auto" : "h-6 w-auto"}
+        />
+      ) : (
+        <div
+          className={`grid place-items-center rounded-[7px] bg-ink font-display font-semibold text-ember-soft ${
+            size === "sm" ? "h-[22px] w-[22px] text-[13px]" : "h-6 w-6 text-[13px]"
+          }`}
+        >
+          {brandInitial(tenant)}
+        </div>
+      )}
       <span className="font-display text-[19px] font-medium tracking-tight text-foreground">
-        Clarity <em className="not-italic text-ember">360</em>
+        {lead} {tail ? <em className="not-italic text-ember">{tail}</em> : null}
       </span>
     </Link>
   );

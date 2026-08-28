@@ -68,10 +68,15 @@ Include exactly seven sections, one per domain key, in the order given.`,
   const sections = (parsed.sections ?? []).filter((s) => DOMAINS.some((d) => d.key === s.domain_key));
   if (sections.length < 3) throw new Error("The plan came back incomplete. Try again.");
 
+  const { resolveTenant, ensureMembership } = await import("./tenant.server");
+  const tenant = await resolveTenant();
+  await ensureMembership(tenant.id, user.id);
+
   const { data: business, error } = await db
     .from("businesses")
     .insert({
       user_id: user.id,
+      tenant_id: tenant.id,
       name: input.name,
       tagline: sections[0]?.summary?.slice(0, 180) ?? null,
       industry: input.industry,
@@ -81,6 +86,10 @@ Include exactly seven sections, one per domain key, in the order given.`,
     .select("id")
     .single();
   if (error || !business) throw new Error("Could not save the plan.");
+
+  await db
+    .from("business_members")
+    .upsert({ business_id: business.id, user_id: user.id, role: "owner" }, { onConflict: "business_id,user_id" });
 
   await db.from("intake_responses").insert(
     input.answers.map((a, i) => ({

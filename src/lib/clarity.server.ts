@@ -27,7 +27,7 @@ export async function assertBusinessAccess(businessId: string) {
   const db = await admin();
   const { data: business, error } = await db
     .from("businesses")
-    .select("id, name, tagline, industry, stage, location, is_demo, user_id")
+    .select("id, name, tagline, industry, stage, location, is_demo, user_id, tenant_id")
     .eq("id", businessId)
     .maybeSingle();
   if (error || !business) throw new Error("Business not found");
@@ -37,10 +37,28 @@ export async function assertBusinessAccess(businessId: string) {
   const token = header.startsWith("Bearer ") ? header.slice(7) : "";
   if (!token) throw new Error("Sign in to change this plan");
   const { data: userData } = await db.auth.getUser(token);
-  if (!userData?.user || userData.user.id !== business.user_id) {
-    throw new Error("Sign in to change this plan");
-  }
-  return business;
+  const userId = userData?.user?.id;
+  if (!userId) throw new Error("Sign in to change this plan");
+  if (userId === business.user_id) return business;
+
+  // Collaborators on the business, and admins of the owning workspace.
+  const { data: member } = await db
+    .from("business_members")
+    .select("id")
+    .eq("business_id", businessId)
+    .eq("user_id", userId)
+    .maybeSingle();
+  if (member) return business;
+
+  const { data: tenantMember } = await db
+    .from("tenant_members")
+    .select("role")
+    .eq("tenant_id", business.tenant_id)
+    .eq("user_id", userId)
+    .maybeSingle();
+  if (tenantMember?.role === "owner" || tenantMember?.role === "admin") return business;
+
+  throw new Error("Sign in to change this plan");
 }
 
 export type PlanContext = {
