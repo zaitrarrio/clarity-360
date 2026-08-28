@@ -153,9 +153,16 @@ function AgendaPage() {
               <h3 className="font-mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground">Agents</h3>
               <ul className="mt-3 space-y-2">
                 {(agents ?? []).map((a) => (
-                  <li key={a.id} className="flex items-baseline justify-between gap-3 border-b border-border/70 pb-2">
-                    <span className="text-[13.5px] font-light text-foreground">{a.name}</span>
-                    <span className="shrink-0 font-mono text-[11px] text-muted-foreground">{a.status}</span>
+                  <li key={a.id} className="border-b border-border/70 pb-2">
+                    <div className="flex items-baseline justify-between gap-3">
+                      <span className="text-[13.5px] font-light text-foreground">{a.name}</span>
+                      <span className="shrink-0 font-mono text-[11px] text-muted-foreground">{a.status}</span>
+                    </div>
+                    {a.status === "inactive" ? (
+                      <p className="mt-1 text-[12px] font-light text-muted-foreground">
+                        Activates when finance tools are connected.
+                      </p>
+                    ) : null}
                   </li>
                 ))}
               </ul>

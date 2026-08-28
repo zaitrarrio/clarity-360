@@ -37,7 +37,7 @@ const CAPABILITIES = [
   {
     n: "03",
     title: "Agents that keep working",
-    body: "Hand a watch to Scout and it checks competitor pricing on a cadence, then alerts you the day someone undercuts you. Tally forecasts cash. Warden watches the dates.",
+    body: "Hand a watch to the Market Agent and it checks competitor pricing on a cadence, then alerts you the day someone undercuts you. The Finance Agent forecasts cash. The Risk Agent watches the dates.",
   },
   {
     n: "04",
