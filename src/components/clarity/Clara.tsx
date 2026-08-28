@@ -139,7 +139,7 @@ export function Clara({
           e.preventDefault();
           send(input);
         }}
-        className="flex items-end gap-2 border-t border-border p-3"
+        className="sticky bottom-0 z-10 flex items-end gap-2 border-t border-border bg-card p-3"
       >
         <textarea
           value={input}
