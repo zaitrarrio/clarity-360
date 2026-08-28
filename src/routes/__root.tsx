@@ -73,7 +73,21 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
 }
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
-  head: () => ({
+  loader: async () => {
+    try {
+      return { tenant: await getTenant() };
+    } catch {
+      return { tenant: DEFAULT_TENANT };
+    }
+  },
+  head: ({ loaderData }) => {
+    const tenant = loaderData?.tenant ?? DEFAULT_TENANT;
+    const name = brandName(tenant);
+    const title = tenant.is_default ? `${name} — the Growth OS` : `${name}`;
+    const description =
+      tenant.branding.heroBody ??
+      "A living seven-domain operating plan, held by a central agent and worked by agents that run actions and watch for change.";
+    return {
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
