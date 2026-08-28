@@ -6,10 +6,10 @@ import { lovable } from "@/integrations/lovable/index";
 import { flushLocalProgress } from "@/lib/progress";
 
 export const Route = createFileRoute("/auth")({
-  validateSearch: (search: Record<string, unknown>) => {
+  validateSearch: (search: Record<string, unknown>): { redirect?: string } => {
     const raw = typeof search['redirect'] === "string" ? (search['redirect'] as string) : undefined;
     // same-origin paths only
-    return { redirect: raw && raw.startsWith("/") && !raw.startsWith("//") ? raw : undefined };
+    return raw && raw.startsWith("/") && !raw.startsWith("//") ? { redirect: raw } : {};
   },
   head: () => ({
     meta: [
