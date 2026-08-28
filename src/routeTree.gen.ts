@@ -18,6 +18,7 @@ import { Route as ForksRouteImport } from './routes/forks'
 import { Route as IntakeRouteImport } from './routes/intake'
 import { Route as PlanRouteImport } from './routes/plan'
 import { Route as ApiClaraRouteImport } from './routes/api/clara'
+import { Route as TSlugRouteImport } from './routes/t.$slug'
 import { Route as ApiPublicAgentsTickRouteImport } from './routes/api/public/agents-tick'
 
 const IndexRoute = IndexRouteImport.update({
@@ -65,6 +66,11 @@ const ApiClaraRoute = ApiClaraRouteImport.update({
   path: '/api/clara',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TSlugRoute = TSlugRouteImport.update({
+  id: '/t/$slug',
+  path: '/t/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicAgentsTickRoute = ApiPublicAgentsTickRouteImport.update({
   id: '/api/public/agents-tick',
   path: '/api/public/agents-tick',
@@ -81,6 +87,7 @@ export interface FileRoutesByFullPath {
   '/intake': typeof IntakeRoute
   '/plan': typeof PlanRoute
   '/api/clara': typeof ApiClaraRoute
+  '/t/$slug': typeof TSlugRoute
   '/api/public/agents-tick': typeof ApiPublicAgentsTickRoute
 }
 export interface FileRoutesByTo {
@@ -93,6 +100,7 @@ export interface FileRoutesByTo {
   '/intake': typeof IntakeRoute
   '/plan': typeof PlanRoute
   '/api/clara': typeof ApiClaraRoute
+  '/t/$slug': typeof TSlugRoute
   '/api/public/agents-tick': typeof ApiPublicAgentsTickRoute
 }
 export interface FileRoutesById {
@@ -106,6 +114,7 @@ export interface FileRoutesById {
   '/intake': typeof IntakeRoute
   '/plan': typeof PlanRoute
   '/api/clara': typeof ApiClaraRoute
+  '/t/$slug': typeof TSlugRoute
   '/api/public/agents-tick': typeof ApiPublicAgentsTickRoute
 }
 export interface FileRouteTypes {
@@ -120,6 +129,7 @@ export interface FileRouteTypes {
     | '/intake'
     | '/plan'
     | '/api/clara'
+    | '/t/$slug'
     | '/api/public/agents-tick'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -132,6 +142,7 @@ export interface FileRouteTypes {
     | '/intake'
     | '/plan'
     | '/api/clara'
+    | '/t/$slug'
     | '/api/public/agents-tick'
   id:
     | '__root__'
@@ -144,6 +155,7 @@ export interface FileRouteTypes {
     | '/intake'
     | '/plan'
     | '/api/clara'
+    | '/t/$slug'
     | '/api/public/agents-tick'
   fileRoutesById: FileRoutesById
 }
@@ -157,6 +169,7 @@ export interface RootRouteChildren {
   IntakeRoute: typeof IntakeRoute
   PlanRoute: typeof PlanRoute
   ApiClaraRoute: typeof ApiClaraRoute
+  TSlugRoute: typeof TSlugRoute
   ApiPublicAgentsTickRoute: typeof ApiPublicAgentsTickRoute
 }
 
@@ -225,6 +238,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiClaraRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/t/$slug': {
+      id: '/t/$slug'
+      path: '/t/$slug'
+      fullPath: '/t/$slug'
+      preLoaderRoute: typeof TSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/agents-tick': {
       id: '/api/public/agents-tick'
       path: '/api/public/agents-tick'
@@ -245,6 +265,7 @@ const rootRouteChildren: RootRouteChildren = {
   IntakeRoute: IntakeRoute,
   PlanRoute: PlanRoute,
   ApiClaraRoute: ApiClaraRoute,
+  TSlugRoute: TSlugRoute,
   ApiPublicAgentsTickRoute: ApiPublicAgentsTickRoute,
 }
 export const routeTree = rootRouteImport
