@@ -94,7 +94,8 @@ function BrandingSettings() {
             You need to be an owner or admin of this workspace to change its branding.
           </p>
         ) : (
-          <div className="mt-8 space-y-5">
+          <div className="mt-8 grid gap-6 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-start">
+          <div className="space-y-5">
             <section className={card}>
               <h2 className="font-display text-[20px] text-foreground">Identity</h2>
               <div className="mt-4 grid gap-4 sm:grid-cols-2">
