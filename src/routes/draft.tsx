@@ -7,7 +7,7 @@ import { buildPlanFromIntake } from "@/lib/clarity.functions";
 import { nextDraftRound } from "@/lib/onboarding.functions";
 import { marketLines, readStoredSeed, seedIndustryLabel, type Seed } from "@/lib/industries";
 import type { Correction, DraftRound } from "@/lib/onboarding.types";
-import { clearProgress, readProgress, saveProgress, savedAtLabel } from "@/lib/progress";
+import { clearProgressEverywhere, resumeProgress, saveProgress, savedAtLabel, syncProgress } from "@/lib/progress";
 
 export const Route = createFileRoute("/draft")({
   head: () => ({
@@ -167,7 +167,7 @@ function DraftPage() {
         },
       });
       if (result?.businessId) {
-        clearProgress();
+        void clearProgressEverywhere();
         navigate({ to: "/plan" });
       }
     } catch (e) {

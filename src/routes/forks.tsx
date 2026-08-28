@@ -7,7 +7,7 @@ import { buildPlanFromIntake } from "@/lib/clarity.functions";
 import { nextForkRound } from "@/lib/onboarding.functions";
 import { marketLines, readStoredSeed, seedIndustryLabel, type Seed } from "@/lib/industries";
 import type { Decision, ForkRound } from "@/lib/onboarding.types";
-import { clearProgress, readProgress, saveProgress } from "@/lib/progress";
+import { clearProgressEverywhere, resumeProgress, saveProgress, savedAtLabel, syncProgress } from "@/lib/progress";
 
 export const Route = createFileRoute("/forks")({
   head: () => ({
@@ -146,7 +146,7 @@ function ForksPage() {
         },
       });
       if (result?.businessId) {
-        clearProgress();
+        void clearProgressEverywhere();
         navigate({ to: "/plan" });
       }
     } catch (e) {
