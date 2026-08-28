@@ -3,8 +3,14 @@ import { useEffect, useState } from "react";
 import { Logo } from "@/components/clarity/AppHeader";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable/index";
+import { flushLocalProgress } from "@/lib/progress";
 
 export const Route = createFileRoute("/auth")({
+  validateSearch: (search: Record<string, unknown>): { redirect?: string } => {
+    const raw = typeof search['redirect'] === "string" ? (search['redirect'] as string) : undefined;
+    // same-origin paths only
+    return raw && raw.startsWith("/") && !raw.startsWith("//") ? { redirect: raw } : {};
+  },
   head: () => ({
     meta: [
       { title: "Sign in — Clarity 360" },
@@ -23,6 +29,13 @@ export const Route = createFileRoute("/auth")({
 
 function AuthPage() {
   const navigate = useNavigate();
+  const { redirect } = Route.useSearch();
+  const back = redirect ?? "/plan";
+
+  async function land(to: string) {
+    await flushLocalProgress();
+    navigate({ to });
+  }
   const [mode, setMode] = useState<"signin" | "signup">("signup");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -32,9 +45,10 @@ function AuthPage() {
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
-      if (data.session) navigate({ to: "/plan" });
+      if (data.session) void land(back);
     });
-  }, [navigate]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -50,12 +64,12 @@ function AuthPage() {
         });
         if (err) throw err;
         const { data } = await supabase.auth.getSession();
-        if (data.session) navigate({ to: "/intake" });
+        if (data.session) void land(redirect ?? "/intake");
         else setNotice("Check your email to confirm your account, then sign in.");
       } else {
         const { error: err } = await supabase.auth.signInWithPassword({ email, password });
         if (err) throw err;
-        navigate({ to: "/plan" });
+        await land(back);
       }
     } catch (e2) {
       setError(e2 instanceof Error ? e2.message : "That didn't work.");
@@ -74,7 +88,7 @@ function AuthPage() {
       return;
     }
     if (result.redirected) return;
-    navigate({ to: "/plan" });
+    await land(back);
   }
 
   return (
