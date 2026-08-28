@@ -140,6 +140,7 @@ export function Clara({
           send(input);
         }}
         className="sticky bottom-0 mt-auto flex items-end gap-2 border-t border-border bg-card p-3"
+      >
         <textarea
           value={input}
           onChange={(e) => setInput(e.target.value)}
