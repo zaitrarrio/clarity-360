@@ -44,6 +44,7 @@ function ForksPage() {
   const [summary, setSummary] = useState(false);
   const [building, setBuilding] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [resumed, setResumed] = useState<string | null>(null);
 
   useEffect(() => {
     if (started.current) return;
