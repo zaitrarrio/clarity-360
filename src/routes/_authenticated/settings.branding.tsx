@@ -276,6 +276,17 @@ function BrandingSettings() {
               ) : null}
             </div>
           </div>
+
+          <aside className="lg:sticky lg:top-24">
+            <div className="flex items-baseline justify-between">
+              <p className={label}>Live preview</p>
+              <span className="text-[11.5px] text-muted-foreground">unsaved changes shown</span>
+            </div>
+            <div className="mt-2">
+              <BrandPreview name={name} branding={branding} />
+            </div>
+          </aside>
+          </div>
         )}
       </main>
     </div>
