@@ -39,8 +39,8 @@ function SectionBody({ section }: { section: PlanSection }) {
         <div className="grid grid-cols-2 gap-px overflow-hidden rounded-xl border border-border bg-border md:grid-cols-3">
           {section.metrics.map((m, i) => (
             <div key={i} className="bg-card px-4 py-4">
-              <div className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground">{m.label}</div>
-              <div className="mt-1.5 font-display text-[26px] leading-none font-normal text-foreground">{m.value}</div>
+              <div className="text-balance font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground">{m.label}</div>
+              <div className="mt-1.5 text-balance font-display text-[26px] leading-none font-normal text-foreground">{m.value}</div>
             </div>
           ))}
         </div>
