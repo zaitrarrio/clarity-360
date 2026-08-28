@@ -74,3 +74,90 @@ export function savedAtLabel(savedAt: number) {
   if (hours < 24) return `${hours} hr ago`;
   return `${Math.round(hours / 24)} d ago`;
 }
+
+// ---------- server sync (resume from another browser after signing in) ----------
+
+async function signedIn() {
+  try {
+    const { data } = await supabase.auth.getSession();
+    return Boolean(data.session);
+  } catch {
+    return false;
+  }
+}
+
+let pushTimer: ReturnType<typeof setTimeout> | undefined;
+
+/** Best-effort debounced push of the current progress (plus its seed) to the account. */
+export function syncProgress(progress: Progress, seed: Seed) {
+  if (typeof window === "undefined") return;
+  if (pushTimer) clearTimeout(pushTimer);
+  pushTimer = setTimeout(() => {
+    void (async () => {
+      if (!(await signedIn())) return;
+      try {
+        await savePlanProgress({
+          data: {
+            mode: progress.mode,
+            seedName: progress.seedName,
+            payload: { progress, seed } as unknown as Record<string, unknown>,
+          },
+        });
+      } catch {
+        /* offline or signed out — local copy still holds */
+      }
+    })();
+  }, 900);
+}
+
+function unwrap<T extends Progress["mode"]>(
+  mode: T,
+  payload: Record<string, unknown> | null | undefined,
+): { progress: Extract<Progress, { mode: T }>; seed: Seed } | null {
+  const progress = payload?.["progress"] as Progress | undefined;
+  const seed = payload?.["seed"] as Seed | undefined;
+  if (!progress || progress.mode !== mode || !progress.round || !seed?.name) return null;
+  return { progress: progress as Extract<Progress, { mode: T }>, seed: normaliseSeed(seed) };
+}
+
+/**
+ * Returns the freshest progress for this mode: the local copy, or the account copy
+ * when it is newer (or when this browser has none). Restores the seed as a side effect.
+ */
+export async function resumeProgress<T extends Progress["mode"]>(
+  mode: T,
+  seedName: string | null,
+): Promise<{ progress: Extract<Progress, { mode: T }>; seed: Seed } | null> {
+  const local = seedName ? readProgress(mode, seedName) : null;
+  if (!(await signedIn())) return local ? { progress: local, seed: readSeedOrNull() } : null;
+
+  try {
+    const row = seedName
+      ? await readPlanProgress({ data: { mode, seedName } })
+      : await latestPlanProgress({ data: { mode } });
+    const remote = unwrap(mode, row?.payload);
+    if (!remote) return local ? { progress: local, seed: readSeedOrNull() } : null;
+    if (local && local.savedAt >= remote.progress.savedAt) {
+      return { progress: local, seed: readSeedOrNull() ?? remote.seed };
+    }
+    storeSeed(remote.seed);
+    saveProgress(remote.progress);
+    return remote;
+  } catch {
+    return local ? { progress: local, seed: readSeedOrNull() } : null;
+  }
+}
+
+function readSeedOrNull(): Seed {
+  return { ...(JSON.parse(window.sessionStorage.getItem("clarity360.seed.v1") ?? "null") ?? {}) } as Seed;
+}
+
+export async function clearProgressEverywhere() {
+  clearProgress();
+  if (!(await signedIn())) return;
+  try {
+    await clearPlanProgress({});
+  } catch {
+    /* no-op */
+  }
+}
