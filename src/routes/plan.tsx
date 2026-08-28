@@ -30,7 +30,7 @@ function SectionBody({ section }: { section: PlanSection }) {
   return (
     <div className="space-y-8">
       {section.summary ? (
-        <p className="max-w-3xl font-display text-[21px] leading-[1.5] font-light text-foreground">
+        <p className="max-w-3xl text-pretty font-display text-[21px] leading-[1.5] font-light text-foreground">
           {section.summary}
         </p>
       ) : null}
