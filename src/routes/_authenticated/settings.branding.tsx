@@ -3,6 +3,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { AppHeader } from "@/components/clarity/AppHeader";
+import { BrandPreview } from "@/components/clarity/BrandPreview";
 import { AGENT_NAMES } from "@/lib/clarity";
 import { THEME_TOKENS, type TenantBranding } from "@/lib/tenant";
 import {
@@ -94,7 +95,8 @@ function BrandingSettings() {
             You need to be an owner or admin of this workspace to change its branding.
           </p>
         ) : (
-          <div className="mt-8 space-y-5">
+          <div className="mt-8 grid gap-6 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-start">
+          <div className="space-y-5">
             <section className={card}>
               <h2 className="font-display text-[20px] text-foreground">Identity</h2>
               <div className="mt-4 grid gap-4 sm:grid-cols-2">
@@ -274,6 +276,17 @@ function BrandingSettings() {
                 <span className="text-[12.5px] text-destructive">{(mutation.error as Error).message}</span>
               ) : null}
             </div>
+          </div>
+
+          <aside className="lg:sticky lg:top-24">
+            <div className="flex items-baseline justify-between">
+              <p className={label}>Live preview</p>
+              <span className="text-[11.5px] text-muted-foreground">unsaved changes shown</span>
+            </div>
+            <div className="mt-2">
+              <BrandPreview name={name} branding={branding} />
+            </div>
+          </aside>
           </div>
         )}
       </main>
