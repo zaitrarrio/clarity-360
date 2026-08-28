@@ -140,8 +140,8 @@ function Landing() {
             ))}
             <div className="grid place-items-center bg-ember px-5 py-6 text-center">
               <div>
-                <div className="font-display text-[21px] font-normal text-primary-foreground">Clara</div>
-                <div className="mt-1 text-[12.5px] font-light text-primary-foreground/75">holds all seven</div>
+                <div className="font-display text-[21px] font-normal text-on-ember">Clara</div>
+                <div className="mt-1 text-[12.5px] font-light text-on-ember/80">holds all seven</div>
               </div>
             </div>
           </div>

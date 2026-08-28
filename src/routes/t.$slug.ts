@@ -3,7 +3,7 @@ import { TENANT_COOKIE } from "@/lib/tenant";
 
 /**
  * Path-prefix entry point for a white-label workspace: /t/<slug> pins the
- * tenant in a cookie and drops the visitor on the branded home page.
+ * tenant in a cookie and drops the visitor on the branded intro screen.
  */
 export const Route = createFileRoute("/t/$slug")({
   server: {
@@ -17,7 +17,7 @@ export const Route = createFileRoute("/t/$slug")({
         return new Response(null, {
           status: 302,
           headers: {
-            Location: "/",
+            Location: "/intro",
             "Set-Cookie": `${TENANT_COOKIE}=${encodeURIComponent(tenant.slug)}; Path=/; Max-Age=31536000; SameSite=Lax`,
           },
         });
