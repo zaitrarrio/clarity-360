@@ -7,6 +7,7 @@ import { buildPlanFromIntake } from "@/lib/clarity.functions";
 import { nextDraftRound } from "@/lib/onboarding.functions";
 import { marketLines, readStoredSeed, seedIndustryLabel, type Seed } from "@/lib/industries";
 import type { Correction, DraftRound } from "@/lib/onboarding.types";
+import { clearProgress, readProgress, saveProgress, savedAtLabel } from "@/lib/progress";
 
 export const Route = createFileRoute("/draft")({
   head: () => ({
@@ -56,6 +57,7 @@ function DraftPage() {
   const [busy, setBusy] = useState(true);
   const [building, setBuilding] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [resumed, setResumed] = useState<string | null>(null);
 
   useEffect(() => {
     const stored = readStoredSeed();
@@ -66,9 +68,24 @@ function DraftPage() {
     setSeed(stored);
     if (started.current) return;
     started.current = true;
+    const saved = readProgress("draft", stored.name);
+    if (saved?.round) {
+      setRound(saved.round);
+      setPass(saved.pass);
+      setCorrections(saved.corrections);
+      setPicked(saved.picked);
+      setResumed(savedAtLabel(saved.savedAt));
+      setBusy(false);
+      return;
+    }
     void load(stored, []);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    if (!seed || !round) return;
+    saveProgress({ mode: "draft", seedName: seed.name, savedAt: Date.now(), pass, round, corrections, picked });
+  }, [seed, round, pass, corrections, picked]);
 
   async function load(currentSeed: Seed, history: Correction[]) {
     setBusy(true);
@@ -136,7 +153,10 @@ function DraftPage() {
           ],
         },
       });
-      if (result?.businessId) navigate({ to: "/plan" });
+      if (result?.businessId) {
+        clearProgress();
+        navigate({ to: "/plan" });
+      }
     } catch (e) {
       setError(e instanceof Error ? e.message : "Clara couldn't write the plan. Try again.");
       setBuilding(false);
@@ -192,6 +212,11 @@ function DraftPage() {
                   {round.headline}
                 </h1>
                 <p className="mt-3 text-[15px] font-light leading-relaxed text-muted-foreground">{round.note}</p>
+                {resumed ? (
+                  <p className="mt-3 font-mono text-[10px] uppercase tracking-[0.12em] text-ember-deep">
+                    Resumed · progress saved {resumed}
+                  </p>
+                ) : null}
               </div>
               <Confidence value={coverage} />
             </div>

@@ -7,6 +7,7 @@ import { buildPlanFromIntake } from "@/lib/clarity.functions";
 import { nextForkRound } from "@/lib/onboarding.functions";
 import { marketLines, readStoredSeed, seedIndustryLabel, type Seed } from "@/lib/industries";
 import type { Decision, ForkRound } from "@/lib/onboarding.types";
+import { clearProgress, readProgress, saveProgress } from "@/lib/progress";
 
 export const Route = createFileRoute("/forks")({
   head: () => ({
@@ -53,9 +54,23 @@ function ForksPage() {
     setSeed(stored);
     if (started.current) return;
     started.current = true;
+    const saved = readProgress("forks", stored.name);
+    if (saved?.round) {
+      setRound(saved.round);
+      setIndex(saved.index);
+      setDecisions(saved.decisions);
+      setSummary(saved.summary);
+      setBusy(false);
+      return;
+    }
     void load(stored, []);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    if (!seed || !round) return;
+    saveProgress({ mode: "forks", seedName: seed.name, savedAt: Date.now(), round, index, decisions, summary });
+  }, [seed, round, index, decisions, summary]);
 
   async function load(currentSeed: Seed, history: Decision[]) {
     setBusy(true);
@@ -130,7 +145,10 @@ function ForksPage() {
           ],
         },
       });
-      if (result?.businessId) navigate({ to: "/plan" });
+      if (result?.businessId) {
+        clearProgress();
+        navigate({ to: "/plan" });
+      }
     } catch (e) {
       setError(e instanceof Error ? e.message : "Clara couldn't write the plan. Try again.");
       setBuilding(false);
