@@ -30,7 +30,7 @@ function SectionBody({ section }: { section: PlanSection }) {
   return (
     <div className="space-y-8">
       {section.summary ? (
-        <p className="max-w-3xl font-display text-[21px] leading-[1.5] font-light text-foreground">
+        <p className="max-w-3xl text-pretty font-display text-[21px] leading-[1.5] font-light text-foreground">
           {section.summary}
         </p>
       ) : null}
@@ -39,8 +39,8 @@ function SectionBody({ section }: { section: PlanSection }) {
         <div className="grid grid-cols-2 gap-px overflow-hidden rounded-xl border border-border bg-border md:grid-cols-3">
           {section.metrics.map((m, i) => (
             <div key={i} className="bg-card px-4 py-4">
-              <div className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground">{m.label}</div>
-              <div className="mt-1.5 font-display text-[26px] leading-none font-normal text-foreground">{m.value}</div>
+              <div className="text-balance font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground">{m.label}</div>
+              <div className="mt-1.5 text-balance font-display text-[26px] leading-none font-normal text-foreground">{m.value}</div>
             </div>
           ))}
         </div>
@@ -53,7 +53,7 @@ function SectionBody({ section }: { section: PlanSection }) {
             {section.findings.map((f, i) => (
               <li key={i} className="flex gap-3 border-b border-border/70 pb-3 text-[14.5px] leading-relaxed font-light text-foreground/85">
                 <span className="mt-[3px] font-mono text-[10px] text-ember">{String(i + 1).padStart(2, "0")}</span>
-                <span>{f}</span>
+                <span className="text-pretty">{f}</span>
               </li>
             ))}
           </ul>
@@ -65,7 +65,7 @@ function SectionBody({ section }: { section: PlanSection }) {
           <h3 className="font-mono text-[10px] uppercase tracking-[0.16em] text-ember">Decisions</h3>
           <ul className="mt-3 space-y-2.5">
             {section.decisions.map((d, i) => (
-              <li key={i} className="text-[14.5px] leading-relaxed font-light text-foreground">
+              <li key={i} className="text-pretty text-[14.5px] leading-relaxed font-light text-foreground">
                 {d}
               </li>
             ))}
@@ -117,7 +117,7 @@ function PlanPage() {
             <div className="font-mono text-[10px] uppercase tracking-[0.16em] text-ember">
               Report {meta?.n} · agent {meta?.agent}
             </div>
-            <h1 className="mt-2 font-display text-[38px] leading-[1.08] font-normal tracking-tight text-foreground">
+            <h1 className="mt-2 text-balance font-display text-[38px] leading-[1.08] font-normal tracking-tight text-foreground">
               {current?.title ?? meta?.label}
             </h1>
           </div>
