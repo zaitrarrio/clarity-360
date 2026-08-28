@@ -3,6 +3,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { AppHeader } from "@/components/clarity/AppHeader";
+import { BrandPreview } from "@/components/clarity/BrandPreview";
 import { AGENT_NAMES } from "@/lib/clarity";
 import { THEME_TOKENS, type TenantBranding } from "@/lib/tenant";
 import {
