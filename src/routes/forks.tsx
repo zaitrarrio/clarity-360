@@ -211,6 +211,7 @@ function ForksPage() {
           <div className="clara-rise">
             <div className="font-mono text-[10px] uppercase tracking-[0.16em] text-ember-deep">
               {decisions.length} decisions · coverage {coverage}%
+              {resumed ? ` · resumed, saved ${resumed}` : ""}
             </div>
             <h1 className="mt-3 font-display text-[40px] leading-[1.08] font-normal tracking-[-0.03em] text-foreground">
               Your plan follows your decisions.
