@@ -139,7 +139,7 @@ export function Clara({
           e.preventDefault();
           send(input);
         }}
-        className="flex shrink-0 items-center gap-2 border-t border-border bg-card px-2 py-1.5"
+        className="flex shrink-0 items-center gap-2 border-t border-border bg-card px-2 py-1"
       >
         <textarea
           value={input}
@@ -152,12 +152,12 @@ export function Clara({
           }}
           rows={1}
           placeholder="Ask Clara, or tell her to run something…"
-          className="max-h-24 h-6 flex-1 resize-none bg-transparent px-1 py-0.5 text-[12.5px] font-light leading-tight text-foreground outline-none placeholder:text-muted-foreground/70"
+          className="max-h-24 h-5 flex-1 resize-none bg-transparent px-1 py-0 text-[12.5px] font-light leading-tight text-foreground outline-none placeholder:text-muted-foreground/70"
         />
         <button
           type="submit"
           disabled={busy || !input.trim()}
-          className="flex h-6 items-center rounded-full bg-ember px-2.5 text-[11px] font-medium text-on-ember disabled:opacity-55"
+          className="flex h-5 items-center rounded-full bg-ember px-2 text-[10.5px] font-medium text-on-ember disabled:opacity-55"
         >
           Send
         </button>
