@@ -10,6 +10,7 @@ import {
   type Schedule,
   type Signal,
 } from "./clarity";
+import { useTenant } from "./tenant";
 
 export function useActiveBusinessId() {
   const tenant = useTenant();
