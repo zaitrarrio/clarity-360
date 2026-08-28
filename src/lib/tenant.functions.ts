@@ -36,6 +36,7 @@ const BrandingSchema = z.object({
   logoUrl: z.string().max(500).optional(),
   faviconUrl: z.string().max(500).optional(),
   footerText: z.string().max(300).optional(),
+  colorScheme: z.enum(["light", "dark"]).optional(),
   colors: z.record(z.string(), z.string().max(80)).optional(),
   fontDisplay: z.string().max(160).optional(),
   fontSans: z.string().max(160).optional(),
