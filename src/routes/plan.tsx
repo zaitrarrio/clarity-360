@@ -117,7 +117,7 @@ function PlanPage() {
             <div className="font-mono text-[10px] uppercase tracking-[0.16em] text-ember">
               Report {meta?.n} · agent {meta?.agent}
             </div>
-            <h1 className="mt-2 font-display text-[38px] leading-[1.08] font-normal tracking-tight text-foreground">
+            <h1 className="mt-2 text-balance font-display text-[38px] leading-[1.08] font-normal tracking-tight text-foreground">
               {current?.title ?? meta?.label}
             </h1>
           </div>
