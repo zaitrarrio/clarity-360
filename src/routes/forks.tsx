@@ -46,30 +46,44 @@ function ForksPage() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const stored = readStoredSeed();
-    if (!stored) {
-      navigate({ to: "/intake" });
-      return;
-    }
-    setSeed(stored);
     if (started.current) return;
     started.current = true;
-    const saved = readProgress("forks", stored.name);
-    if (saved?.round) {
-      setRound(saved.round);
-      setIndex(saved.index);
-      setDecisions(saved.decisions);
-      setSummary(saved.summary);
-      setBusy(false);
-      return;
-    }
-    void load(stored, []);
+    void (async () => {
+      const stored = readStoredSeed();
+      const resumedState = await resumeProgress("forks", stored?.name ?? null);
+      if (resumedState?.progress.round) {
+        setSeed(resumedState.seed);
+        setRound(resumedState.progress.round);
+        setIndex(resumedState.progress.index);
+        setDecisions(resumedState.progress.decisions);
+        setSummary(resumedState.progress.summary);
+        setResumed(savedAtLabel(resumedState.progress.savedAt));
+        setBusy(false);
+        return;
+      }
+      if (!stored) {
+        navigate({ to: "/intake" });
+        return;
+      }
+      setSeed(stored);
+      void load(stored, []);
+    })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     if (!seed || !round) return;
-    saveProgress({ mode: "forks", seedName: seed.name, savedAt: Date.now(), round, index, decisions, summary });
+    const progress = {
+      mode: "forks" as const,
+      seedName: seed.name,
+      savedAt: Date.now(),
+      round,
+      index,
+      decisions,
+      summary,
+    };
+    saveProgress(progress);
+    syncProgress(progress, seed);
   }, [seed, round, index, decisions, summary]);
 
   async function load(currentSeed: Seed, history: Decision[]) {
