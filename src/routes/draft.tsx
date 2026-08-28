@@ -300,7 +300,7 @@ function DraftPage() {
                         void load(seed, corrections);
                       }
                     }}
-                    className="rounded-full bg-ember px-6 py-3 text-[14px] font-medium text-primary-foreground"
+                    className="rounded-full bg-ember px-6 py-3 text-[14px] font-medium text-on-ember"
                   >
                     {enough ? "Build my plan →" : "Keep going — show me the next gaps"}
                   </button>
@@ -348,7 +348,7 @@ function DraftPage() {
             <p className="text-[14px] font-light text-destructive">{error}</p>
             <button
               onClick={() => seed && void load(seed, corrections)}
-              className="mt-5 rounded-full bg-ember px-6 py-2.5 text-[13.5px] font-medium text-primary-foreground"
+              className="mt-5 rounded-full bg-ember px-6 py-2.5 text-[13.5px] font-medium text-on-ember"
             >
               Try again
             </button>

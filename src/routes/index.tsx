@@ -60,7 +60,7 @@ function Landing() {
         </Link>
         <Link
           to="/intake"
-          className="rounded-full bg-ember px-4 py-2 text-[13px] font-medium text-primary-foreground no-underline shadow-ember"
+          className="rounded-full bg-ember px-4 py-2 text-[13px] font-medium text-on-ember no-underline shadow-ember"
         >
           Start
         </Link>
@@ -79,7 +79,7 @@ function Landing() {
           <div className="mt-9 flex flex-wrap items-center gap-3">
             <Link
               to="/intake"
-              className="rounded-full bg-ember px-6 py-3 text-[14px] font-medium text-primary-foreground no-underline shadow-ember"
+              className="rounded-full bg-ember px-6 py-3 text-[14px] font-medium text-on-ember no-underline shadow-ember"
             >
               Build my plan
             </Link>
@@ -140,8 +140,8 @@ function Landing() {
             ))}
             <div className="grid place-items-center bg-ember px-5 py-6 text-center">
               <div>
-                <div className="font-display text-[21px] font-normal text-primary-foreground">Clara</div>
-                <div className="mt-1 text-[12.5px] font-light text-primary-foreground/75">holds all seven</div>
+                <div className="font-display text-[21px] font-normal text-on-ember">Clara</div>
+                <div className="mt-1 text-[12.5px] font-light text-on-ember/80">holds all seven</div>
               </div>
             </div>
           </div>
@@ -157,7 +157,7 @@ function Landing() {
         </p>
         <Link
           to="/intake"
-          className="mt-8 inline-block rounded-full bg-ember px-7 py-3 text-[14px] font-medium text-primary-foreground no-underline shadow-ember"
+          className="mt-8 inline-block rounded-full bg-ember px-7 py-3 text-[14px] font-medium text-on-ember no-underline shadow-ember"
         >
           Build my plan
         </Link>

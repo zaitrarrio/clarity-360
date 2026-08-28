@@ -1,5 +1,6 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import aurora from "@/assets/intro-aurora.jpg";
+import { marketComplete, readStoredSeed } from "@/lib/industries";
 import { brandName, brandWordmark, useTenant } from "@/lib/tenant";
 
 export const Route = createFileRoute("/intro")({
@@ -45,6 +46,23 @@ function Intro() {
   const tenant = useTenant();
   const { lead, tail } = brandWordmark(tenant);
   const name = brandName(tenant);
+  const navigate = useNavigate();
+
+  /**
+   * "Get started" resumes an existing seed straight into the draft loop; a
+   * first-time visitor is sent to intake to create the plan workspace first.
+   */
+  function getStarted() {
+    const seed = readStoredSeed();
+    const ready =
+      seed &&
+      seed.name.trim() &&
+      seed.stage &&
+      seed.industryKey &&
+      seed.objective &&
+      marketComplete(seed.market);
+    navigate({ to: ready ? "/draft" : "/intake" });
+  }
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-background text-foreground">
@@ -82,12 +100,13 @@ function Intro() {
           </p>
 
           <div className="mt-9 flex flex-wrap gap-3">
-            <Link
-              to="/intake"
-              className="rounded-full bg-ember-soft px-6 py-2.5 text-[13.5px] font-semibold text-ink no-underline shadow-ember hover:bg-ember hover:text-primary-foreground"
+            <button
+              type="button"
+              onClick={getStarted}
+              className="rounded-full bg-ember-soft px-6 py-2.5 text-[13.5px] font-semibold text-on-ember shadow-ember hover:bg-ember"
             >
-              Build a plan
-            </Link>
+              Get started
+            </button>
             <Link
               to="/plan"
               className="rounded-full border border-border px-6 py-2.5 text-[13.5px] font-medium text-foreground no-underline hover:bg-card"
@@ -95,6 +114,7 @@ function Intro() {
               See a live plan
             </Link>
           </div>
+
 
           <div className="mt-16 grid gap-px overflow-hidden rounded-2xl border border-border/70 bg-border/60 sm:grid-cols-3">
             {PILLARS.map((p) => (

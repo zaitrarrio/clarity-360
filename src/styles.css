@@ -52,6 +52,7 @@
   --color-ember: var(--ember);
   --color-ember-soft: var(--ember-soft);
   --color-ember-deep: var(--ember-deep);
+  --color-on-ember: var(--on-ember);
   --color-ink: var(--ink);
   --color-parchment: var(--parchment);
   --color-linen: var(--linen);
@@ -100,6 +101,7 @@
   --ember-soft: oklch(0.728 0.172 37.4);
   --ember-deep: oklch(0.526 0.159 37.9);
   --ink: oklch(0.21 0.008 84.6);
+  --on-ember: oklch(0.19 0.012 60);
   --parchment: oklch(0.941 0.01 81.8);
   --linen: oklch(0.964 0.004 91.4);
   --quill: oklch(0.595 0.027 67.3);
@@ -144,6 +146,7 @@
   --ember-soft: oklch(0.79 0.14 40);
   --ember-deep: oklch(0.643 0.189 37);
   --ink: oklch(0.964 0.004 91.4);
+  --on-ember: oklch(0.19 0.012 60);
   --parchment: oklch(0.3 0.01 80);
   --linen: oklch(0.26 0.009 84.6);
   --quill: oklch(0.72 0.018 76);

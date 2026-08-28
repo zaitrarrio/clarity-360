@@ -96,7 +96,7 @@ export function AppHeader({ businessName }: { businessName?: string | undefined 
       ) : (
         <Link
           to="/auth"
-          className="rounded-full bg-ember-soft px-4 py-1.5 text-[12.5px] font-semibold text-ink no-underline shadow-ember hover:bg-ember hover:text-primary-foreground"
+          className="rounded-full bg-ember-soft px-4 py-1.5 text-[12.5px] font-semibold text-on-ember no-underline shadow-ember hover:bg-ember hover:text-on-ember"
         >
           Sign in
         </Link>

@@ -102,7 +102,7 @@ function AgendaPage() {
                           }
                         }}
                         disabled={busy === s.id}
-                        className="rounded-full bg-ember px-3.5 py-1.5 text-[12.5px] font-medium text-primary-foreground disabled:opacity-50"
+                        className="rounded-full bg-ember px-3.5 py-1.5 text-[12.5px] font-medium text-on-ember disabled:opacity-50"
                       >
                         {busy === s.id ? "Working…" : suggested.title}
                       </button>
