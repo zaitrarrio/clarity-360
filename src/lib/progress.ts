@@ -1,5 +1,5 @@
 import { supabase } from "@/integrations/supabase/client";
-import { normaliseSeed, readStoredSeed, storeSeed, type Seed } from "./industries";
+import { readStoredSeed, storeSeed, type Seed } from "./industries";
 import {
   clearPlanProgress,
   latestPlanProgress,
@@ -100,7 +100,7 @@ export function syncProgress(progress: Progress, seed: Seed) {
           data: {
             mode: progress.mode,
             seedName: progress.seedName,
-            payload: { progress, seed } as unknown as Record<string, unknown>,
+            payload: JSON.stringify({ progress, seed }),
           },
         });
       } catch {
@@ -112,12 +112,18 @@ export function syncProgress(progress: Progress, seed: Seed) {
 
 function unwrap<T extends Progress["mode"]>(
   mode: T,
-  payload: Record<string, unknown> | null | undefined,
+  raw: string | null | undefined,
 ): { progress: Extract<Progress, { mode: T }>; seed: Seed } | null {
-  const progress = payload?.["progress"] as Progress | undefined;
-  const seed = payload?.["seed"] as Seed | undefined;
+  if (!raw) return null;
+  let parsed: { progress?: Progress; seed?: Seed };
+  try {
+    parsed = JSON.parse(raw) as { progress?: Progress; seed?: Seed };
+  } catch {
+    return null;
+  }
+  const { progress, seed } = parsed;
   if (!progress || progress.mode !== mode || !progress.round || !seed?.name) return null;
-  return { progress: progress as Extract<Progress, { mode: T }>, seed: normaliseSeed(seed) };
+  return { progress: progress as Extract<Progress, { mode: T }>, seed };
 }
 
 /**
@@ -136,7 +142,7 @@ export async function resumeProgress<T extends Progress["mode"]>(
     const row = seedName
       ? await readPlanProgress({ data: { mode, seedName } })
       : await latestPlanProgress({ data: { mode } });
-    const remote = unwrap(mode, row?.payload);
+    const remote = unwrap(mode, row?.payload ?? null);
     if (!remote) return local && localSeed ? { progress: local, seed: localSeed } : null;
     if (local && local.savedAt >= remote.progress.savedAt) {
       return { progress: local, seed: localSeed ?? remote.seed };

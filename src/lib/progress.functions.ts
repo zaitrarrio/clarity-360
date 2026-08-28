@@ -5,7 +5,7 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 const SaveInput = z.object({
   mode: z.enum(["draft", "forks"]),
   seedName: z.string().min(1),
-  payload: z.record(z.string(), z.unknown()),
+  payload: z.string(),
 });
 
 const ReadInput = z.object({
@@ -22,7 +22,7 @@ export const savePlanProgress = createServerFn({ method: "POST" })
         user_id: context.userId,
         mode: data.mode,
         seed_name: data.seedName,
-        payload: data.payload as never,
+        payload: JSON.parse(data.payload) as never,
         updated_at: new Date().toISOString(),
       },
       { onConflict: "user_id,mode,seed_name" },
@@ -43,7 +43,7 @@ export const readPlanProgress = createServerFn({ method: "POST" })
       .eq("seed_name", data.seedName)
       .maybeSingle();
     if (error) throw new Error(error.message);
-    return row ? { payload: row.payload as Record<string, unknown>, updatedAt: row.updated_at } : null;
+    return row ? { payload: JSON.stringify(row.payload), updatedAt: row.updated_at } : null;
   });
 
 export const latestPlanProgress = createServerFn({ method: "POST" })
@@ -59,7 +59,7 @@ export const latestPlanProgress = createServerFn({ method: "POST" })
       .limit(1);
     if (error) throw new Error(error.message);
     const row = rows?.[0];
-    return row ? { payload: row.payload as Record<string, unknown>, updatedAt: row.updated_at } : null;
+    return row ? { payload: JSON.stringify(row.payload), updatedAt: row.updated_at } : null;
   });
 
 export const clearPlanProgress = createServerFn({ method: "POST" })
