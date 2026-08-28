@@ -65,7 +65,7 @@ function SectionBody({ section }: { section: PlanSection }) {
           <h3 className="font-mono text-[10px] uppercase tracking-[0.16em] text-ember">Decisions</h3>
           <ul className="mt-3 space-y-2.5">
             {section.decisions.map((d, i) => (
-              <li key={i} className="text-[14.5px] leading-relaxed font-light text-foreground">
+              <li key={i} className="text-pretty text-[14.5px] leading-relaxed font-light text-foreground">
                 {d}
               </li>
             ))}
