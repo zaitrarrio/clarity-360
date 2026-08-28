@@ -138,11 +138,16 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const { tenant } = Route.useLoaderData();
+  const css = brandingCss(tenant);
 
   return (
     <QueryClientProvider client={queryClient}>
-      {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-      <Outlet />
+      <TenantContext.Provider value={tenant}>
+        {css ? <style dangerouslySetInnerHTML={{ __html: css }} /> : null}
+        {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
+        <Outlet />
+      </TenantContext.Provider>
     </QueryClientProvider>
   );
 }
