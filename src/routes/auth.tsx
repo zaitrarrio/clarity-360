@@ -5,6 +5,11 @@ import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable/index";
 
 export const Route = createFileRoute("/auth")({
+  validateSearch: (search: Record<string, unknown>) => {
+    const raw = typeof search['redirect'] === "string" ? (search['redirect'] as string) : undefined;
+    // same-origin paths only
+    return { redirect: raw && raw.startsWith("/") && !raw.startsWith("//") ? raw : undefined };
+  },
   head: () => ({
     meta: [
       { title: "Sign in — Clarity 360" },
