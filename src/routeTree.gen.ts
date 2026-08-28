@@ -17,6 +17,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as DraftRouteImport } from './routes/draft'
 import { Route as ForksRouteImport } from './routes/forks'
 import { Route as IntakeRouteImport } from './routes/intake'
+import { Route as IntroRouteImport } from './routes/intro'
 import { Route as PlanRouteImport } from './routes/plan'
 import { Route as ApiClaraRouteImport } from './routes/api/clara'
 import { Route as TSlugRouteImport } from './routes/t.$slug'
@@ -63,6 +64,11 @@ const IntakeRoute = IntakeRouteImport.update({
   path: '/intake',
   getParentRoute: () => rootRouteImport,
 } as any)
+const IntroRoute = IntroRouteImport.update({
+  id: '/intro',
+  path: '/intro',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PlanRoute = PlanRouteImport.update({
   id: '/plan',
   path: '/plan',
@@ -104,6 +110,7 @@ export interface FileRoutesByFullPath {
   '/draft': typeof DraftRoute
   '/forks': typeof ForksRoute
   '/intake': typeof IntakeRoute
+  '/intro': typeof IntroRoute
   '/plan': typeof PlanRoute
   '/api/clara': typeof ApiClaraRoute
   '/t/$slug': typeof TSlugRoute
@@ -119,6 +126,7 @@ export interface FileRoutesByTo {
   '/draft': typeof DraftRoute
   '/forks': typeof ForksRoute
   '/intake': typeof IntakeRoute
+  '/intro': typeof IntroRoute
   '/plan': typeof PlanRoute
   '/api/clara': typeof ApiClaraRoute
   '/t/$slug': typeof TSlugRoute
@@ -136,6 +144,7 @@ export interface FileRoutesById {
   '/draft': typeof DraftRoute
   '/forks': typeof ForksRoute
   '/intake': typeof IntakeRoute
+  '/intro': typeof IntroRoute
   '/plan': typeof PlanRoute
   '/api/clara': typeof ApiClaraRoute
   '/t/$slug': typeof TSlugRoute
@@ -153,6 +162,7 @@ export interface FileRouteTypes {
     | '/draft'
     | '/forks'
     | '/intake'
+    | '/intro'
     | '/plan'
     | '/api/clara'
     | '/t/$slug'
@@ -168,6 +178,7 @@ export interface FileRouteTypes {
     | '/draft'
     | '/forks'
     | '/intake'
+    | '/intro'
     | '/plan'
     | '/api/clara'
     | '/t/$slug'
@@ -184,6 +195,7 @@ export interface FileRouteTypes {
     | '/draft'
     | '/forks'
     | '/intake'
+    | '/intro'
     | '/plan'
     | '/api/clara'
     | '/t/$slug'
@@ -201,6 +213,7 @@ export interface RootRouteChildren {
   DraftRoute: typeof DraftRoute
   ForksRoute: typeof ForksRoute
   IntakeRoute: typeof IntakeRoute
+  IntroRoute: typeof IntroRoute
   PlanRoute: typeof PlanRoute
   ApiClaraRoute: typeof ApiClaraRoute
   TSlugRoute: typeof TSlugRoute
@@ -263,6 +276,13 @@ declare module '@tanstack/react-router' {
       path: '/intake'
       fullPath: '/intake'
       preLoaderRoute: typeof IntakeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/intro': {
+      id: '/intro'
+      path: '/intro'
+      fullPath: '/intro'
+      preLoaderRoute: typeof IntroRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/plan': {
@@ -332,6 +352,7 @@ const rootRouteChildren: RootRouteChildren = {
   DraftRoute: DraftRoute,
   ForksRoute: ForksRoute,
   IntakeRoute: IntakeRoute,
+  IntroRoute: IntroRoute,
   PlanRoute: PlanRoute,
   ApiClaraRoute: ApiClaraRoute,
   TSlugRoute: TSlugRoute,
