@@ -67,12 +67,16 @@ function TenantsAdmin() {
           Workspaces
         </h1>
 
-        {tenants.error ? (
-          <p className="mt-8 text-[13px] text-muted-foreground">{(tenants.error as Error).message}</p>
+        {tenants.error || (tenants.data && !tenants.data.allowed) ? (
+          <p className="mt-8 text-[13px] text-muted-foreground">
+            {tenants.error
+              ? (tenants.error as Error).message
+              : "This screen is limited to platform administrators."}
+          </p>
         ) : (
           <>
             <div className="mt-8 space-y-2">
-              {(tenants.data ?? []).map((t) => (
+              {(tenants.data?.tenants ?? []).map((t) => (
                 <div key={t.id} className="rounded-xl border border-border bg-card/70 px-4 py-3">
                   <div className="flex flex-wrap items-center justify-between gap-3">
                     <div>
