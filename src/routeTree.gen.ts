@@ -20,6 +20,7 @@ import { Route as IntakeRouteImport } from './routes/intake'
 import { Route as PlanRouteImport } from './routes/plan'
 import { Route as ApiClaraRouteImport } from './routes/api/clara'
 import { Route as TSlugRouteImport } from './routes/t.$slug'
+import { Route as AuthenticatedAdminTenantsRouteImport } from './routes/_authenticated/admin.tenants'
 import { Route as AuthenticatedSettingsBrandingRouteImport } from './routes/_authenticated/settings.branding'
 import { Route as ApiPublicAgentsTickRouteImport } from './routes/api/public/agents-tick'
 
@@ -77,6 +78,12 @@ const TSlugRoute = TSlugRouteImport.update({
   path: '/t/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedAdminTenantsRoute =
+  AuthenticatedAdminTenantsRouteImport.update({
+    id: '/admin/tenants',
+    path: '/admin/tenants',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedSettingsBrandingRoute =
   AuthenticatedSettingsBrandingRouteImport.update({
     id: '/settings/branding',
@@ -100,6 +107,7 @@ export interface FileRoutesByFullPath {
   '/plan': typeof PlanRoute
   '/api/clara': typeof ApiClaraRoute
   '/t/$slug': typeof TSlugRoute
+  '/admin/tenants': typeof AuthenticatedAdminTenantsRoute
   '/settings/branding': typeof AuthenticatedSettingsBrandingRoute
   '/api/public/agents-tick': typeof ApiPublicAgentsTickRoute
 }
@@ -114,6 +122,7 @@ export interface FileRoutesByTo {
   '/plan': typeof PlanRoute
   '/api/clara': typeof ApiClaraRoute
   '/t/$slug': typeof TSlugRoute
+  '/admin/tenants': typeof AuthenticatedAdminTenantsRoute
   '/settings/branding': typeof AuthenticatedSettingsBrandingRoute
   '/api/public/agents-tick': typeof ApiPublicAgentsTickRoute
 }
@@ -130,6 +139,7 @@ export interface FileRoutesById {
   '/plan': typeof PlanRoute
   '/api/clara': typeof ApiClaraRoute
   '/t/$slug': typeof TSlugRoute
+  '/_authenticated/admin/tenants': typeof AuthenticatedAdminTenantsRoute
   '/_authenticated/settings/branding': typeof AuthenticatedSettingsBrandingRoute
   '/api/public/agents-tick': typeof ApiPublicAgentsTickRoute
 }
@@ -146,6 +156,7 @@ export interface FileRouteTypes {
     | '/plan'
     | '/api/clara'
     | '/t/$slug'
+    | '/admin/tenants'
     | '/settings/branding'
     | '/api/public/agents-tick'
   fileRoutesByTo: FileRoutesByTo
@@ -160,6 +171,7 @@ export interface FileRouteTypes {
     | '/plan'
     | '/api/clara'
     | '/t/$slug'
+    | '/admin/tenants'
     | '/settings/branding'
     | '/api/public/agents-tick'
   id:
@@ -175,6 +187,7 @@ export interface FileRouteTypes {
     | '/plan'
     | '/api/clara'
     | '/t/$slug'
+    | '/_authenticated/admin/tenants'
     | '/_authenticated/settings/branding'
     | '/api/public/agents-tick'
   fileRoutesById: FileRoutesById
@@ -273,6 +286,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/admin/tenants': {
+      id: '/_authenticated/admin/tenants'
+      path: '/admin/tenants'
+      fullPath: '/admin/tenants'
+      preLoaderRoute: typeof AuthenticatedAdminTenantsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/settings/branding': {
       id: '/_authenticated/settings/branding'
       path: '/settings/branding'
@@ -291,10 +311,12 @@ declare module '@tanstack/react-router' {
 }
 
 interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAdminTenantsRoute: typeof AuthenticatedAdminTenantsRoute
   AuthenticatedSettingsBrandingRoute: typeof AuthenticatedSettingsBrandingRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAdminTenantsRoute: AuthenticatedAdminTenantsRoute,
   AuthenticatedSettingsBrandingRoute: AuthenticatedSettingsBrandingRoute,
 }
 
