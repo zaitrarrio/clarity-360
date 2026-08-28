@@ -7,6 +7,8 @@ export type TenantBranding = {
   logoUrl?: string;
   faviconUrl?: string;
   footerText?: string;
+  /** "dark" renders the whole workspace in dark mode by default. */
+  colorScheme?: "light" | "dark";
   colors?: Partial<Record<ThemeToken, string>>;
   fontDisplay?: string;
   fontSans?: string;
