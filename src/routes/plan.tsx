@@ -53,7 +53,7 @@ function SectionBody({ section }: { section: PlanSection }) {
             {section.findings.map((f, i) => (
               <li key={i} className="flex gap-3 border-b border-border/70 pb-3 text-[14.5px] leading-relaxed font-light text-foreground/85">
                 <span className="mt-[3px] font-mono text-[10px] text-ember">{String(i + 1).padStart(2, "0")}</span>
-                <span>{f}</span>
+                <span className="text-pretty">{f}</span>
               </li>
             ))}
           </ul>
