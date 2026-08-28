@@ -89,7 +89,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     const description =
       tenant.branding.heroBody ??
       "A living seven-domain operating plan, held by a central agent and worked by agents that run actions and watch for change.";
-    const links = [
+    const links: { rel: string; href: string; crossOrigin?: "anonymous" }[] = [
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
