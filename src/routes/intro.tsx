@@ -1,5 +1,6 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import aurora from "@/assets/intro-aurora.jpg";
+import { marketComplete, readStoredSeed } from "@/lib/industries";
 import { brandName, brandWordmark, useTenant } from "@/lib/tenant";
 
 export const Route = createFileRoute("/intro")({
@@ -45,6 +46,23 @@ function Intro() {
   const tenant = useTenant();
   const { lead, tail } = brandWordmark(tenant);
   const name = brandName(tenant);
+  const navigate = useNavigate();
+
+  /**
+   * "Get started" resumes an existing seed straight into the draft loop; a
+   * first-time visitor is sent to intake to create the plan workspace first.
+   */
+  function getStarted() {
+    const seed = readStoredSeed();
+    const ready =
+      seed &&
+      seed.name.trim() &&
+      seed.stage &&
+      seed.industryKey &&
+      seed.objective &&
+      marketComplete(seed.market);
+    navigate({ to: ready ? "/draft" : "/intake" });
+  }
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-background text-foreground">
