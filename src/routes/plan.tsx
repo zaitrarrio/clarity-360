@@ -88,7 +88,7 @@ function PlanPage() {
   return (
     <div className="min-h-screen bg-background">
       <AppHeader businessName={business?.name} />
-      <div className="mx-auto grid max-w-[1500px] gap-6 px-5 py-7 md:px-7 xl:grid-cols-[210px_minmax(0,1fr)_380px]">
+      <div className="mx-auto grid max-w-[1500px] gap-6 px-5 py-7 md:px-7 xl:grid-cols-[210px_minmax(0,1fr)]">
         <aside className="xl:sticky xl:top-[76px] xl:self-start">
           <div className="mb-3 font-mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground">Reports</div>
           <nav className="flex gap-1.5 overflow-x-auto pb-1 xl:flex-col xl:overflow-visible">
@@ -134,12 +134,15 @@ function PlanPage() {
               This report hasn't been written yet. Ask Clara to fill it in.
             </p>
           )}
+          <aside className="mt-8 xl:hidden">
+            <Clara businessId={businessId} section={meta?.label ?? null} compact />
+          </aside>
         </main>
-
-        <aside className="xl:sticky xl:top-[76px] xl:h-[calc(100vh-100px)] xl:self-start">
-          <Clara businessId={businessId} section={meta?.label ?? null} compact />
-        </aside>
       </div>
+
+      <aside className="fixed bottom-6 right-6 z-40 hidden h-[calc(100vh-100px)] w-[380px] xl:flex">
+        <Clara businessId={businessId} section={meta?.label ?? null} />
+      </aside>
     </div>
   );
 }
