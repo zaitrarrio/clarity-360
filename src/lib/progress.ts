@@ -1,5 +1,5 @@
 import { supabase } from "@/integrations/supabase/client";
-import { normaliseSeed, storeSeed, type Seed } from "./industries";
+import { normaliseSeed, readStoredSeed, storeSeed, type Seed } from "./industries";
 import {
   clearPlanProgress,
   latestPlanProgress,
@@ -129,27 +129,24 @@ export async function resumeProgress<T extends Progress["mode"]>(
   seedName: string | null,
 ): Promise<{ progress: Extract<Progress, { mode: T }>; seed: Seed } | null> {
   const local = seedName ? readProgress(mode, seedName) : null;
-  if (!(await signedIn())) return local ? { progress: local, seed: readSeedOrNull() } : null;
+  const localSeed = readStoredSeed();
+  if (!(await signedIn())) return local && localSeed ? { progress: local, seed: localSeed } : null;
 
   try {
     const row = seedName
       ? await readPlanProgress({ data: { mode, seedName } })
       : await latestPlanProgress({ data: { mode } });
     const remote = unwrap(mode, row?.payload);
-    if (!remote) return local ? { progress: local, seed: readSeedOrNull() } : null;
+    if (!remote) return local && localSeed ? { progress: local, seed: localSeed } : null;
     if (local && local.savedAt >= remote.progress.savedAt) {
-      return { progress: local, seed: readSeedOrNull() ?? remote.seed };
+      return { progress: local, seed: localSeed ?? remote.seed };
     }
     storeSeed(remote.seed);
     saveProgress(remote.progress);
     return remote;
   } catch {
-    return local ? { progress: local, seed: readSeedOrNull() } : null;
+    return local && localSeed ? { progress: local, seed: localSeed } : null;
   }
-}
-
-function readSeedOrNull(): Seed {
-  return { ...(JSON.parse(window.sessionStorage.getItem("clarity360.seed.v1") ?? "null") ?? {}) } as Seed;
 }
 
 export async function clearProgressEverywhere() {
