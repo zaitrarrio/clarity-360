@@ -155,6 +155,36 @@ export async function resumeProgress<T extends Progress["mode"]>(
   }
 }
 
+/**
+ * Push whatever this browser holds to the account right now (used straight after
+ * sign-in, so answers given while signed out are never stranded in one browser).
+ */
+export async function flushLocalProgress() {
+  if (typeof window === "undefined") return;
+  const seed = readStoredSeed();
+  if (!seed) return;
+  let progress: Progress | null = null;
+  try {
+    const raw = window.localStorage.getItem(KEY);
+    progress = raw ? (JSON.parse(raw) as Progress) : null;
+  } catch {
+    return;
+  }
+  if (!progress?.round) return;
+  if (!(await signedIn())) return;
+  try {
+    await savePlanProgress({
+      data: {
+        mode: progress.mode,
+        seedName: progress.seedName,
+        payload: JSON.stringify({ progress, seed }),
+      },
+    });
+  } catch {
+    /* best effort */
+  }
+}
+
 export async function clearProgressEverywhere() {
   clearProgress();
   if (!(await signedIn())) return;
