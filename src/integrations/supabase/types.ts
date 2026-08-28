@@ -367,6 +367,36 @@ export type Database = {
           },
         ]
       }
+      plan_progress: {
+        Row: {
+          created_at: string
+          id: string
+          mode: string
+          payload: Json
+          seed_name: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          mode: string
+          payload?: Json
+          seed_name: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          mode?: string
+          payload?: Json
+          seed_name?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       plan_sections: {
         Row: {
           business_id: string
