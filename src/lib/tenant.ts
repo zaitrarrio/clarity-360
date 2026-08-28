@@ -111,6 +111,3 @@ export function brandingCss(tenant: Tenant): string {
   return `:root{${lines.join("")}}`;
 }
 
-export function tenantPath(tenant: Tenant, path: string): string {
-  return path;
-}
