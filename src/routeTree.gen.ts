@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as ActionsRouteImport } from './routes/actions'
 import { Route as AgendaRouteImport } from './routes/agenda'
 import { Route as AuthRouteImport } from './routes/auth'
@@ -19,11 +20,16 @@ import { Route as IntakeRouteImport } from './routes/intake'
 import { Route as PlanRouteImport } from './routes/plan'
 import { Route as ApiClaraRouteImport } from './routes/api/clara'
 import { Route as TSlugRouteImport } from './routes/t.$slug'
+import { Route as AuthenticatedSettingsBrandingRouteImport } from './routes/_authenticated/settings.branding'
 import { Route as ApiPublicAgentsTickRouteImport } from './routes/api/public/agents-tick'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ActionsRoute = ActionsRouteImport.update({
@@ -71,6 +77,12 @@ const TSlugRoute = TSlugRouteImport.update({
   path: '/t/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedSettingsBrandingRoute =
+  AuthenticatedSettingsBrandingRouteImport.update({
+    id: '/settings/branding',
+    path: '/settings/branding',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const ApiPublicAgentsTickRoute = ApiPublicAgentsTickRouteImport.update({
   id: '/api/public/agents-tick',
   path: '/api/public/agents-tick',
@@ -88,6 +100,7 @@ export interface FileRoutesByFullPath {
   '/plan': typeof PlanRoute
   '/api/clara': typeof ApiClaraRoute
   '/t/$slug': typeof TSlugRoute
+  '/settings/branding': typeof AuthenticatedSettingsBrandingRoute
   '/api/public/agents-tick': typeof ApiPublicAgentsTickRoute
 }
 export interface FileRoutesByTo {
@@ -101,11 +114,13 @@ export interface FileRoutesByTo {
   '/plan': typeof PlanRoute
   '/api/clara': typeof ApiClaraRoute
   '/t/$slug': typeof TSlugRoute
+  '/settings/branding': typeof AuthenticatedSettingsBrandingRoute
   '/api/public/agents-tick': typeof ApiPublicAgentsTickRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/actions': typeof ActionsRoute
   '/agenda': typeof AgendaRoute
   '/auth': typeof AuthRoute
@@ -115,6 +130,7 @@ export interface FileRoutesById {
   '/plan': typeof PlanRoute
   '/api/clara': typeof ApiClaraRoute
   '/t/$slug': typeof TSlugRoute
+  '/_authenticated/settings/branding': typeof AuthenticatedSettingsBrandingRoute
   '/api/public/agents-tick': typeof ApiPublicAgentsTickRoute
 }
 export interface FileRouteTypes {
@@ -130,6 +146,7 @@ export interface FileRouteTypes {
     | '/plan'
     | '/api/clara'
     | '/t/$slug'
+    | '/settings/branding'
     | '/api/public/agents-tick'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -143,10 +160,12 @@ export interface FileRouteTypes {
     | '/plan'
     | '/api/clara'
     | '/t/$slug'
+    | '/settings/branding'
     | '/api/public/agents-tick'
   id:
     | '__root__'
     | '/'
+    | '/_authenticated'
     | '/actions'
     | '/agenda'
     | '/auth'
@@ -156,11 +175,13 @@ export interface FileRouteTypes {
     | '/plan'
     | '/api/clara'
     | '/t/$slug'
+    | '/_authenticated/settings/branding'
     | '/api/public/agents-tick'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   ActionsRoute: typeof ActionsRoute
   AgendaRoute: typeof AgendaRoute
   AuthRoute: typeof AuthRoute
@@ -180,6 +201,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/actions': {
@@ -245,6 +273,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/settings/branding': {
+      id: '/_authenticated/settings/branding'
+      path: '/settings/branding'
+      fullPath: '/settings/branding'
+      preLoaderRoute: typeof AuthenticatedSettingsBrandingRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/api/public/agents-tick': {
       id: '/api/public/agents-tick'
       path: '/api/public/agents-tick'
@@ -255,8 +290,20 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedSettingsBrandingRoute: typeof AuthenticatedSettingsBrandingRoute
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedSettingsBrandingRoute: AuthenticatedSettingsBrandingRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   ActionsRoute: ActionsRoute,
   AgendaRoute: AgendaRoute,
   AuthRoute: AuthRoute,
