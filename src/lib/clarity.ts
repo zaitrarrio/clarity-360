@@ -10,24 +10,24 @@ export type DomainKey =
   | "risk";
 
 export const DOMAINS: { key: DomainKey; label: string; agent: string; n: string }[] = [
-  { key: "market", label: "The Market", agent: "Scout", n: "01" },
-  { key: "offer", label: "The Offer", agent: "Ledgerline", n: "02" },
-  { key: "growth", label: "Growth", agent: "Current", n: "03" },
-  { key: "operations", label: "Operations", agent: "Keel", n: "04" },
-  { key: "finance", label: "Finance", agent: "Tally", n: "05" },
-  { key: "brand", label: "Brand & Story", agent: "Ember", n: "06" },
-  { key: "risk", label: "Risk & Compliance", agent: "Warden", n: "07" },
+  { key: "market", label: "The Market", agent: "Market Agent", n: "01" },
+  { key: "offer", label: "The Offer", agent: "Offer Agent", n: "02" },
+  { key: "growth", label: "Growth", agent: "Growth Agent", n: "03" },
+  { key: "operations", label: "Operations", agent: "Operations Agent", n: "04" },
+  { key: "finance", label: "Finance", agent: "Finance Agent", n: "05" },
+  { key: "brand", label: "Brand & Story", agent: "Messaging Agent", n: "06" },
+  { key: "risk", label: "Risk & Compliance", agent: "Risk Agent", n: "07" },
 ];
 
 export const AGENT_NAMES: Record<string, string> = {
   clara: "Clara",
-  market: "Scout",
-  offer: "Ledgerline",
-  growth: "Current",
-  operations: "Keel",
-  finance: "Tally",
-  brand: "Ember",
-  risk: "Warden",
+  market: "Market Agent",
+  offer: "Offer Agent",
+  growth: "Growth Agent",
+  operations: "Operations Agent",
+  finance: "Finance Agent",
+  brand: "Messaging Agent",
+  risk: "Risk Agent",
 };
 
 export type Metric = { label: string; value: string };

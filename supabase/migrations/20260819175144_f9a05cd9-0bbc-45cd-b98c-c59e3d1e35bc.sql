@@ -227,13 +227,13 @@ INSERT INTO public.plan_sections (business_id, domain_key, title, kicker, ordina
 
 INSERT INTO public.agents (business_id, agent_key, name, domain_key, description, status) VALUES
 ('11111111-1111-1111-1111-111111111111','clara','Clara',NULL,'The central agent. Holds the whole plan, routes work to the domain agents, and assembles your daily agenda.','active'),
-('11111111-1111-1111-1111-111111111111','market','Scout','market','Watches competitors, pricing, and local demand signals.','active'),
-('11111111-1111-1111-1111-111111111111','offer','Ledgerline','offer','Tests offer structure, pricing tiers, and add-on attach.','idle'),
-('11111111-1111-1111-1111-111111111111','growth','Current','growth','Runs the enrollment sequence, referral loops, and content cadence.','active'),
-('11111111-1111-1111-1111-111111111111','operations','Keel','operations','Tracks staffing, ratios, coverage, and documentation.','active'),
-('11111111-1111-1111-1111-111111111111','finance','Tally','finance','Monitors margin, runway, and concentration risk.','idle'),
-('11111111-1111-1111-1111-111111111111','brand','Ember','brand','Writes in your voice: posts, pages, decks, and story.','active'),
-('11111111-1111-1111-1111-111111111111','risk','Warden','risk','Watches compliance dates, coverage, and single points of failure.','active');
+('11111111-1111-1111-1111-111111111111','market','Market Agent','market','Watches competitors, pricing, and local demand signals.','active'),
+('11111111-1111-1111-1111-111111111111','offer','Offer Agent','offer','Tests offer structure, pricing tiers, and add-on attach.','idle'),
+('11111111-1111-1111-1111-111111111111','growth','Growth Agent','growth','Runs the enrollment sequence, referral loops, and content cadence.','active'),
+('11111111-1111-1111-1111-111111111111','operations','Operations Agent','operations','Tracks staffing, ratios, coverage, and documentation.','active'),
+('11111111-1111-1111-1111-111111111111','finance','Finance Agent','finance','Monitors margin, runway, and concentration risk. Activates when finance tools are connected.','inactive'),
+('11111111-1111-1111-1111-111111111111','brand','Messaging Agent','brand','Writes in your voice: posts, pages, decks, and story.','active'),
+('11111111-1111-1111-1111-111111111111','risk','Risk Agent','risk','Watches compliance dates, coverage, and single points of failure.','active');
 
 INSERT INTO public.actions (business_id, domain_key, action_key, title, description, kind, agent_key, ordinal) VALUES
 ('11111111-1111-1111-1111-111111111111','market','competitor_price_watch','Watch competitor pricing','Check the eleven local centers weekly and raise a signal whenever one prices below you.','recurring','market',1),
