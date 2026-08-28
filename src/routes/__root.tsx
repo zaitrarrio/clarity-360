@@ -87,39 +87,34 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     const description =
       tenant.branding.heroBody ??
       "A living seven-domain operating plan, held by a central agent and worked by agents that run actions and watch for change.";
-    return {
-    meta: [
-      { charSet: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Clarity 360 — the Growth OS" },
-      {
-        name: "description",
-        content:
-          "A living seven-domain operating plan, held by Clara and worked by agents that run actions and watch for change.",
-      },
-      { name: "author", content: "Clarity 360" },
-      { property: "og:title", content: "Clarity 360 — the Growth OS" },
-      {
-        property: "og:description",
-        content: "From idea to exponential, with the whole 360 in view.",
-      },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
-    links: [
+    const links = [
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
         rel: "stylesheet",
         href: "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=DM+Mono:wght@400;500&display=swap",
       },
-      {
-        rel: "stylesheet",
-        href: appCss,
-      },
-      { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
-    ],
-  }),
+      { rel: "stylesheet", href: appCss },
+      { rel: "icon", href: tenant.branding.faviconUrl || "/favicon.ico" },
+    ];
+    if (tenant.branding.fontLinkHref) {
+      links.splice(2, 0, { rel: "stylesheet", href: tenant.branding.fontLinkHref });
+    }
+    return {
+      meta: [
+        { charSet: "utf-8" },
+        { name: "viewport", content: "width=device-width, initial-scale=1" },
+        { title },
+        { name: "description", content: description },
+        { name: "author", content: name },
+        { property: "og:title", content: title },
+        { property: "og:description", content: description },
+        { property: "og:type", content: "website" },
+        { name: "twitter:card", content: "summary_large_image" },
+      ],
+      links,
+    };
+  },
 
   shellComponent: RootShell,
   component: RootComponent,
