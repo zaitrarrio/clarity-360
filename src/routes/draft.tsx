@@ -136,8 +136,8 @@ function DraftPage() {
       const { data: session } = await supabase.auth.getSession();
       if (!session.session) {
         setBuilding(false);
-        setError("Create an account to save your plan — taking you to sign-in.");
-        navigate({ to: "/auth" });
+        setError("Create an account to save your plan — we'll bring you right back with your answers.");
+        navigate({ to: "/auth", search: { redirect: "/draft" } });
         return;
       }
       const result = await build({
