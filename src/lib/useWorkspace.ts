@@ -12,17 +12,20 @@ import {
 } from "./clarity";
 
 export function useActiveBusinessId() {
+  const tenant = useTenant();
   const { data } = useQuery({
-    queryKey: ["active-business"],
+    queryKey: ["active-business", tenant.id],
     queryFn: async () => {
       const { data: session } = await supabase.auth.getSession();
       if (session.session) {
-        const { data: mine } = await supabase
+        let query = supabase
           .from("businesses")
           .select("id")
           .eq("user_id", session.session.user.id)
           .order("created_at", { ascending: false })
           .limit(1);
+        if (tenant.id) query = query.eq("tenant_id", tenant.id);
+        const { data: mine } = await query;
         if (mine && mine.length) return mine[0]!.id as string;
       }
       return DEMO_BUSINESS_ID;
