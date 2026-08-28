@@ -82,7 +82,7 @@ export function Clara({
   }
 
   return (
-    <div className={`flex flex-col overflow-hidden rounded-xl border border-border bg-card ${compact ? "h-[520px]" : "h-full"}`}>
+    <div className={`flex flex-col overflow-hidden rounded-xl border border-border bg-card ${compact ? "h-[calc(100vh-100px)]" : "h-full"}`}>
       <div className="flex items-center gap-2.5 border-b border-border px-4 py-3">
         <span className="clara-orb" />
         <div className="min-w-0">
