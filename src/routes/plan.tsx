@@ -88,7 +88,7 @@ function PlanPage() {
   return (
     <div className="min-h-screen bg-background">
       <AppHeader businessName={business?.name} />
-      <div className="mx-auto grid max-w-[1500px] gap-6 px-5 py-7 md:px-7 xl:grid-cols-[210px_minmax(0,1fr)_380px]">
+      <div className="mx-auto grid max-w-[1500px] grid-cols-[minmax(0,1fr)] gap-6 px-5 py-7 pb-[340px] md:mr-[340px] md:px-7 md:pb-7 md:grid-cols-[minmax(0,1fr)] xl:grid-cols-[210px_minmax(0,1fr)_380px] xl:mr-0">
         <aside className="xl:sticky xl:top-[76px] xl:self-start">
           <div className="mb-3 font-mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground">Reports</div>
           <nav className="flex gap-1.5 overflow-x-auto pb-1 xl:flex-col xl:overflow-visible">
@@ -134,15 +134,9 @@ function PlanPage() {
               This report hasn't been written yet. Ask Clara to fill it in.
             </p>
           )}
-          <aside className="mt-8 xl:hidden">
-            <Clara businessId={businessId} section={meta?.label ?? null} compact />
-          </aside>
         </main>
 
-        <aside
-          className="fixed bottom-6 z-40 hidden h-[calc(100vh-100px)] w-[380px] xl:flex"
-          style={{ right: "max(1.75rem, calc((100vw - 1500px) / 2 + 1.75rem))" }}
-        >
+        <aside className="fixed bottom-0 left-0 right-0 z-40 flex h-[320px] w-full flex-col md:bottom-6 md:left-auto md:right-7 md:h-[420px] md:w-[320px] xl:h-[calc(100vh-100px)] xl:w-[380px] xl:right-[max(1.75rem,calc((100vw-1500px)/2+1.75rem))]">
           <Clara businessId={businessId} section={meta?.label ?? null} />
         </aside>
       </div>
