@@ -88,7 +88,7 @@ function PlanPage() {
   return (
     <div className="min-h-screen bg-background">
       <AppHeader businessName={business?.name} />
-      <div className="mx-auto grid max-w-[1500px] gap-6 px-5 py-7 pb-[340px] md:mr-[340px] md:px-7 md:pb-7 xl:grid-cols-[210px_minmax(0,1fr)_380px] xl:mr-0">
+      <div className="mx-auto grid max-w-[1500px] grid-cols-[minmax(0,1fr)] gap-6 px-5 py-7 pb-[340px] md:mr-[340px] md:px-7 md:pb-7 md:grid-cols-[minmax(0,1fr)] xl:grid-cols-[210px_minmax(0,1fr)_380px] xl:mr-0">
         <aside className="xl:sticky xl:top-[76px] xl:self-start">
           <div className="mb-3 font-mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground">Reports</div>
           <nav className="flex gap-1.5 overflow-x-auto pb-1 xl:flex-col xl:overflow-visible">
