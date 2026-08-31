@@ -119,39 +119,42 @@ function ActionsPage() {
                           </button>
                         </div>
 
-                        {a.kind === "recurring" ? (
-                          <div className="mt-3 flex flex-wrap items-center gap-1.5 border-t border-border pt-3">
-                            {sched ? (
-                              <>
-                                <span className="text-[11.5px] font-light text-muted-foreground">
-                                  {sched.active ? `${sched.cadence}, next ${timeUntil(sched.next_run_at)}` : "paused"}
-                                </span>
+                        <div className="mt-3 border-t border-border pt-3">
+                          <div className="flex flex-wrap items-center gap-1.5">
+                            {CADENCES.map((c) => {
+                              const current = sched?.active ? sched.cadence : "on_demand";
+                              const selected = current === c.key;
+                              return (
                                 <button
+                                  key={c.key}
                                   onClick={async () => {
-                                    await toggle({ data: { scheduleId: sched.id, active: !sched.active } });
-                                    refresh();
+                                    setBusyKey(`${a.action_key}:sched`);
+                                    try {
+                                      await schedule({
+                                        data: { businessId, actionKey: a.action_key, cadence: c.key },
+                                      });
+                                      refresh();
+                                    } finally {
+                                      setBusyKey(null);
+                                    }
                                   }}
-                                  className="ml-auto rounded-full border border-border px-2.5 py-1 text-[11.5px] text-muted-foreground hover:text-foreground"
+                                  className={`rounded-full border px-2.5 py-1 text-[11.5px] transition-colors ${
+                                    selected
+                                      ? "border-ember bg-ember/10 font-medium text-foreground"
+                                      : "border-border font-light text-muted-foreground hover:border-ember/40 hover:text-foreground"
+                                  }`}
                                 >
-                                  {sched.active ? "Pause" : "Resume"}
+                                  {c.label}
                                 </button>
-                              </>
-                            ) : (
-                              (["daily", "weekly", "monthly"] as const).map((c) => (
-                                <button
-                                  key={c}
-                                  onClick={async () => {
-                                    await schedule({ data: { businessId, actionKey: a.action_key, cadence: c } });
-                                    refresh();
-                                  }}
-                                  className="rounded-full border border-border px-2.5 py-1 text-[11.5px] font-light text-muted-foreground hover:border-ember/40 hover:text-foreground"
-                                >
-                                  {c}
-                                </button>
-                              ))
-                            )}
+                              );
+                            })}
                           </div>
-                        ) : null}
+                          <div className="mt-2 text-[11.5px] font-light text-muted-foreground">
+                            {sched?.active
+                              ? `Runs ${sched.cadence}, next ${timeUntil(sched.next_run_at)}`
+                              : "Runs only when you ask"}
+                          </div>
+                        </div>
                       </div>
                     );
                   })}
