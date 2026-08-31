@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AppHeader } from "@/components/clarity/AppHeader";
 import { Clara } from "@/components/clarity/Clara";
 import { DOMAINS, type PlanSection } from "@/lib/clarity";
@@ -81,6 +81,14 @@ function PlanPage() {
   const { data: business } = useBusiness(businessId);
   const { data: sections, isLoading } = usePlanSections(businessId);
   const [active, setActive] = useState<string>("market");
+  const [claraOpen, setClaraOpen] = useState(() => {
+    if (typeof window === "undefined") return true;
+    return localStorage.getItem("clara-open") !== "false";
+  });
+
+  useEffect(() => {
+    localStorage.setItem("clara-open", String(claraOpen));
+  }, [claraOpen]);
 
   const current = sections?.find((s) => s.domain_key === active);
   const meta = DOMAINS.find((d) => d.key === active);
@@ -88,7 +96,11 @@ function PlanPage() {
   return (
     <div className="min-h-screen bg-background">
       <AppHeader businessName={business?.name} />
-      <div className="mx-auto grid max-w-[1500px] grid-cols-[minmax(0,1fr)] gap-6 px-5 py-7 pb-[340px] md:mr-[340px] md:px-7 md:pb-7 md:grid-cols-[minmax(0,1fr)] xl:grid-cols-[210px_minmax(0,1fr)_380px] xl:mr-0">
+      <div
+        className={`mx-auto grid max-w-[1500px] grid-cols-[minmax(0,1fr)] gap-6 px-5 py-7 md:px-7 xl:mr-0 xl:grid-cols-[210px_minmax(0,1fr)_380px] ${
+          claraOpen ? "pb-[340px] md:mr-[340px] md:pb-7" : "pb-[80px] md:pb-7"
+        }`}
+      >
         <aside className="xl:sticky xl:top-[76px] xl:self-start">
           <div className="mb-3 font-mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground">Reports</div>
           <nav className="flex gap-1.5 overflow-x-auto pb-1 xl:flex-col xl:overflow-visible">
@@ -136,8 +148,19 @@ function PlanPage() {
           )}
         </main>
 
-        <aside className="fixed bottom-0 left-0 right-0 z-40 flex h-[320px] w-full flex-col md:bottom-6 md:left-auto md:right-7 md:h-[420px] md:w-[320px] xl:h-[calc(100vh-100px)] xl:w-[380px] xl:right-[max(1.75rem,calc((100vw-1500px)/2+1.75rem))]">
-          <Clara businessId={businessId} section={meta?.label ?? null} />
+        <aside
+          className={`fixed bottom-0 left-0 right-0 z-40 flex flex-col md:bottom-6 md:left-auto md:right-7 xl:right-[max(1.75rem,calc((100vw-1500px)/2+1.75rem))] ${
+            claraOpen
+              ? "h-[320px] w-full md:h-[420px] md:w-[320px] xl:h-[calc(100vh-100px)] xl:w-[380px]"
+              : "h-auto w-full md:w-[320px] xl:w-[380px]"
+          }`}
+        >
+          <Clara
+            businessId={businessId}
+            section={meta?.label ?? null}
+            collapsed={!claraOpen}
+            onToggleCollapse={() => setClaraOpen((v) => !v)}
+          />
         </aside>
       </div>
     </div>
