@@ -4,7 +4,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
 import { AppHeader } from "@/components/clarity/AppHeader";
 import { Markdown } from "@/components/clarity/Markdown";
-import { runAction, scheduleAction, setScheduleActive } from "@/lib/clarity.functions";
+import { runAction, scheduleAction } from "@/lib/clarity.functions";
 import { AGENT_NAMES, DOMAINS, timeAgo, timeUntil, type ActionDef } from "@/lib/clarity";
 import { useActions, useActiveBusinessId, useBusiness, useRuns, useSchedules } from "@/lib/useWorkspace";
 
@@ -26,6 +26,13 @@ export const Route = createFileRoute("/actions")({
   component: ActionsPage,
 });
 
+const CADENCES = [
+  { key: "on_demand", label: "On-demand" },
+  { key: "daily", label: "Daily" },
+  { key: "weekly", label: "Weekly" },
+  { key: "monthly", label: "Monthly" },
+] as const;
+
 function ActionsPage() {
   const businessId = useActiveBusinessId();
   const qc = useQueryClient();
@@ -36,7 +43,6 @@ function ActionsPage() {
 
   const run = useServerFn(runAction);
   const schedule = useServerFn(scheduleAction);
-  const toggle = useServerFn(setScheduleActive);
 
   const [busyKey, setBusyKey] = useState<string | null>(null);
   const [openRun, setOpenRun] = useState<string | null>(null);
