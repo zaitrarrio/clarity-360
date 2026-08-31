@@ -7,7 +7,7 @@ const ScheduleInput = z.object({ scheduleId: z.string().uuid(), active: z.boolea
 const ScheduleCreateInput = z.object({
   businessId: z.string().uuid(),
   actionKey: z.string().min(1),
-  cadence: z.enum(["daily", "weekly", "monthly"]),
+  cadence: z.enum(["on_demand", "daily", "weekly", "monthly"]),
 });
 const IntakeInput = z.object({
   name: z.string().min(1),
