@@ -151,18 +151,38 @@ Include exactly seven sections, one per domain key, in the order given.`,
     { key: "compliance_sweep", domain: "risk", title: "Sweep compliance dates", kind: "recurring", agent: "risk" },
   ];
 
-  await db.from("actions").insert(
-    catalogue.map((a, i) => ({
-      business_id: business.id,
-      domain_key: a.domain,
-      action_key: a.key,
-      title: a.title,
-      description: ACTION_INSTRUCTIONS[a.key] ?? null,
-      kind: a.kind,
-      agent_key: a.agent,
-      ordinal: i + 1,
-    })),
-  );
+  const { data: insertedActions } = await db
+    .from("actions")
+    .insert(
+      catalogue.map((a, i) => ({
+        business_id: business.id,
+        domain_key: a.domain,
+        action_key: a.key,
+        title: a.title,
+        description: ACTION_INSTRUCTIONS[a.key] ?? null,
+        kind: a.kind,
+        agent_key: a.agent,
+        ordinal: i + 1,
+      })),
+    )
+    .select("id, action_key, agent_key");
+
+  // Every agent runs daily by default; the owner can switch any action to
+  // weekly, monthly, or on-demand from the Actions page.
+  if (insertedActions?.length) {
+    await db.from("agent_schedules").insert(
+      insertedActions.map((a, i) => ({
+        business_id: business.id,
+        action_id: a.id,
+        action_key: a.action_key,
+        agent_key: a.agent_key,
+        cadence: "daily",
+        // stagger so the tick does not run everything at once
+        next_run_at: new Date(Date.now() + (2 + i) * 3600_000).toISOString(),
+        active: true,
+      })),
+    );
+  }
 
   await db.from("signals").insert({
     business_id: business.id,

@@ -7,7 +7,7 @@ const ScheduleInput = z.object({ scheduleId: z.string().uuid(), active: z.boolea
 const ScheduleCreateInput = z.object({
   businessId: z.string().uuid(),
   actionKey: z.string().min(1),
-  cadence: z.enum(["daily", "weekly", "monthly"]),
+  cadence: z.enum(["on_demand", "daily", "weekly", "monthly"]),
 });
 const IntakeInput = z.object({
   name: z.string().min(1),
@@ -112,6 +112,7 @@ export const scheduleAction = createServerFn({ method: "POST" })
       .eq("action_key", data.actionKey)
       .maybeSingle();
     if (!action) throw new Error("Unknown action");
+    const onDemand = data.cadence === "on_demand";
     const hours = data.cadence === "daily" ? 24 : data.cadence === "weekly" ? 168 : 720;
     const next = new Date(Date.now() + hours * 3600_000).toISOString();
     const { data: existing } = await db
@@ -123,7 +124,11 @@ export const scheduleAction = createServerFn({ method: "POST" })
     if (existing) {
       await db
         .from("agent_schedules")
-        .update({ cadence: data.cadence, next_run_at: next, active: true })
+        .update(
+          onDemand
+            ? { active: false }
+            : { cadence: data.cadence, next_run_at: next, active: true },
+        )
         .eq("id", existing.id);
     } else {
       await db.from("agent_schedules").insert({
@@ -131,9 +136,9 @@ export const scheduleAction = createServerFn({ method: "POST" })
         action_id: action.id,
         action_key: action.action_key,
         agent_key: action.agent_key,
-        cadence: data.cadence,
+        cadence: onDemand ? "daily" : data.cadence,
         next_run_at: next,
-        active: true,
+        active: !onDemand,
       });
     }
     return { ok: true };
