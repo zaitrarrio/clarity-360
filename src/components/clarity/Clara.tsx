@@ -1,4 +1,5 @@
 import { useQueryClient } from "@tanstack/react-query";
+import { Maximize2, Minimize2 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { Markdown } from "./Markdown";
 
@@ -15,10 +16,14 @@ export function Clara({
   businessId,
   section,
   compact = false,
+  collapsed = false,
+  onToggleCollapse,
 }: {
   businessId: string;
   section?: string | null;
   compact?: boolean;
+  collapsed?: boolean;
+  onToggleCollapse?: () => void;
 }) {
   const qc = useQueryClient();
   const [messages, setMessages] = useState<Msg[]>([
