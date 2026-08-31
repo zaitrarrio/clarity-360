@@ -92,17 +92,56 @@ export function Clara({
     }
   }
 
-  return (
-    <div className={`flex flex-col overflow-hidden rounded-xl border border-border bg-card ${compact ? "h-[520px]" : "h-full"}`}>
-      <div className="flex items-center gap-2.5 border-b border-border px-4 py-3">
+  const statusText = busy ? "thinking…" : section ? `reading ${section}` : "your plan, live";
+  const header = (
+    <div className="flex items-center justify-between gap-2.5 border-b border-border px-4 py-3">
+      <div className="flex items-center gap-2.5 min-w-0">
         <span className="clara-orb" />
         <div className="min-w-0">
           <div className="font-display text-[15px] font-medium text-foreground">Clara</div>
-          <div className="truncate text-[11px] font-light text-muted-foreground">
-            {busy ? "thinking…" : section ? `reading ${section}` : "your plan, live"}
-          </div>
+          <div className="truncate text-[11px] font-light text-muted-foreground">{statusText}</div>
         </div>
       </div>
+      {onToggleCollapse ? (
+        <button
+          type="button"
+          onClick={onToggleCollapse}
+          aria-label={collapsed ? "Expand Clara" : "Collapse Clara"}
+          className="shrink-0 rounded-lg p-1.5 text-muted-foreground transition-colors hover:bg-parchment hover:text-foreground"
+        >
+          {collapsed ? <Maximize2 className="h-4 w-4" /> : <Minimize2 className="h-4 w-4" />}
+        </button>
+      ) : null}
+    </div>
+  );
+
+  if (collapsed) {
+    return (
+      <div className="flex items-center justify-between gap-2.5 rounded-xl border border-border bg-card px-4 py-3 shadow-lg">
+        <div className="flex items-center gap-2.5 min-w-0">
+          <span className="clara-orb" />
+          <div className="min-w-0">
+            <div className="font-display text-[15px] font-medium text-foreground">Clara</div>
+            <div className="truncate text-[11px] font-light text-muted-foreground">{statusText}</div>
+          </div>
+        </div>
+        {onToggleCollapse ? (
+          <button
+            type="button"
+            onClick={onToggleCollapse}
+            aria-label="Expand Clara"
+            className="shrink-0 rounded-lg p-1.5 text-muted-foreground transition-colors hover:bg-parchment hover:text-foreground"
+          >
+            <Maximize2 className="h-4 w-4" />
+          </button>
+        ) : null}
+      </div>
+    );
+  }
+
+  return (
+    <div className={`flex flex-col overflow-hidden rounded-xl border border-border bg-card ${compact ? "h-[520px]" : "h-full"}`}>
+      {header}
 
       <div ref={scrollRef} className="flex-1 space-y-4 overflow-y-auto px-4 py-4">
         {messages.map((m, i) =>
