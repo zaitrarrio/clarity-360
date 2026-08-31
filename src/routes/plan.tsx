@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AppHeader } from "@/components/clarity/AppHeader";
 import { Clara } from "@/components/clarity/Clara";
 import { DOMAINS, type PlanSection } from "@/lib/clarity";
