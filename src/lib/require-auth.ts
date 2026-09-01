@@ -12,7 +12,7 @@ async function waitForSession(timeoutMs = 2500) {
   const { data } = await supabase.auth.getSession();
   if (data.session) return data.session;
 
-  return await new Promise<typeof data.session>((resolve) => {
+  return await new Promise<Session | null>((resolve) => {
     const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
       if (session) {
         clearTimeout(timer);
