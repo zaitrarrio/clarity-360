@@ -8,8 +8,11 @@ import { nextDraftRound } from "@/lib/onboarding.functions";
 import { marketLines, readStoredSeed, seedIndustryLabel, type Seed } from "@/lib/industries";
 import type { Correction, DraftRound } from "@/lib/onboarding.types";
 import { clearProgressEverywhere, resumeProgress, saveProgress, savedAtLabel, syncProgress } from "@/lib/progress";
+import { requireAuthOrRedirect } from "@/lib/require-auth";
 
 export const Route = createFileRoute("/draft")({
+  ssr: false,
+  beforeLoad: () => requireAuthOrRedirect("/draft"),
   head: () => ({
     meta: [
       { title: "Correct the draft — Clarity 360" },
