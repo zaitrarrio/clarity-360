@@ -23,6 +23,8 @@ import { clearProgress } from "@/lib/progress";
 
 
 export const Route = createFileRoute("/intake")({
+  ssr: false,
+  beforeLoad: () => requireAuthOrRedirect("/intake"),
   head: () => ({
     meta: [
       { title: "Start your plan — Clarity 360" },
