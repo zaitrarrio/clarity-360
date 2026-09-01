@@ -20,9 +20,12 @@ import {
   type Seed,
 } from "@/lib/industries";
 import { clearProgress } from "@/lib/progress";
+import { requireAuthOrRedirect } from "@/lib/require-auth";
 
 
 export const Route = createFileRoute("/intake")({
+  ssr: false,
+  beforeLoad: () => requireAuthOrRedirect("/intake"),
   head: () => ({
     meta: [
       { title: "Start your plan — Clarity 360" },

@@ -8,8 +8,11 @@ import { nextForkRound } from "@/lib/onboarding.functions";
 import { marketLines, readStoredSeed, seedIndustryLabel, type Seed } from "@/lib/industries";
 import type { Decision, ForkRound } from "@/lib/onboarding.types";
 import { clearProgressEverywhere, resumeProgress, saveProgress, savedAtLabel, syncProgress } from "@/lib/progress";
+import { requireAuthOrRedirect } from "@/lib/require-auth";
 
 export const Route = createFileRoute("/forks")({
+  ssr: false,
+  beforeLoad: () => requireAuthOrRedirect("/forks"),
   head: () => ({
     meta: [
       { title: "Discover your plan — Clarity 360" },
