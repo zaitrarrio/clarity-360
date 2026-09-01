@@ -20,6 +20,7 @@ import {
   type Seed,
 } from "@/lib/industries";
 import { clearProgress } from "@/lib/progress";
+import { requireAuthOrRedirect } from "@/lib/require-auth";
 
 
 export const Route = createFileRoute("/intake")({
