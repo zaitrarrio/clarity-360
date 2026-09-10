@@ -403,5 +403,6 @@ function ForksPage() {
         )}
       </div>
     </div>
+    </GlossaryProvider>
   );
 }
