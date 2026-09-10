@@ -272,9 +272,13 @@ function DraftPage() {
                         </span>
                       </div>
                       <div className="mt-3 font-display text-[23px] leading-snug font-medium text-foreground">
-                        {flag.assumed}
+                        <Gloss>{detailed ? flag.assumed : flag.plain || flag.assumed}</Gloss>
                       </div>
-                      <p className="mt-2 text-[13.5px] font-light leading-relaxed text-muted-foreground">{flag.why}</p>
+                      {detailed ? (
+                        <p className="mt-2 text-[13.5px] font-light leading-relaxed text-muted-foreground">
+                          <Gloss>{flag.why}</Gloss>
+                        </p>
+                      ) : null}
 
                       {chosen ? (
                         <div className="mt-4 rounded-xl border border-ember/30 bg-ember/8 p-4">
