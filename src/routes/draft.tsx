@@ -74,6 +74,7 @@ function DraftPage() {
   const [building, setBuilding] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [resumed, setResumed] = useState<string | null>(null);
+  const [detailed, setDetailed] = useDetailMode();
 
   useEffect(() => {
     if (started.current) return;
@@ -197,15 +198,19 @@ function DraftPage() {
   const answered = Object.keys(picked).length;
 
   return (
+    <GlossaryProvider terms={round?.glossary}>
     <div className="min-h-screen bg-background">
-      <header className="flex items-center justify-between px-6 py-5">
+      <header className="flex items-center justify-between gap-4 px-6 py-5">
         <Logo />
-        <button
-          onClick={() => navigate({ to: "/intake" })}
-          className="rounded-full border border-border px-4 py-2 text-[12.5px] font-light text-muted-foreground hover:text-foreground"
-        >
-          Leave
-        </button>
+        <div className="flex items-center gap-3">
+          {round && !busy && !building ? <DetailToggle detailed={detailed} onChange={setDetailed} /> : null}
+          <button
+            onClick={() => navigate({ to: "/intake" })}
+            className="rounded-full border border-border px-4 py-2 text-[12.5px] font-light text-muted-foreground hover:text-foreground"
+          >
+            Leave
+          </button>
+        </div>
       </header>
 
       <div className="mx-auto max-w-5xl px-6 pb-24 pt-4">
