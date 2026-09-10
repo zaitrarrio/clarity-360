@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { AppHeader } from "@/components/clarity/AppHeader";
-import { Clara } from "@/components/clarity/Clara";
+import { ClaraRail } from "@/components/clarity/ClaraRail";
 import { DOMAINS, type PlanSection } from "@/lib/clarity";
 import { useActiveBusinessId, useBusiness, usePlanSections } from "@/lib/useWorkspace";
 

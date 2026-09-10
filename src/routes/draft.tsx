@@ -2,6 +2,8 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useRef, useState } from "react";
 import { Logo } from "@/components/clarity/AppHeader";
+import { DetailToggle } from "@/components/clarity/DetailToggle";
+import { Gloss, GlossaryProvider } from "@/components/clarity/Glossary";
 import { supabase } from "@/integrations/supabase/client";
 import { buildPlanFromIntake } from "@/lib/clarity.functions";
 import { nextDraftRound } from "@/lib/onboarding.functions";
@@ -9,6 +11,17 @@ import { marketLines, readStoredSeed, seedIndustryLabel, type Seed } from "@/lib
 import type { Correction, DraftRound } from "@/lib/onboarding.types";
 import { clearProgressEverywhere, resumeProgress, saveProgress, savedAtLabel, syncProgress } from "@/lib/progress";
 import { requireAuthOrRedirect } from "@/lib/require-auth";
+
+function useDetailMode() {
+  const [detailed, setDetailed] = useState(() => {
+    if (typeof window === "undefined") return false;
+    return localStorage.getItem("clarity-detail-mode") === "true";
+  });
+  useEffect(() => {
+    localStorage.setItem("clarity-detail-mode", String(detailed));
+  }, [detailed]);
+  return [detailed, setDetailed] as const;
+}
 
 export const Route = createFileRoute("/draft")({
   ssr: false,
