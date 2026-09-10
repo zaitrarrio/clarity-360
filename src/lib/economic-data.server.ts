@@ -45,6 +45,27 @@ const QCEW_BY_INDUSTRY: Record<string, string> = {
   "Manufacturing & Physical Products": "31-33",
 };
 
+function industryCode(industry: string, mapping: Record<string, string>): { name: string; code: string } | null {
+  const normalized = industry.toLowerCase();
+  const exact = Object.keys(mapping).find((label) => normalized.includes(label.toLowerCase()));
+  if (exact) return { name: exact, code: mapping[exact] ?? "" };
+  const aliases: { pattern: RegExp; name: string }[] = [
+    { pattern: /restaurant|food|beverage|bar|brewery|catering/, name: "Food & Beverage" },
+    { pattern: /retail|e-?commerce|store|marketplace/, name: "Retail & E-commerce" },
+    { pattern: /consult|account|legal|agency|professional/, name: "Professional & Consulting Services" },
+    { pattern: /health|wellness|fitness|salon|therapy|medical/, name: "Health, Wellness & Personal Care" },
+    { pattern: /software|technology|saas|app|iot/, name: "Technology & Software" },
+    { pattern: /creative|media|design|photo|video|creator/, name: "Creative & Media" },
+    { pattern: /construction|contractor|hvac|plumb|landscap|cleaning|repair/, name: "Construction & Home Services" },
+    { pattern: /real estate|property|broker/, name: "Real Estate & Property Services" },
+    { pattern: /education|childcare|school|tutor|daycare/, name: "Education & Childcare" },
+    { pattern: /hospitality|hotel|travel|event|venue|tour/, name: "Hospitality, Travel & Events" },
+    { pattern: /manufactur|physical product|industrial/, name: "Manufacturing & Physical Products" },
+  ];
+  const match = aliases.find((item) => item.pattern.test(normalized));
+  return match ? { name: match.name, code: mapping[match.name] ?? "" } : null;
+}
+
 const BLS_SERIES = [
   { id: "LNS14000000", label: "U.S. unemployment rate", suffix: "%" },
   { id: "CUUR0000SA0", label: "U.S. consumer price index", suffix: "" },
@@ -130,9 +151,9 @@ function csvRow(line: string): string[] {
 }
 
 async function loadQcew(industry: string): Promise<Indicator[]> {
-  const name = Object.keys(QCEW_BY_INDUSTRY).find((label) => industry.includes(label));
-  const naics = name ? QCEW_BY_INDUSTRY[name] : undefined;
-  if (!naics) return [];
+  const match = industryCode(industry, QCEW_BY_INDUSTRY);
+  if (!match?.code) return [];
+  const { name, code: naics } = match;
   const year = 2024;
   const sourceUrl = `${QCEW_ORIGIN}/${year}/a/industry/${encodeURIComponent(naics)}.csv`;
   const response = await fetch(sourceUrl, { headers: { accept: "text/csv" } });
@@ -175,9 +196,9 @@ async function loadAcs(zip: string, key: string): Promise<Indicator[]> {
 }
 
 async function loadIndustry(industry: string, key: string): Promise<Indicator[]> {
-  const name = Object.keys(NAICS_BY_INDUSTRY).find((label) => industry.includes(label));
-  const naics = name ? NAICS_BY_INDUSTRY[name] : undefined;
-  if (!naics) return [];
+  const match = industryCode(industry, NAICS_BY_INDUSTRY);
+  if (!match?.code) return [];
+  const { name, code: naics } = match;
   const year = 2023;
   const url = `${CENSUS_ORIGIN}/${year}/cbp?get=NAME,NAICS2022_LABEL,ESTAB,EMP,PAYANN&for=us:*&NAICS2022=${encodeURIComponent(naics)}&key=${encodeURIComponent(key)}`;
   const rows = await fetchJson(url) as string[][];
