@@ -325,15 +325,21 @@ function ForksPage() {
                     <div className="mt-1 font-display text-[24px] font-medium leading-tight text-foreground">
                       {o.label}
                     </div>
-                    <p className="mt-2 text-[13.5px] font-light leading-relaxed text-muted-foreground">{o.tail}</p>
-                    <div className="mt-4 grid gap-2 border-t border-border pt-4">
-                      {o.effects.map((e, i) => (
-                        <div key={i} className="flex gap-3">
-                          <span className="font-mono text-[12px] leading-5 text-ember">{e.sign}</span>
-                          <span className="text-[13px] font-light leading-5 text-foreground">{e.text}</span>
-                        </div>
-                      ))}
-                    </div>
+                    <p className="mt-2 text-[13.5px] font-light leading-relaxed text-muted-foreground">
+                      <Gloss>{detailed ? o.tail : o.plainTail || o.tail}</Gloss>
+                    </p>
+                    {detailed ? (
+                      <div className="mt-4 grid gap-2 border-t border-border pt-4">
+                        {o.effects.map((e, i) => (
+                          <div key={i} className="flex gap-3">
+                            <span className="font-mono text-[12px] leading-5 text-ember">{e.sign}</span>
+                            <span className="text-[13px] font-light leading-5 text-foreground">
+                              <Gloss>{e.text}</Gloss>
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    ) : null}
                   </button>
                 );
               })}
