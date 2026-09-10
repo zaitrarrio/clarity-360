@@ -302,7 +302,7 @@ function ForksPage() {
               {fork.question}
             </h1>
             <p className="mt-3 max-w-[42em] text-[15px] font-light leading-relaxed text-muted-foreground">
-              {fork.why}
+              <Gloss>{detailed ? fork.why : fork.plain || fork.why}</Gloss>
             </p>
 
             <div className="mt-8 grid gap-4 md:grid-cols-2">
