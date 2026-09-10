@@ -14,9 +14,24 @@ export type EconomicSnapshot = {
 };
 
 const BLS_URL = "https://api.bls.gov/publicAPI/v2/timeseries/data/";
+const QCEW_ORIGIN = "https://data.bls.gov/cew/data/api";
 const CENSUS_ORIGIN = "https://api.census.gov/data";
 
 const NAICS_BY_INDUSTRY: Record<string, string> = {
+  "Food & Beverage": "722",
+  "Retail & E-commerce": "44-45",
+  "Professional & Consulting Services": "54",
+  "Health, Wellness & Personal Care": "62",
+  "Technology & Software": "51",
+  "Creative & Media": "71",
+  "Construction & Home Services": "23",
+  "Real Estate & Property Services": "53",
+  "Education & Childcare": "61",
+  "Hospitality, Travel & Events": "72",
+  "Manufacturing & Physical Products": "31-33",
+};
+
+const QCEW_BY_INDUSTRY: Record<string, string> = {
   "Food & Beverage": "722",
   "Retail & E-commerce": "44-45",
   "Professional & Consulting Services": "54",
@@ -74,6 +89,21 @@ async function loadBls(): Promise<Indicator[]> {
     const definition = BLS_SERIES.find((item) => item.id === series.seriesID);
     const latest = series.data?.[0];
     if (!definition || !latest) return [];
+    if (definition.id === "CUUR0000SA0") {
+      const previous = series.data?.find((item) => item.periodName === latest.periodName && item.year === String(Number(latest.year) - 1));
+      const latestValue = Number(latest.value);
+      const previousValue = Number(previous?.value);
+      if (previous && previousValue > 0) {
+        return [{
+          label: "U.S. inflation rate",
+          value: `${number(((latestValue - previousValue) / previousValue) * 100)}% year over year`,
+          period: `${latest.periodName} ${latest.year}`,
+          geography: "United States",
+          source: "U.S. Bureau of Labor Statistics",
+          sourceUrl: `https://data.bls.gov/timeseries/${definition.id}`,
+        }];
+      }
+    }
     return [{
       label: definition.label,
       value: `${"prefix" in definition ? definition.prefix : ""}${number(Number(latest.value))}${definition.suffix}`,
@@ -83,6 +113,40 @@ async function loadBls(): Promise<Indicator[]> {
       sourceUrl: `https://data.bls.gov/timeseries/${definition.id}`,
     }];
   });
+}
+
+function csvRow(line: string): string[] {
+  const values: string[] = [];
+  let value = "";
+  let quoted = false;
+  for (let index = 0; index < line.length; index += 1) {
+    const character = line[index];
+    if (character === '"') quoted = !quoted;
+    else if (character === "," && !quoted) { values.push(value); value = ""; }
+    else value += character;
+  }
+  values.push(value);
+  return values;
+}
+
+async function loadQcew(industry: string): Promise<Indicator[]> {
+  const name = Object.keys(QCEW_BY_INDUSTRY).find((label) => industry.includes(label));
+  const naics = name ? QCEW_BY_INDUSTRY[name] : undefined;
+  if (!naics) return [];
+  const year = 2024;
+  const sourceUrl = `${QCEW_ORIGIN}/${year}/a/industry/${encodeURIComponent(naics)}.csv`;
+  const response = await fetch(sourceUrl, { headers: { accept: "text/csv" } });
+  if (!response.ok) throw new Error(`QCEW returned ${response.status}`);
+  const lines = (await response.text()).split(/\r?\n/);
+  const headers = csvRow(lines[0] ?? "");
+  const row = lines.slice(1).map(csvRow).find((item) => item[headers.indexOf("area_fips")] === "US000" && item[headers.indexOf("own_code")] === "5");
+  if (!row) throw new Error("No national QCEW benchmark found");
+  const get = (field: string) => row[headers.indexOf(field)];
+  return [
+    { label: `${name} establishments`, value: number(Number(get("annual_avg_estabs"))), period: `${year} annual average`, geography: "United States", source: "U.S. Bureau of Labor Statistics, Quarterly Census of Employment and Wages", sourceUrl },
+    { label: `${name} employment`, value: number(Number(get("annual_avg_emplvl"))), period: `${year} annual average`, geography: "United States", source: "U.S. Bureau of Labor Statistics, Quarterly Census of Employment and Wages", sourceUrl },
+    { label: `${name} average annual pay`, value: money(Number(get("avg_annual_pay"))), period: `${year} annual average`, geography: "United States", source: "U.S. Bureau of Labor Statistics, Quarterly Census of Employment and Wages", sourceUrl },
+  ];
 }
 
 async function loadAcs(zip: string, key: string): Promise<Indicator[]> {
@@ -136,6 +200,10 @@ export async function loadEconomicSnapshot(input: { location: string | null; ind
     indicators.push(...await loadBls());
   } catch {
     notes.push("Current BLS indicators are temporarily unavailable.");
+  }
+
+  if (input.industry) {
+    try { indicators.push(...await loadQcew(input.industry)); } catch { notes.push("Current BLS industry benchmarks are temporarily unavailable."); }
   }
 
   const censusKey = process.env["CENSUS_API_KEY"];
