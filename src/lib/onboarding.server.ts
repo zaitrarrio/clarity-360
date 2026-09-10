@@ -140,16 +140,20 @@ Return JSON:
    {"id":"kebab-id","kicker":"Route to market|Sourcing|Capacity|Pricing|…",
     "question":"a binary question, under 70 characters",
     "why":"two sentences on why this is theirs to decide and what it drives",
+    "plain":"one short plain-English sentence explaining the choice to someone with no business background",
      "options":[
        {"key":"a","label":"short label","tail":"one sentence on what this road looks like in practice",
+        "plainTail":"the same road described in one short everyday sentence, no jargon",
         "effects":[{"sign":"+","text":"a specific consequence, naming a report where useful"}]},
-       {"key":"b","label":"the other road","tail":"one sentence","effects":[{"sign":"!","text":"a specific consequence"}]}
+       {"key":"b","label":"the other road","tail":"one sentence","plainTail":"one short everyday sentence","effects":[{"sign":"!","text":"a specific consequence"}]}
      ]}
  ],
- "inferred": [{"k":"parameter","v":"what you have inferred","why":"which answer let you infer it"}]}
+ "inferred": [{"k":"parameter","v":"what you have inferred","why":"which answer let you infer it"}],
+ "glossary": [{"term":"CAC","definition":"one plain sentence defining it"}]}
 
 Give exactly 2 forks this round, each with exactly 2 options and 3-4 effects per option.
-Never repeat a decision already made; build on them. Give 0-3 inferred entries.`,
+Never repeat a decision already made; build on them. Give 0-3 inferred entries.
+In "glossary", define every abbreviation, acronym or industry term of art you used anywhere in this response.`,
   );
 
   return {
@@ -157,5 +161,6 @@ Never repeat a decision already made; build on them. Give 0-3 inferred entries.`
     headline: parsed.headline ?? "",
     forks: (parsed.forks ?? []).slice(0, 2),
     inferred: (parsed.inferred ?? []).slice(0, 3),
+    glossary: (parsed.glossary ?? []).slice(0, 30),
   };
 }
