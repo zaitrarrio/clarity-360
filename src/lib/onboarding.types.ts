@@ -12,21 +12,26 @@ export type Decision = {
   choice: string;
 };
 
+export type GlossaryEntry = { term: string; definition: string };
+
 export type Flag = {
   id: string;
   tag: string;
   where: string;
   assumed: string;
+  plain?: string;
   why: string;
-  fixes: { key: string; label: string; result: string }[];
+  fixes: { key: string; label: string; result: string; plainResult?: string }[];
 };
 
 export type DraftRound = {
   coverage: number;
   headline: string;
   note: string;
+  plainNote?: string;
   flags: Flag[];
   ripple: { name: string; note: string }[];
+  glossary?: GlossaryEntry[];
 };
 
 export type Fork = {
@@ -34,7 +39,14 @@ export type Fork = {
   kicker: string;
   question: string;
   why: string;
-  options: { key: string; label: string; tail: string; effects: { sign: string; text: string }[] }[];
+  plain?: string;
+  options: {
+    key: string;
+    label: string;
+    tail: string;
+    plainTail?: string;
+    effects: { sign: string; text: string }[];
+  }[];
 };
 
 export type ForkRound = {
@@ -42,4 +54,5 @@ export type ForkRound = {
   headline: string;
   forks: Fork[];
   inferred: { k: string; v: string; why: string }[];
+  glossary?: GlossaryEntry[];
 };

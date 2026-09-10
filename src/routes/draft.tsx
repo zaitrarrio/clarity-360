@@ -2,6 +2,8 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useRef, useState } from "react";
 import { Logo } from "@/components/clarity/AppHeader";
+import { DetailToggle } from "@/components/clarity/DetailToggle";
+import { Gloss, GlossaryProvider } from "@/components/clarity/Glossary";
 import { supabase } from "@/integrations/supabase/client";
 import { buildPlanFromIntake } from "@/lib/clarity.functions";
 import { nextDraftRound } from "@/lib/onboarding.functions";
@@ -9,6 +11,7 @@ import { marketLines, readStoredSeed, seedIndustryLabel, type Seed } from "@/lib
 import type { Correction, DraftRound } from "@/lib/onboarding.types";
 import { clearProgressEverywhere, resumeProgress, saveProgress, savedAtLabel, syncProgress } from "@/lib/progress";
 import { requireAuthOrRedirect } from "@/lib/require-auth";
+import { useDetailMode } from "@/lib/use-detail-mode";
 
 export const Route = createFileRoute("/draft")({
   ssr: false,
@@ -61,6 +64,7 @@ function DraftPage() {
   const [building, setBuilding] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [resumed, setResumed] = useState<string | null>(null);
+  const [detailed, setDetailed] = useDetailMode();
 
   useEffect(() => {
     if (started.current) return;
@@ -184,15 +188,19 @@ function DraftPage() {
   const answered = Object.keys(picked).length;
 
   return (
+    <GlossaryProvider terms={round?.glossary}>
     <div className="min-h-screen bg-background">
-      <header className="flex items-center justify-between px-6 py-5">
+      <header className="flex items-center justify-between gap-4 px-6 py-5">
         <Logo />
-        <button
-          onClick={() => navigate({ to: "/intake" })}
-          className="rounded-full border border-border px-4 py-2 text-[12.5px] font-light text-muted-foreground hover:text-foreground"
-        >
-          Leave
-        </button>
+        <div className="flex items-center gap-3">
+          {round && !busy && !building ? <DetailToggle detailed={detailed} onChange={setDetailed} /> : null}
+          <button
+            onClick={() => navigate({ to: "/intake" })}
+            className="rounded-full border border-border px-4 py-2 text-[12.5px] font-light text-muted-foreground hover:text-foreground"
+          >
+            Leave
+          </button>
+        </div>
       </header>
 
       <div className="mx-auto max-w-5xl px-6 pb-24 pt-4">
@@ -227,7 +235,9 @@ function DraftPage() {
                 <h1 className="mt-3 font-display text-[38px] leading-[1.1] font-normal tracking-[-0.03em] text-foreground">
                   {round.headline}
                 </h1>
-                <p className="mt-3 text-[15px] font-light leading-relaxed text-muted-foreground">{round.note}</p>
+                <p className="mt-3 text-[15px] font-light leading-relaxed text-muted-foreground">
+                  <Gloss>{detailed ? round.note : round.plainNote || round.note}</Gloss>
+                </p>
                 {resumed ? (
                   <p className="mt-3 font-mono text-[10px] uppercase tracking-[0.12em] text-ember-deep">
                     Resumed · progress saved {resumed}
@@ -252,9 +262,13 @@ function DraftPage() {
                         </span>
                       </div>
                       <div className="mt-3 font-display text-[23px] leading-snug font-medium text-foreground">
-                        {flag.assumed}
+                        <Gloss>{detailed ? flag.assumed : flag.plain || flag.assumed}</Gloss>
                       </div>
-                      <p className="mt-2 text-[13.5px] font-light leading-relaxed text-muted-foreground">{flag.why}</p>
+                      {detailed ? (
+                        <p className="mt-2 text-[13.5px] font-light leading-relaxed text-muted-foreground">
+                          <Gloss>{flag.why}</Gloss>
+                        </p>
+                      ) : null}
 
                       {chosen ? (
                         <div className="mt-4 rounded-xl border border-ember/30 bg-ember/8 p-4">
@@ -270,7 +284,12 @@ function DraftPage() {
                             </button>
                           </div>
                           <p className="mt-2 text-[13.5px] font-light leading-relaxed text-foreground">
-                            {chosen.result}
+                            <Gloss>
+                              {(() => {
+                                const fix = flag.fixes.find((f) => f.label === chosen.label);
+                                return detailed ? chosen.result : fix?.plainResult || chosen.result;
+                              })()}
+                            </Gloss>
                           </p>
                         </div>
                       ) : (
@@ -282,7 +301,7 @@ function DraftPage() {
                               className="flex items-baseline gap-3 rounded-xl border border-border px-4 py-2.5 text-left text-[13px] font-light text-foreground transition-colors hover:border-ember"
                             >
                               <span className="font-mono text-[11px] text-ember">{fi + 1}.</span>
-                              <span>{fix.label}</span>
+                              <span><Gloss>{fix.label}</Gloss></span>
                             </button>
                           ))}
                         </div>
@@ -359,5 +378,6 @@ function DraftPage() {
         )}
       </div>
     </div>
+    </GlossaryProvider>
   );
 }

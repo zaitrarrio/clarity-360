@@ -2,6 +2,8 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useRef, useState } from "react";
 import { Logo } from "@/components/clarity/AppHeader";
+import { DetailToggle } from "@/components/clarity/DetailToggle";
+import { Gloss, GlossaryProvider } from "@/components/clarity/Glossary";
 import { supabase } from "@/integrations/supabase/client";
 import { buildPlanFromIntake } from "@/lib/clarity.functions";
 import { nextForkRound } from "@/lib/onboarding.functions";
@@ -9,6 +11,7 @@ import { marketLines, readStoredSeed, seedIndustryLabel, type Seed } from "@/lib
 import type { Decision, ForkRound } from "@/lib/onboarding.types";
 import { clearProgressEverywhere, resumeProgress, saveProgress, savedAtLabel, syncProgress } from "@/lib/progress";
 import { requireAuthOrRedirect } from "@/lib/require-auth";
+import { useDetailMode } from "@/lib/use-detail-mode";
 
 export const Route = createFileRoute("/forks")({
   ssr: false,
@@ -48,6 +51,7 @@ function ForksPage() {
   const [building, setBuilding] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [resumed, setResumed] = useState<string | null>(null);
+  const [detailed, setDetailed] = useDetailMode();
 
   useEffect(() => {
     if (started.current) return;
@@ -177,15 +181,19 @@ function ForksPage() {
   const coverage = round?.coverage ?? 55;
 
   return (
+    <GlossaryProvider terms={round?.glossary}>
     <div className="min-h-screen bg-background">
-      <header className="flex items-center justify-between px-6 py-5">
+      <header className="flex items-center justify-between gap-4 px-6 py-5">
         <Logo />
-        <button
-          onClick={() => navigate({ to: "/intake" })}
-          className="rounded-full border border-border px-4 py-2 text-[12.5px] font-light text-muted-foreground hover:text-foreground"
-        >
-          Leave
-        </button>
+        <div className="flex items-center gap-3">
+          {round && !busy && !building ? <DetailToggle detailed={detailed} onChange={setDetailed} /> : null}
+          <button
+            onClick={() => navigate({ to: "/intake" })}
+            className="rounded-full border border-border px-4 py-2 text-[12.5px] font-light text-muted-foreground hover:text-foreground"
+          >
+            Leave
+          </button>
+        </div>
       </header>
 
       <div className="mx-auto max-w-4xl px-6 pb-24 pt-4">
@@ -294,7 +302,7 @@ function ForksPage() {
               {fork.question}
             </h1>
             <p className="mt-3 max-w-[42em] text-[15px] font-light leading-relaxed text-muted-foreground">
-              {fork.why}
+              <Gloss>{detailed ? fork.why : fork.plain || fork.why}</Gloss>
             </p>
 
             <div className="mt-8 grid gap-4 md:grid-cols-2">
@@ -317,15 +325,21 @@ function ForksPage() {
                     <div className="mt-1 font-display text-[24px] font-medium leading-tight text-foreground">
                       {o.label}
                     </div>
-                    <p className="mt-2 text-[13.5px] font-light leading-relaxed text-muted-foreground">{o.tail}</p>
-                    <div className="mt-4 grid gap-2 border-t border-border pt-4">
-                      {o.effects.map((e, i) => (
-                        <div key={i} className="flex gap-3">
-                          <span className="font-mono text-[12px] leading-5 text-ember">{e.sign}</span>
-                          <span className="text-[13px] font-light leading-5 text-foreground">{e.text}</span>
-                        </div>
-                      ))}
-                    </div>
+                    <p className="mt-2 text-[13.5px] font-light leading-relaxed text-muted-foreground">
+                      <Gloss>{detailed ? o.tail : o.plainTail || o.tail}</Gloss>
+                    </p>
+                    {detailed ? (
+                      <div className="mt-4 grid gap-2 border-t border-border pt-4">
+                        {o.effects.map((e, i) => (
+                          <div key={i} className="flex gap-3">
+                            <span className="font-mono text-[12px] leading-5 text-ember">{e.sign}</span>
+                            <span className="text-[13px] font-light leading-5 text-foreground">
+                              <Gloss>{e.text}</Gloss>
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    ) : null}
                   </button>
                 );
               })}
@@ -389,5 +403,6 @@ function ForksPage() {
         )}
       </div>
     </div>
+    </GlossaryProvider>
   );
 }
