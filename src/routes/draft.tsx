@@ -311,7 +311,7 @@ function DraftPage() {
                               className="flex items-baseline gap-3 rounded-xl border border-border px-4 py-2.5 text-left text-[13px] font-light text-foreground transition-colors hover:border-ember"
                             >
                               <span className="font-mono text-[11px] text-ember">{fi + 1}.</span>
-                              <span>{fix.label}</span>
+                              <span><Gloss>{fix.label}</Gloss></span>
                             </button>
                           ))}
                         </div>
@@ -388,5 +388,6 @@ function DraftPage() {
         )}
       </div>
     </div>
+    </GlossaryProvider>
   );
 }
