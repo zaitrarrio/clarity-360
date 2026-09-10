@@ -294,7 +294,12 @@ function DraftPage() {
                             </button>
                           </div>
                           <p className="mt-2 text-[13.5px] font-light leading-relaxed text-foreground">
-                            {chosen.result}
+                            <Gloss>
+                              {(() => {
+                                const fix = flag.fixes.find((f) => f.label === chosen.label);
+                                return detailed ? chosen.result : fix?.plainResult || chosen.result;
+                              })()}
+                            </Gloss>
                           </p>
                         </div>
                       ) : (
