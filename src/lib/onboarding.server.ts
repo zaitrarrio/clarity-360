@@ -89,24 +89,30 @@ Return JSON:
 {"coverage": <0-100>,
  "headline": "one sentence in Clara's voice about this pass, naming the business or its category",
  "note": "one or two sentences about which guesses matter and which do not",
+ "plainNote": "the same thing said to a smart friend with no business jargon, one short sentence",
  "flags": [
    {"id":"kebab-id","tag":"The big one|Assumed|Placeholder","where":"Report 0N · short section name",
     "assumed":"the specific thing you assumed, with numbers",
+    "plain":"one short plain-English sentence saying what you guessed and why it matters — no jargon, no acronyms",
     "why":"why you assumed it and what would change if it is wrong",
-    "fixes":[{"key":"short-key","label":"what they'd click, phrased as their own words","result":"what changes in the plan if they pick this — name the reports affected"}]}
+    "fixes":[{"key":"short-key","label":"what they'd click, phrased as their own words","result":"what changes in the plan if they pick this — name the reports affected","plainResult":"the same consequence in one short everyday sentence"}]}
  ],
- "ripple": [{"name":"Report 0N · name","note":"what their corrections have already changed here, or empty string"}]}
+ "ripple": [{"name":"Report 0N · name","note":"what their corrections have already changed here, or empty string"}],
+ "glossary": [{"term":"CAC","definition":"one plain sentence defining it"}]}
 
 Give exactly 3 flags this round, ordered most load-bearing first, each with 2-3 fixes.
-Do not repeat any assumption they have already corrected. Give 4-7 ripple entries.`,
+Do not repeat any assumption they have already corrected. Give 4-7 ripple entries.
+In "glossary", define every abbreviation, acronym or industry term of art you used anywhere in this response.`,
   );
 
   return {
     coverage: Math.max(0, Math.min(100, Math.round(parsed.coverage ?? 60))),
     headline: parsed.headline ?? "Here is a first pass.",
     note: parsed.note ?? "",
+    plainNote: parsed.plainNote ?? "",
     flags: (parsed.flags ?? []).slice(0, 3),
     ripple: (parsed.ripple ?? []).slice(0, 7),
+    glossary: (parsed.glossary ?? []).slice(0, 30),
   };
 }
 
