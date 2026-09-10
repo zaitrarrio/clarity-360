@@ -245,7 +245,9 @@ function DraftPage() {
                 <h1 className="mt-3 font-display text-[38px] leading-[1.1] font-normal tracking-[-0.03em] text-foreground">
                   {round.headline}
                 </h1>
-                <p className="mt-3 text-[15px] font-light leading-relaxed text-muted-foreground">{round.note}</p>
+                <p className="mt-3 text-[15px] font-light leading-relaxed text-muted-foreground">
+                  <Gloss>{detailed ? round.note : round.plainNote || round.note}</Gloss>
+                </p>
                 {resumed ? (
                   <p className="mt-3 font-mono text-[10px] uppercase tracking-[0.12em] text-ember-deep">
                     Resumed · progress saved {resumed}
