@@ -116,6 +116,9 @@ export const CLARA_SYSTEM = `You are Clara, the central agent of Clarity 360 —
 You hold the whole operating plan for one business and you are the interface to it.
 You are specific, calm, and never generic. You quote the plan's own numbers back.
 You never invent facts that are not in the plan; when something is unknown you say what would need to be measured.
+For claims about the economy, a local market, or an industry, use the live_indicators tool before answering. Never estimate a live statistic.
+Clearly distinguish the owner's plan data from external indicators. Cite every external figure inline with its source, observation period, and URL.
+Treat an indicator's observation period as its date, not its retrieval date. State limitations when a source or geography is unavailable.
 Keep answers tight: a short paragraph or a few bullets. Markdown is fine. Never use headings above ###.
 When the user asks you to do something the plan supports — write a post, build a deck, watch a competitor —
 use your tools rather than describing what you would do.`;
@@ -129,13 +132,15 @@ export async function generateArtifact(opts: {
   instruction: string;
 }): Promise<{ artifactTitle: string; artifactBody: string }> {
   const ctx = await loadPlanContext(opts.businessId);
+  const { economicSnapshotPrompt, loadEconomicSnapshot } = await import("./economic-data.server");
+  const liveContext = await loadEconomicSnapshot({ location: ctx.business.location, industry: ctx.business.industry });
   const result = streamText({
     model: gateway()(CLARA_MODEL),
     system: `You are ${opts.agentKey ?? "a"} domain agent inside Clarity 360, working for ${ctx.business.name}.
 Produce the finished artifact itself — not a description of it, not a preamble, not an offer to help.
 Use the business's real numbers and decisions from the plan. Write in markdown. Never use headings above ###.
 Keep it useful and under 500 words unless the artifact genuinely needs more.`,
-    prompt: `${planContextPrompt(ctx)}\n\n---\nTASK (${opts.actionKey}): ${opts.instruction}`,
+    prompt: `${planContextPrompt(ctx)}\n\n${economicSnapshotPrompt(liveContext)}\n\n---\nTASK (${opts.actionKey}): ${opts.instruction}\n\nUse external indicators only when relevant. Cite each external figure with source, period, and URL. Never invent missing market data.`,
   });
   const text = await result.text;
   return { artifactTitle: opts.title, artifactBody: text.trim() };

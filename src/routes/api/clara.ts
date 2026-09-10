@@ -44,6 +44,17 @@ export const Route = createFileRoute("/api/clara")({
           .order("ordinal");
 
         const tools = {
+          live_indicators: tool({
+            description:
+              "Fetch authoritative current economic, local-market, and industry indicators for this business. Call this before making claims about market size, employment, inflation, income, demand, or industry conditions.",
+            inputSchema: z.object({
+              focus: z.enum(["economic", "local_market", "industry", "all"]),
+            }),
+            execute: async () => {
+              const { loadEconomicSnapshot } = await import("@/lib/economic-data.server");
+              return loadEconomicSnapshot({ location: ctx.business.location, industry: ctx.business.industry });
+            },
+          }),
           run_action: tool({
             description:
               "Run one of the plan's actions now. The domain agent produces a real artifact (post, deck, brief, scan). Use this whenever the user asks for the thing to be made.",
