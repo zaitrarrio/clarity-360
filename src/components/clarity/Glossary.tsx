@@ -55,7 +55,7 @@ function normalise(t: string) {
   return t.trim().toLowerCase();
 }
 
-export function GlossaryProvider({ terms, children }: { terms?: GlossaryTerm[]; children: ReactNode }) {
+export function GlossaryProvider({ terms, children }: { terms?: GlossaryTerm[] | undefined; children: ReactNode }) {
   const map = useMemo(() => {
     const out: Record<string, string> = {};
     for (const t of [...BASE_TERMS, ...(terms ?? [])]) {
