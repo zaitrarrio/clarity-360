@@ -97,8 +97,8 @@ function PlanPage() {
     <div className="min-h-screen bg-background">
       <AppHeader businessName={business?.name} />
       <div
-        className={`mx-auto grid max-w-[1500px] grid-cols-[minmax(0,1fr)] gap-6 px-5 py-7 md:px-7 xl:mr-0 xl:grid-cols-[210px_minmax(0,1fr)_380px] ${
-          claraOpen ? "pb-[340px] md:mr-[340px] md:pb-7" : "pb-[80px] md:pb-7"
+        className={`mx-auto grid max-w-[1500px] grid-cols-[minmax(0,1fr)] gap-6 px-5 py-7 pb-24 transition-[margin] duration-300 md:px-7 xl:grid-cols-[210px_minmax(0,1fr)] ${
+          claraOpen ? "lg:mr-[400px]" : ""
         }`}
       >
         <aside className="xl:sticky xl:top-[76px] xl:self-start">
@@ -147,22 +147,14 @@ function PlanPage() {
             </p>
           )}
         </main>
-
-        <aside
-          className={`fixed bottom-0 left-0 right-0 z-40 flex flex-col md:bottom-6 md:left-auto md:right-7 xl:right-[max(1.75rem,calc((100vw-1500px)/2+1.75rem))] ${
-            claraOpen
-              ? "h-[320px] w-full md:h-[420px] md:w-[320px] xl:h-[calc(100vh-100px)] xl:w-[380px]"
-              : "h-auto w-full md:w-[320px] xl:w-[380px]"
-          }`}
-        >
-          <Clara
-            businessId={businessId}
-            section={meta?.label ?? null}
-            collapsed={!claraOpen}
-            onToggleCollapse={() => setClaraOpen((v) => !v)}
-          />
-        </aside>
       </div>
+
+      <ClaraRail
+        open={claraOpen}
+        onOpenChange={setClaraOpen}
+        businessId={businessId}
+        section={meta?.label ?? null}
+      />
     </div>
   );
 }
