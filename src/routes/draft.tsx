@@ -11,17 +11,7 @@ import { marketLines, readStoredSeed, seedIndustryLabel, type Seed } from "@/lib
 import type { Correction, DraftRound } from "@/lib/onboarding.types";
 import { clearProgressEverywhere, resumeProgress, saveProgress, savedAtLabel, syncProgress } from "@/lib/progress";
 import { requireAuthOrRedirect } from "@/lib/require-auth";
-
-function useDetailMode() {
-  const [detailed, setDetailed] = useState(() => {
-    if (typeof window === "undefined") return false;
-    return localStorage.getItem("clarity-detail-mode") === "true";
-  });
-  useEffect(() => {
-    localStorage.setItem("clarity-detail-mode", String(detailed));
-  }, [detailed]);
-  return [detailed, setDetailed] as const;
-}
+import { useDetailMode } from "@/lib/use-detail-mode";
 
 export const Route = createFileRoute("/draft")({
   ssr: false,

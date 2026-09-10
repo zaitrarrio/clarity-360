@@ -2,6 +2,8 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useRef, useState } from "react";
 import { Logo } from "@/components/clarity/AppHeader";
+import { DetailToggle } from "@/components/clarity/DetailToggle";
+import { Gloss, GlossaryProvider } from "@/components/clarity/Glossary";
 import { supabase } from "@/integrations/supabase/client";
 import { buildPlanFromIntake } from "@/lib/clarity.functions";
 import { nextForkRound } from "@/lib/onboarding.functions";
@@ -9,6 +11,7 @@ import { marketLines, readStoredSeed, seedIndustryLabel, type Seed } from "@/lib
 import type { Decision, ForkRound } from "@/lib/onboarding.types";
 import { clearProgressEverywhere, resumeProgress, saveProgress, savedAtLabel, syncProgress } from "@/lib/progress";
 import { requireAuthOrRedirect } from "@/lib/require-auth";
+import { useDetailMode } from "@/lib/use-detail-mode";
 
 export const Route = createFileRoute("/forks")({
   ssr: false,
