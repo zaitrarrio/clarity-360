@@ -108,7 +108,10 @@ export function AppHeader({
               <Link to="/admin/tenants">Platform admin</Link>
             </DropdownMenuItem>
             <DropdownMenuItem asChild>
-              <Link to="/intake">Build a plan</Link>
+              <Link to="/plan">My workspace</Link>
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <Link to="/intake" search={{ new: true }}>Build a new plan</Link>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem onSelect={() => void supabase.auth.signOut()}>
