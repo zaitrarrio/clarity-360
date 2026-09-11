@@ -1,4 +1,4 @@
-import { Link, useRouterState } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import {
@@ -9,13 +9,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { SidebarTrigger } from "@/components/ui/sidebar";
 import { brandInitial, brandWordmark, useTenant } from "@/lib/tenant";
-
-const NAV = [
-  { to: "/plan", n: "01", label: "The plan" },
-  { to: "/actions", n: "02", label: "Actions" },
-  { to: "/agenda", n: "03", label: "Agenda" },
-] as const;
 
 export function Logo({ size = "md" }: { size?: "sm" | "md" }) {
   const tenant = useTenant();
@@ -46,8 +41,13 @@ export function Logo({ size = "md" }: { size?: "sm" | "md" }) {
   );
 }
 
-export function AppHeader({ businessName }: { businessName?: string | undefined }) {
-  const pathname = useRouterState({ select: (s) => s.location.pathname });
+export function AppHeader({
+  businessName,
+  workspace = false,
+}: {
+  businessName?: string | undefined;
+  workspace?: boolean;
+}) {
   const [email, setEmail] = useState<string | null>(null);
 
   useEffect(() => {
@@ -60,29 +60,8 @@ export function AppHeader({ businessName }: { businessName?: string | undefined 
 
   return (
     <header className="sticky top-0 z-50 flex flex-wrap items-center gap-4 border-b border-border bg-background/90 px-5 py-3 backdrop-blur-md md:px-7">
-      <Logo size="sm" />
-      <div className="hidden h-5 w-px bg-border md:block" />
-      <nav className="flex gap-1.5">
-        {NAV.map((item) => {
-          const active = pathname.startsWith(item.to);
-          return (
-            <Link
-              key={item.to}
-              to={item.to}
-              className={`flex items-center gap-2 rounded-full border px-3 py-1.5 text-[12.5px] no-underline transition-colors ${
-                active
-                  ? "border-ember/40 bg-ember/10 font-medium text-foreground"
-                  : "border-border bg-card font-normal text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              <span className={`font-mono text-[9.5px] ${active ? "text-ember" : "text-muted-foreground/70"}`}>
-                {item.n}
-              </span>
-              {item.label}
-            </Link>
-          );
-        })}
-      </nav>
+      {workspace ? <SidebarTrigger aria-label="Toggle workspace navigation" /> : <Logo size="sm" />}
+      {workspace ? <div className="md:hidden"><Logo size="sm" /></div> : null}
       <div className="flex-1" />
       {businessName ? (
         <span className="hidden text-[12.5px] font-light text-muted-foreground lg:inline">{businessName}</span>
