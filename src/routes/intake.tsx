@@ -258,8 +258,42 @@ function MarketFields({
 
 function IntakePage() {
   const navigate = useNavigate();
+  const { new: startNew } = Route.useSearch();
+  const [checking, setChecking] = useState(!startNew);
   const [seed, setSeed] = useState<Seed>(EMPTY_SEED);
   const industry = industryByKey(seed.industryKey);
+
+  useEffect(() => {
+    if (startNew) return;
+    let cancelled = false;
+    void (async () => {
+      const { data: session } = await supabase.auth.getSession();
+      const uid = session.session?.user.id;
+      if (!uid) {
+        if (!cancelled) setChecking(false);
+        return;
+      }
+      const { data } = await supabase
+        .from("businesses")
+        .select("id")
+        .eq("user_id", uid)
+        .limit(1);
+      if (cancelled) return;
+      if (data && data.length) navigate({ to: "/plan", replace: true });
+      else setChecking(false);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [startNew, navigate]);
+
+  if (checking) {
+    return (
+      <div className="grid min-h-screen place-items-center bg-background text-[13px] font-light text-muted-foreground">
+        Checking your workspace…
+      </div>
+    );
+  }
 
   const set = (patch: Partial<Seed>) => setSeed((s) => ({ ...s, ...patch }));
   const setMarket = (patch: Partial<Market>) =>
