@@ -15,25 +15,16 @@ import { brandInitial, brandWordmark, useTenant } from "@/lib/tenant";
 export function Logo({ size = "md" }: { size?: "sm" | "md" }) {
   const tenant = useTenant();
   const { lead, tail } = brandWordmark(tenant);
-  const logoUrl = tenant.branding.logoUrl;
 
   return (
     <Link to="/" className="flex items-center gap-2 no-underline">
-      {logoUrl ? (
-        <img
-          src={logoUrl}
-          alt=""
-          className={size === "sm" ? "h-[22px] w-auto" : "h-6 w-auto"}
-        />
-      ) : (
-        <div
-          className={`grid place-items-center rounded-[7px] bg-ink font-display font-semibold text-ember-soft ${
-            size === "sm" ? "h-[22px] w-[22px] text-[13px]" : "h-6 w-6 text-[13px]"
-          }`}
-        >
-          {brandInitial(tenant)}
-        </div>
-      )}
+      <div
+        className={`grid place-items-center rounded-[7px] bg-ink font-display font-semibold text-ember-soft ${
+          size === "sm" ? "h-[22px] w-[22px] text-[13px]" : "h-6 w-6 text-[13px]"
+        }`}
+      >
+        {brandInitial(tenant)}
+      </div>
       <span className="font-display text-[19px] font-medium tracking-tight text-foreground">
         {lead} {tail ? <em className="not-italic text-ember">{tail}</em> : null}
       </span>
