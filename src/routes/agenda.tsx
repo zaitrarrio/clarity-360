@@ -1,8 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { AppHeader } from "@/components/clarity/AppHeader";
 import { Clara } from "@/components/clarity/Clara";
+import { WorkspaceShell } from "@/components/clarity/WorkspaceShell";
 import { runAction, setSignalStatus } from "@/lib/clarity.functions";
 import { AGENT_NAMES, timeAgo, timeUntil } from "@/lib/clarity";
 import {
@@ -61,8 +61,7 @@ function AgendaPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <AppHeader businessName={business?.name} />
+    <WorkspaceShell businessName={business?.name}>
       <div className="mx-auto grid max-w-[1500px] gap-8 px-5 py-7 md:px-7 xl:grid-cols-[minmax(0,1fr)_380px]">
         <main className="min-w-0">
           <div className="font-mono text-[10px] uppercase tracking-[0.16em] text-ember">
@@ -190,6 +189,6 @@ function AgendaPage() {
           <Clara businessId={businessId} compact />
         </aside>
       </div>
-    </div>
+    </WorkspaceShell>
   );
 }

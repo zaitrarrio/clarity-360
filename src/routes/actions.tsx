@@ -2,8 +2,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
-import { AppHeader } from "@/components/clarity/AppHeader";
 import { Markdown } from "@/components/clarity/Markdown";
+import { WorkspaceShell } from "@/components/clarity/WorkspaceShell";
 import { runAction, scheduleAction } from "@/lib/clarity.functions";
 import { AGENT_NAMES, DOMAINS, timeAgo, timeUntil, type ActionDef } from "@/lib/clarity";
 import { useActions, useActiveBusinessId, useBusiness, useRuns, useSchedules } from "@/lib/useWorkspace";
@@ -76,8 +76,7 @@ function ActionsPage() {
   const openRunRow = (runs ?? []).find((r) => r.id === openRun);
 
   return (
-    <div className="min-h-screen bg-background">
-      <AppHeader businessName={business?.name} />
+    <WorkspaceShell businessName={business?.name}>
       <div className="mx-auto grid max-w-[1500px] gap-8 px-5 py-7 md:px-7 xl:grid-cols-[minmax(0,1fr)_380px]">
         <main className="min-w-0">
           <h1 className="font-display text-[38px] leading-tight font-normal tracking-tight text-foreground">
@@ -218,6 +217,6 @@ function ActionsPage() {
           </div>
         </div>
       ) : null}
-    </div>
+    </WorkspaceShell>
   );
 }

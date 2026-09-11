@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { AppHeader } from "@/components/clarity/AppHeader";
 import { ClaraRail } from "@/components/clarity/ClaraRail";
+import { WorkspaceShell } from "@/components/clarity/WorkspaceShell";
 import { DOMAINS, type PlanSection } from "@/lib/clarity";
 import { useActiveBusinessId, useBusiness, usePlanSections } from "@/lib/useWorkspace";
 
@@ -94,8 +94,7 @@ function PlanPage() {
   const meta = DOMAINS.find((d) => d.key === active);
 
   return (
-    <div className="min-h-screen bg-background">
-      <AppHeader businessName={business?.name} />
+    <WorkspaceShell businessName={business?.name}>
       <div
         className={`mx-auto grid max-w-[1500px] grid-cols-[minmax(0,1fr)] gap-6 px-5 py-7 pb-24 transition-[margin] duration-300 md:px-7 xl:grid-cols-[210px_minmax(0,1fr)] ${
           claraOpen ? "lg:mr-[400px]" : ""
@@ -155,6 +154,6 @@ function PlanPage() {
         businessId={businessId}
         section={meta?.label ?? null}
       />
-    </div>
+    </WorkspaceShell>
   );
 }
