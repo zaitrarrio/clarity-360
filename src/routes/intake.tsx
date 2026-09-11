@@ -26,9 +26,8 @@ import { requireAuthOrRedirect } from "@/lib/require-auth";
 
 export const Route = createFileRoute("/intake")({
   ssr: false,
-  validateSearch: (search: Record<string, unknown>) => ({
-    new: search['new'] === "1" || search['new'] === true ? true : undefined,
-  }),
+  validateSearch: (search: Record<string, unknown>): { new?: true } =>
+    search['new'] === "1" || search['new'] === true ? { new: true } : {},
   beforeLoad: () => requireAuthOrRedirect("/intake"),
   head: () => ({
     meta: [
