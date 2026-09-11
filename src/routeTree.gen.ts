@@ -14,6 +14,7 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as ActionsRouteImport } from './routes/actions'
 import { Route as AgendaRouteImport } from './routes/agenda'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as ContentRouteImport } from './routes/content'
 import { Route as DraftRouteImport } from './routes/draft'
 import { Route as ForksRouteImport } from './routes/forks'
 import { Route as IntakeRouteImport } from './routes/intake'
@@ -47,6 +48,11 @@ const AgendaRoute = AgendaRouteImport.update({
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContentRoute = ContentRouteImport.update({
+  id: '/content',
+  path: '/content',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DraftRoute = DraftRouteImport.update({
@@ -107,6 +113,7 @@ export interface FileRoutesByFullPath {
   '/actions': typeof ActionsRoute
   '/agenda': typeof AgendaRoute
   '/auth': typeof AuthRoute
+  '/content': typeof ContentRoute
   '/draft': typeof DraftRoute
   '/forks': typeof ForksRoute
   '/intake': typeof IntakeRoute
@@ -123,6 +130,7 @@ export interface FileRoutesByTo {
   '/actions': typeof ActionsRoute
   '/agenda': typeof AgendaRoute
   '/auth': typeof AuthRoute
+  '/content': typeof ContentRoute
   '/draft': typeof DraftRoute
   '/forks': typeof ForksRoute
   '/intake': typeof IntakeRoute
@@ -141,6 +149,7 @@ export interface FileRoutesById {
   '/actions': typeof ActionsRoute
   '/agenda': typeof AgendaRoute
   '/auth': typeof AuthRoute
+  '/content': typeof ContentRoute
   '/draft': typeof DraftRoute
   '/forks': typeof ForksRoute
   '/intake': typeof IntakeRoute
@@ -159,6 +168,7 @@ export interface FileRouteTypes {
     | '/actions'
     | '/agenda'
     | '/auth'
+    | '/content'
     | '/draft'
     | '/forks'
     | '/intake'
@@ -175,6 +185,7 @@ export interface FileRouteTypes {
     | '/actions'
     | '/agenda'
     | '/auth'
+    | '/content'
     | '/draft'
     | '/forks'
     | '/intake'
@@ -192,6 +203,7 @@ export interface FileRouteTypes {
     | '/actions'
     | '/agenda'
     | '/auth'
+    | '/content'
     | '/draft'
     | '/forks'
     | '/intake'
@@ -210,6 +222,7 @@ export interface RootRouteChildren {
   ActionsRoute: typeof ActionsRoute
   AgendaRoute: typeof AgendaRoute
   AuthRoute: typeof AuthRoute
+  ContentRoute: typeof ContentRoute
   DraftRoute: typeof DraftRoute
   ForksRoute: typeof ForksRoute
   IntakeRoute: typeof IntakeRoute
@@ -255,6 +268,13 @@ declare module '@tanstack/react-router' {
       path: '/auth'
       fullPath: '/auth'
       preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/content': {
+      id: '/content'
+      path: '/content'
+      fullPath: '/content'
+      preLoaderRoute: typeof ContentRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/draft': {
@@ -349,6 +369,7 @@ const rootRouteChildren: RootRouteChildren = {
   ActionsRoute: ActionsRoute,
   AgendaRoute: AgendaRoute,
   AuthRoute: AuthRoute,
+  ContentRoute: ContentRoute,
   DraftRoute: DraftRoute,
   ForksRoute: ForksRoute,
   IntakeRoute: IntakeRoute,
