@@ -15,7 +15,6 @@ import { brandInitial, brandWordmark, useTenant } from "@/lib/tenant";
 export function Logo({ size = "md" }: { size?: "sm" | "md" }) {
   const tenant = useTenant();
   const { lead, tail } = brandWordmark(tenant);
-  const logoUrl = tenant.branding.logoUrl;
 
   return (
     <Link to="/" className="flex items-center gap-2 no-underline">
