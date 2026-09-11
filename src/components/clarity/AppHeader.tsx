@@ -66,12 +66,22 @@ export function AppHeader({
       {businessName ? (
         <span className="hidden text-[12.5px] font-light text-muted-foreground lg:inline">{businessName}</span>
       ) : null}
-      <Link
-        to="/intake"
-        className="rounded-full border border-ember/40 bg-ember/10 px-3 py-1.5 text-[12.5px] font-medium text-foreground no-underline hover:bg-ember/20"
-      >
-        Build a plan
-      </Link>
+      {email ? (
+        <Link
+          to="/plan"
+          className="rounded-full border border-ember/40 bg-ember/10 px-3 py-1.5 text-[12.5px] font-medium text-foreground no-underline hover:bg-ember/20"
+        >
+          My workspace
+        </Link>
+      ) : (
+        <Link
+          to="/intake"
+          className="rounded-full border border-ember/40 bg-ember/10 px-3 py-1.5 text-[12.5px] font-medium text-foreground no-underline hover:bg-ember/20"
+        >
+          Build a plan
+        </Link>
+      )}
+
 
       {email ? (
         <DropdownMenu>
