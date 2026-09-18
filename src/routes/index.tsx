@@ -1,7 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
-import { HeaderLead, Logo } from "@/components/clarity/AppHeader";
-import { supabase } from "@/integrations/supabase/client";
+import { Logo } from "@/components/clarity/AppHeader";
 import { DOMAINS } from "@/lib/clarity";
 
 export const Route = createFileRoute("/")({
@@ -49,20 +47,10 @@ const CAPABILITIES = [
 ];
 
 function Landing() {
-  const [signedIn, setSignedIn] = useState(false);
-
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => setSignedIn(Boolean(data.session)));
-    const { data: subscription } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSignedIn(Boolean(session));
-    });
-    return () => subscription.subscription.unsubscribe();
-  }, []);
-
   return (
     <div className="min-h-screen bg-background">
       <header className="sticky top-0 z-50 flex items-center gap-4 border-b border-border bg-background/85 px-6 py-4 backdrop-blur-md">
-        <HeaderLead signedIn={signedIn} />
+        <Logo />
         <div className="flex-1" />
         <Link
           to="/plan"
