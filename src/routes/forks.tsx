@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { Logo } from "@/components/clarity/AppHeader";
 import { DetailToggle } from "@/components/clarity/DetailToggle";
 import { Gloss, GlossaryProvider } from "@/components/clarity/Glossary";
+import { OTHER_KEY, OtherChoice } from "@/components/clarity/OtherChoice";
 import { supabase } from "@/integrations/supabase/client";
 import { buildPlanFromIntake } from "@/lib/clarity.functions";
 import { nextForkRound } from "@/lib/onboarding.functions";
@@ -103,6 +104,7 @@ function ForksPage() {
       setRound(result);
       setIndex(0);
       setChoice(null);
+      setOtherText("");
     } catch (e) {
       setError(e instanceof Error ? e.message : "Clara couldn't frame the next decision. Try again.");
     } finally {
@@ -348,8 +350,16 @@ function ForksPage() {
                     ) : null}
                   </button>
                 );
-              })}
+               })}
+              <OtherChoice
+                number={fork.options.length + 1}
+                selected={choice === OTHER_KEY}
+                onSelect={() => setChoice(OTHER_KEY)}
+                value={otherText}
+                onChange={setOtherText}
+              />
             </div>
+
 
             {round?.inferred.length ? (
               <div className="mt-8 rounded-2xl bg-linen p-5">
