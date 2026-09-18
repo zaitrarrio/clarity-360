@@ -1,6 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
 import { Logo } from "@/components/clarity/AppHeader";
 import {
   EMPTY_SEED,
@@ -272,6 +271,8 @@ function IntakePage() {
       try {
         const saved = await getLatestSavedIntake();
         if (!cancelled && saved) setSeed(seedFromSavedIntake(saved));
+      } catch {
+        // A saved plan is optional; keep the blank form available if it cannot be loaded.
       } finally {
         if (!cancelled) setChecking(false);
       }
