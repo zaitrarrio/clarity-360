@@ -1,9 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { History } from "lucide-react";
 import { useEffect, useState } from "react";
 import { ClaraRail } from "@/components/clarity/ClaraRail";
 import { WorkspaceShell } from "@/components/clarity/WorkspaceShell";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { DOMAINS, type PlanSection } from "@/lib/clarity";
-import { useActiveBusinessId, useBusiness, usePlanSections } from "@/lib/useWorkspace";
+import { useActiveBusinessId, useBusiness, usePlanSections, usePlanVersions } from "@/lib/useWorkspace";
 
 export const Route = createFileRoute("/plan")({
   head: () => ({
