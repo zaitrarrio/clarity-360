@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Logo } from "@/components/clarity/AppHeader";
+import { HeaderAccountControls } from "@/components/clarity/HeaderAccountControls";
 import { DOMAINS } from "@/lib/clarity";
 
 export const Route = createFileRoute("/")({
@@ -58,12 +59,9 @@ function Landing() {
         >
           See a live plan
         </Link>
-        <Link
-          to="/intake"
-          className="rounded-full bg-ember px-4 py-2 text-[13px] font-medium text-on-ember no-underline shadow-ember"
-        >
-          Start
-        </Link>
+        <HeaderAccountControls signedOut={(
+          <Link to="/intake" className="rounded-full bg-ember px-4 py-2 text-[13px] font-medium text-on-ember no-underline shadow-ember">Start</Link>
+        )} />
       </header>
 
       <section className="mx-auto max-w-5xl px-6 pb-16 pt-20 md:pt-28">
