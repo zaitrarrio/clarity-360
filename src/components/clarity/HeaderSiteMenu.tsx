@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { Menu } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import {
@@ -11,9 +11,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Logo } from "./AppHeader";
 
-export function HeaderSiteMenu() {
+export function HeaderSiteMenu({ signedIn }: { signedIn: ReactNode }) {
   const [email, setEmail] = useState<string | null>(null);
 
   useEffect(() => {
@@ -22,7 +21,7 @@ export function HeaderSiteMenu() {
     return () => sub.subscription.unsubscribe();
   }, []);
 
-  if (email) return <Logo size="sm" />;
+  if (email) return <>{signedIn}</>;
 
   return (
     <DropdownMenu>

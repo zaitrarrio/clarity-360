@@ -52,7 +52,7 @@ function Landing() {
   return (
     <div className="min-h-screen bg-background">
       <header className="sticky top-0 z-50 flex items-center gap-4 border-b border-border bg-background/85 px-6 py-4 backdrop-blur-md">
-        <HeaderSiteMenu />
+        <HeaderSiteMenu signedIn={<Logo />} />
         <div className="flex-1" />
         <Link
           to="/plan"

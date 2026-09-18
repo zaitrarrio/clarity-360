@@ -42,7 +42,7 @@ export function AppHeader({
 }) {
   return (
     <header className="sticky top-0 z-50 flex flex-wrap items-center gap-4 border-b border-border bg-background/90 px-5 py-3 backdrop-blur-md md:px-7">
-      {workspace ? <SidebarTrigger aria-label="Toggle workspace navigation" /> : <HeaderSiteMenu />}
+      {workspace ? <SidebarTrigger aria-label="Toggle workspace navigation" /> : <HeaderSiteMenu signedIn={<Logo size="sm" />} />}
       {workspace ? <div className="md:hidden"><Logo size="sm" /></div> : null}
       <div className="flex-1" />
       {businessName ? (
