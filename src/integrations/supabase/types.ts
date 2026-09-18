@@ -554,6 +554,47 @@ export type Database = {
           },
         ]
       }
+      plan_versions: {
+        Row: {
+          business_id: string
+          change_note: string | null
+          created_at: string
+          created_by: string | null
+          id: string
+          sections: Json
+          summary: string | null
+          version: number
+        }
+        Insert: {
+          business_id: string
+          change_note?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          sections?: Json
+          summary?: string | null
+          version: number
+        }
+        Update: {
+          business_id?: string
+          change_note?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          sections?: Json
+          summary?: string | null
+          version?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "plan_versions_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "businesses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       platform_admins: {
         Row: {
           created_at: string
