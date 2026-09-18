@@ -152,6 +152,7 @@ function DraftPage() {
           name: seed.name,
           industry: seedIndustryLabel(seed),
           answers: [
+            { key: "intake_seed", stage: "Seed", question: "Intake selections", answer: JSON.stringify(seed) },
             { key: "stage", stage: "Seed", question: "Where are you today?", answer: seed.stage },
             ...marketLines(seed.market).map((line, i) => {
               const [label, ...rest] = line.split(": ");

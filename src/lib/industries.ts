@@ -354,6 +354,67 @@ export function seedIndustryLabel(seed: Seed): string {
   return seed.subcategory ? `${industry.label} · ${seed.subcategory}` : industry.label;
 }
 
+type SavedIntake = {
+  business: { name: string; industry: string | null; stage: string | null };
+  responses: { question_key: string; question: string; answer: string | null }[];
+};
+
+function validSeed(value: unknown): Seed | null {
+  if (!value || typeof value !== "object") return null;
+  const candidate = value as Partial<Seed>;
+  if (!candidate.name || !candidate.market || typeof candidate.market !== "object") return null;
+  return normaliseSeed(candidate as Seed);
+}
+
+/** Rebuild the intake form from its exact saved snapshot, with a fallback for older plans. */
+export function seedFromSavedIntake(saved: SavedIntake): Seed {
+  const snapshot = saved.responses.find((response) => response.question_key === "intake_seed")?.answer;
+  if (snapshot) {
+    try {
+      const parsed = validSeed(JSON.parse(snapshot));
+      if (parsed) return parsed;
+    } catch {
+      // Older plans predate the exact intake snapshot and are reconstructed below.
+    }
+  }
+
+  const answers = new Map(
+    saved.responses.map((response) => [response.question_key, response.answer ?? ""]),
+  );
+  const marketAnswers = new Map(
+    saved.responses
+      .filter((response) => response.question_key.startsWith("market_"))
+      .map((response) => [response.question, response.answer ?? ""]),
+  );
+  const industryText = saved.business.industry ?? "";
+  const industry = INDUSTRIES.find(
+    (item) => industryText === item.label || industryText.startsWith(`${item.label} · `),
+  );
+  const subcategory = industry ? industryText.slice(industry.label.length).replace(/^\s*·\s*/, "") : "";
+  const reachText = marketAnswers.get("Reach model") ?? "";
+  const reach = REACH_MODELS.find((item) => reachText.startsWith(item.label))?.key ?? "";
+
+  return {
+    ...EMPTY_SEED,
+    name: saved.business.name,
+    stage: answers.get("stage") || saved.business.stage || "",
+    industryKey: industry?.key ?? "",
+    subcategory,
+    market: {
+      ...EMPTY_MARKET,
+      reach,
+      baseLocation: marketAnswers.get("Based in") ?? "",
+      serviceAreas: (marketAnswers.get("Service area") ?? "").split(", ").filter(Boolean),
+      radius: marketAnswers.get("Customer travel / crew radius") ?? "",
+      regions: (marketAnswers.get("Markets served") ?? "").split(", ").filter(Boolean),
+      primaryRegion: marketAnswers.get("Primary market") ?? "",
+      audienceNote: marketAnswers.get("Audience") ?? "",
+    },
+    website: answers.get("website") ?? "",
+    objective: answers.get("objective") ?? "",
+  };
+}
+
 export function seedSummary(seed: Seed): string {
   return [
     `Business: ${seed.name}`,

@@ -17,11 +17,13 @@ import {
   needsRegions,
   needsServiceAreas,
   storeSeed,
+  seedFromSavedIntake,
   type Market,
   type Seed,
 } from "@/lib/industries";
 import { clearProgress } from "@/lib/progress";
 import { requireAuthOrRedirect } from "@/lib/require-auth";
+import { getLatestSavedIntake } from "@/lib/intake.functions";
 
 
 export const Route = createFileRoute("/intake")({
@@ -267,20 +269,12 @@ function IntakePage() {
     if (startNew) return;
     let cancelled = false;
     void (async () => {
-      const { data: session } = await supabase.auth.getSession();
-      const uid = session.session?.user.id;
-      if (!uid) {
+      try {
+        const saved = await getLatestSavedIntake();
+        if (!cancelled && saved) setSeed(seedFromSavedIntake(saved));
+      } finally {
         if (!cancelled) setChecking(false);
-        return;
       }
-      const { data } = await supabase
-        .from("businesses")
-        .select("id")
-        .eq("user_id", uid)
-        .limit(1);
-      if (cancelled) return;
-      if (data && data.length) navigate({ to: "/plan", replace: true });
-      else setChecking(false);
     })();
     return () => {
       cancelled = true;
