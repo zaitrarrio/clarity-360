@@ -40,7 +40,7 @@ export async function snapshotPlan(businessId: string, changeNote: string, summa
     version,
     change_note: changeNote,
     summary,
-    sections: (sections ?? []) as unknown as object,
+    sections: (sections ?? []) as unknown as Json,
   });
   return version;
 }
@@ -120,9 +120,9 @@ Include an entry for every domain_key listed above.`,
       .from("plan_sections")
       .update({
         summary: next.summary ?? row.summary,
-        findings: (next.findings ?? row.findings) as unknown as object,
-        decisions: (next.decisions ?? row.decisions) as unknown as object,
-        metrics: (next.metrics ?? row.metrics) as unknown as object,
+        findings: (next.findings ?? row.findings) as unknown as Json,
+        decisions: (next.decisions ?? row.decisions) as unknown as Json,
+        metrics: (next.metrics ?? row.metrics) as unknown as Json,
         updated_at: new Date().toISOString(),
       })
       .eq("id", row.id);
