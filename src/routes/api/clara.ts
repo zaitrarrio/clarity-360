@@ -142,6 +142,15 @@ export const Route = createFileRoute("/api/clara")({
               return { ok: true };
             },
           }),
+          revise_plan: tool({
+            description:
+              "Apply an agreed change to the operating plan. This saves the plan as a new version and rewrites every report so the whole plan stays consistent. Call this whenever the owner decides something that changes the plan — a new price, market, offer, target, constraint or direction. Describe the change fully in one paragraph.",
+            inputSchema: z.object({ change: z.string().min(4) }),
+            execute: async ({ change }) => {
+              const { revisePlan } = await import("@/lib/plan-versions.server");
+              return revisePlan(businessId, change);
+            },
+          }),
           review_readiness: tool({
             description:
               "Review the business readiness checklist (My Actions) against everything known about the business and sharpen or add to it. Call this when the conversation has surfaced something specific enough to make a checklist item more precise, or a genuinely new must-have the current list is missing — not on every message.",
@@ -168,6 +177,11 @@ ${(readinessItems ?? []).map((i) => `- ${i.item_key} [${i.status}] ${i.title}${i
 When the conversation reveals something specific enough to sharpen an item or surfaces a genuinely
 new must-have, call review_readiness rather than just describing it — that's what actually updates
 the checklist the owner sees on My Actions.
+
+CHANGES TO THE PLAN: when the owner decides something that changes the plan, call revise_plan with a full
+description of the change. That saves a new version and refreshes every report. Never describe a plan change
+as done without calling it, and never edit only one report in your head — the tool keeps the whole plan consistent.
+After it returns, tell the owner the version number and which reports moved.
 ${body.section ? `\nThe owner is currently reading the "${body.section}" section of the plan.` : ""}
 
 WHENEVER YOU ASK A MULTIPLE-CHOICE QUESTION: number the options and always end the list with a final numbered "Other — describe it in your own words" option. Accept a free-text answer that matches none of your options, take it at face value, and plan around it instead of pushing the owner back into your list.`,

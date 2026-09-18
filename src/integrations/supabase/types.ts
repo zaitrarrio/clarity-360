@@ -216,6 +216,47 @@ export type Database = {
           },
         ]
       }
+      business_briefings: {
+        Row: {
+          body: string
+          briefing_date: string
+          business_id: string
+          created_at: string
+          focus_item_keys: string[]
+          headline: string
+          id: string
+          updated_at: string
+        }
+        Insert: {
+          body: string
+          briefing_date: string
+          business_id: string
+          created_at?: string
+          focus_item_keys?: string[]
+          headline: string
+          id?: string
+          updated_at?: string
+        }
+        Update: {
+          body?: string
+          briefing_date?: string
+          business_id?: string
+          created_at?: string
+          focus_item_keys?: string[]
+          headline?: string
+          id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "business_briefings_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "businesses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       business_members: {
         Row: {
           business_id: string
@@ -303,47 +344,6 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "business_readiness_items_business_id_fkey"
-            columns: ["business_id"]
-            isOneToOne: false
-            referencedRelation: "businesses"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      business_briefings: {
-        Row: {
-          body: string
-          briefing_date: string
-          business_id: string
-          created_at: string
-          focus_item_keys: string[]
-          headline: string
-          id: string
-          updated_at: string
-        }
-        Insert: {
-          body: string
-          briefing_date?: string
-          business_id: string
-          created_at?: string
-          focus_item_keys?: string[]
-          headline: string
-          id?: string
-          updated_at?: string
-        }
-        Update: {
-          body?: string
-          briefing_date?: string
-          business_id?: string
-          created_at?: string
-          focus_item_keys?: string[]
-          headline?: string
-          id?: string
-          updated_at?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "business_briefings_business_id_fkey"
             columns: ["business_id"]
             isOneToOne: false
             referencedRelation: "businesses"
@@ -597,6 +597,47 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "plan_sections_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "businesses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      plan_versions: {
+        Row: {
+          business_id: string
+          change_note: string | null
+          created_at: string
+          created_by: string | null
+          id: string
+          sections: Json
+          summary: string | null
+          version: number
+        }
+        Insert: {
+          business_id: string
+          change_note?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          sections?: Json
+          summary?: string | null
+          version: number
+        }
+        Update: {
+          business_id?: string
+          change_note?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          sections?: Json
+          summary?: string | null
+          version?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "plan_versions_business_id_fkey"
             columns: ["business_id"]
             isOneToOne: false
             referencedRelation: "businesses"

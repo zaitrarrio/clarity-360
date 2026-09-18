@@ -84,6 +84,9 @@ export function Clara({
       qc.invalidateQueries({ queryKey: ["runs", businessId] });
       qc.invalidateQueries({ queryKey: ["signals", businessId] });
       qc.invalidateQueries({ queryKey: ["schedules", businessId] });
+      qc.invalidateQueries({ queryKey: ["plan-sections", businessId] });
+      qc.invalidateQueries({ queryKey: ["plan-versions", businessId] });
+      qc.invalidateQueries({ queryKey: ["readiness", businessId] });
     } catch (e) {
       setMessages(next);
       setError(e instanceof Error ? e.message : "Clara is unavailable right now.");
