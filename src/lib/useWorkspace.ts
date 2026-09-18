@@ -142,3 +142,27 @@ export function useAgents(businessId: string) {
     },
   });
 }
+
+export type PlanVersion = {
+  id: string;
+  version: number;
+  change_note: string | null;
+  summary: string | null;
+  created_at: string;
+};
+
+export function usePlanVersions(businessId: string) {
+  return useQuery({
+    queryKey: ["plan-versions", businessId],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("plan_versions")
+        .select("id, version, change_note, summary, created_at")
+        .eq("business_id", businessId)
+        .order("version", { ascending: false })
+        .limit(30);
+      if (error) throw error;
+      return (data ?? []) as unknown as PlanVersion[];
+    },
+  });
+}
