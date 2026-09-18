@@ -135,6 +135,45 @@ function PlanPage() {
             <h1 className="mt-2 text-balance font-display text-[38px] leading-[1.08] font-normal tracking-tight text-foreground">
               {current?.title ?? meta?.label}
             </h1>
+            {latest ? (
+              <Dialog>
+                <DialogTrigger asChild>
+                  <button
+                    type="button"
+                    className="mt-3 inline-flex items-center gap-2 rounded-full border border-border px-3 py-1 text-[11.5px] font-light text-muted-foreground transition-colors hover:border-ember/40 hover:text-foreground"
+                  >
+                    <History className="h-3.5 w-3.5" />
+                    Version {latest.version} · updated {new Date(latest.created_at).toLocaleDateString()}
+                  </button>
+                </DialogTrigger>
+                <DialogContent className="max-h-[80vh] overflow-y-auto sm:max-w-lg">
+                  <DialogHeader>
+                    <DialogTitle className="text-balance">Plan history</DialogTitle>
+                    <DialogDescription className="text-pretty">
+                      Every change Clara makes saves a new version and refreshes all seven reports.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <ol className="space-y-3">
+                    {versions!.map((v) => (
+                      <li key={v.id} className="border-b border-border/70 pb-3 last:border-0">
+                        <div className="flex items-baseline justify-between gap-3">
+                          <span className="font-mono text-[11px] text-ember">Version {v.version}</span>
+                          <span className="text-[11px] font-light text-muted-foreground">
+                            {new Date(v.created_at).toLocaleString()}
+                          </span>
+                        </div>
+                        {v.summary ? (
+                          <p className="mt-1 text-pretty text-[13.5px] font-light text-foreground">{v.summary}</p>
+                        ) : null}
+                        {v.change_note ? (
+                          <p className="mt-1 text-pretty text-[12.5px] font-light text-muted-foreground">{v.change_note}</p>
+                        ) : null}
+                      </li>
+                    ))}
+                  </ol>
+                </DialogContent>
+              </Dialog>
+            ) : null}
           </div>
           {isLoading ? (
             <div className="space-y-3">
