@@ -46,6 +46,7 @@ function ForksPage() {
   const [index, setIndex] = useState(0);
   const [decisions, setDecisions] = useState<Decision[]>([]);
   const [choice, setChoice] = useState<string | null>(null);
+  const [otherText, setOtherText] = useState("");
   const [busy, setBusy] = useState(true);
   const [summary, setSummary] = useState(false);
   const [building, setBuilding] = useState(false);
@@ -114,12 +115,16 @@ function ForksPage() {
     const fork = round.forks[index];
     if (!fork) return;
     const option = fork.options.find((o) => o.key === choice);
+    const answer =
+      choice === OTHER_KEY ? `Other — ${otherText.trim()}` : (option?.label ?? choice);
+    if (choice === OTHER_KEY && !otherText.trim()) return;
     const next: Decision[] = [
       ...decisions,
-      { forkId: fork.id, question: fork.question, choice: option?.label ?? choice },
+      { forkId: fork.id, question: fork.question, choice: answer },
     ];
     setDecisions(next);
     setChoice(null);
+    setOtherText("");
     if (index + 1 < round.forks.length) {
       setIndex(index + 1);
     } else if (round.coverage >= TARGET) {
