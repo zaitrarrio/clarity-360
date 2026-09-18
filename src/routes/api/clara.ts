@@ -142,6 +142,15 @@ export const Route = createFileRoute("/api/clara")({
               return { ok: true };
             },
           }),
+          revise_plan: tool({
+            description:
+              "Apply an agreed change to the operating plan. This saves the plan as a new version and rewrites every report so the whole plan stays consistent. Call this whenever the owner decides something that changes the plan — a new price, market, offer, target, constraint or direction. Describe the change fully in one paragraph.",
+            inputSchema: z.object({ change: z.string().min(4) }),
+            execute: async ({ change }) => {
+              const { revisePlan } = await import("@/lib/plan-versions.server");
+              return revisePlan(businessId, change);
+            },
+          }),
           review_readiness: tool({
             description:
               "Review the business readiness checklist (My Actions) against everything known about the business and sharpen or add to it. Call this when the conversation has surfaced something specific enough to make a checklist item more precise, or a genuinely new must-have the current list is missing — not on every message.",
