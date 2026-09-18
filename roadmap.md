@@ -12,3 +12,5 @@
 - [x] Give agent-kind readiness items a real, agent-executable objective and wire them into the existing actions/agent_schedules engine so they run autonomously (`ensureAgentAction`).
 - [x] Add My Briefing: a daily, plan-grounded summary with 1-3 spotlighted readiness items, generated once per business per day.
 - [ ] Schedule `/api/public/agents-tick` and `/api/public/briefing-tick` to actually run (pg_cron + pg_net extensions are enabled but no `cron.schedule` call exists yet — needs the deployed project URL, which isn't available from inside the repo).
+- [x] Clara saves every agreed plan change as a new version and refreshes all seven reports (`plan_versions`, `revise_plan` tool, plan history dialog).
+- [ ] Add Runway (media), Outstand (social), Apollo (leads) and Lovable (websites/apps) integrations — awaiting the user's answers on keys and Apollo connection.
