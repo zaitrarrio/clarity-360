@@ -308,6 +308,27 @@ function DraftPage() {
                               <span><Gloss>{fix.label}</Gloss></span>
                             </button>
                           ))}
+                          <OtherChoice
+                            variant="row"
+                            number={flag.fixes.length + 1}
+                            selected={!!otherOpen[flag.id]}
+                            onSelect={() => setOtherOpen((o) => ({ ...o, [flag.id]: true }))}
+                            value={otherText[flag.id] ?? ""}
+                            onChange={(next) => setOtherText((t) => ({ ...t, [flag.id]: next }))}
+                            onSubmit={() => {
+                              const text = (otherText[flag.id] ?? "").trim();
+                              if (!text) return;
+                              pick(
+                                flag.id,
+                                flag.where,
+                                flag.assumed,
+                                `Other — ${text}`,
+                                `You corrected this yourself: ${text}`,
+                              );
+                              setOtherOpen((o) => ({ ...o, [flag.id]: false }));
+                            }}
+                            submitLabel="Use my correction"
+                          />
                         </div>
                       )}
                     </div>
