@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { brandInitial, brandWordmark, useTenant } from "@/lib/tenant";
 import { HeaderAccountControls } from "./HeaderAccountControls";
+import { HeaderSiteMenu } from "./HeaderSiteMenu";
 
 export function Logo({ size = "md" }: { size?: "sm" | "md" }) {
   const tenant = useTenant();
@@ -41,7 +42,7 @@ export function AppHeader({
 }) {
   return (
     <header className="sticky top-0 z-50 flex flex-wrap items-center gap-4 border-b border-border bg-background/90 px-5 py-3 backdrop-blur-md md:px-7">
-      {workspace ? <SidebarTrigger aria-label="Toggle workspace navigation" /> : <Logo size="sm" />}
+      {workspace ? <SidebarTrigger aria-label="Toggle workspace navigation" /> : <HeaderSiteMenu />}
       {workspace ? <div className="md:hidden"><Logo size="sm" /></div> : null}
       <div className="flex-1" />
       {businessName ? (

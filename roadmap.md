@@ -7,3 +7,4 @@
 - [ ] Connect legal-entity formation to a verified Bizee fulfillment service. Blocked: no Bizee skill or connector is currently available.
 - [ ] Connect payment collection to a real payment onboarding and fulfillment flow.
 - [x] Verify navigation, signed-in states, checklist persistence, and responsive layouts.
+- [x] Replace the signed-out header logo with a hamburger menu for site navigation.
