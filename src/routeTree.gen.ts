@@ -11,8 +11,8 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
-import { Route as ActionsRouteImport } from './routes/actions'
 import { Route as AgendaRouteImport } from './routes/agenda'
+import { Route as AgentsRouteImport } from './routes/agents'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ContentRouteImport } from './routes/content'
 import { Route as DraftRouteImport } from './routes/draft'
@@ -35,14 +35,14 @@ const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
   id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ActionsRoute = ActionsRouteImport.update({
-  id: '/actions',
-  path: '/actions',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const AgendaRoute = AgendaRouteImport.update({
   id: '/agenda',
   path: '/agenda',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AgentsRoute = AgentsRouteImport.update({
+  id: '/agents',
+  path: '/agents',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRoute = AuthRouteImport.update({
@@ -110,8 +110,8 @@ const ApiPublicAgentsTickRoute = ApiPublicAgentsTickRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/actions': typeof ActionsRoute
   '/agenda': typeof AgendaRoute
+  '/agents': typeof AgentsRoute
   '/auth': typeof AuthRoute
   '/content': typeof ContentRoute
   '/draft': typeof DraftRoute
@@ -127,8 +127,8 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/actions': typeof ActionsRoute
   '/agenda': typeof AgendaRoute
+  '/agents': typeof AgentsRoute
   '/auth': typeof AuthRoute
   '/content': typeof ContentRoute
   '/draft': typeof DraftRoute
@@ -146,8 +146,8 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
-  '/actions': typeof ActionsRoute
   '/agenda': typeof AgendaRoute
+  '/agents': typeof AgentsRoute
   '/auth': typeof AuthRoute
   '/content': typeof ContentRoute
   '/draft': typeof DraftRoute
@@ -165,8 +165,8 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/actions'
     | '/agenda'
+    | '/agents'
     | '/auth'
     | '/content'
     | '/draft'
@@ -182,8 +182,8 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/actions'
     | '/agenda'
+    | '/agents'
     | '/auth'
     | '/content'
     | '/draft'
@@ -200,8 +200,8 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/_authenticated'
-    | '/actions'
     | '/agenda'
+    | '/agents'
     | '/auth'
     | '/content'
     | '/draft'
@@ -219,8 +219,8 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
-  ActionsRoute: typeof ActionsRoute
   AgendaRoute: typeof AgendaRoute
+  AgentsRoute: typeof AgentsRoute
   AuthRoute: typeof AuthRoute
   ContentRoute: typeof ContentRoute
   DraftRoute: typeof DraftRoute
@@ -249,18 +249,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/actions': {
-      id: '/actions'
-      path: '/actions'
-      fullPath: '/actions'
-      preLoaderRoute: typeof ActionsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/agenda': {
       id: '/agenda'
       path: '/agenda'
       fullPath: '/agenda'
       preLoaderRoute: typeof AgendaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/agents': {
+      id: '/agents'
+      path: '/agents'
+      fullPath: '/agents'
+      preLoaderRoute: typeof AgentsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth': {
@@ -366,8 +366,8 @@ const AuthenticatedRouteRouteWithChildren =
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
-  ActionsRoute: ActionsRoute,
   AgendaRoute: AgendaRoute,
+  AgentsRoute: AgentsRoute,
   AuthRoute: AuthRoute,
   ContentRoute: ContentRoute,
   DraftRoute: DraftRoute,

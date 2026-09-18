@@ -8,7 +8,7 @@ import { runAction, scheduleAction } from "@/lib/clarity.functions";
 import { AGENT_NAMES, DOMAINS, timeAgo, timeUntil, type ActionDef } from "@/lib/clarity";
 import { useActions, useActiveBusinessId, useBusiness, useRuns, useSchedules } from "@/lib/useWorkspace";
 
-export const Route = createFileRoute("/actions")({
+export const Route = createFileRoute("/agents")({
   head: () => ({
     meta: [
       { title: "Actions & agents — Clarity 360" },
