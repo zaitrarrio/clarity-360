@@ -203,9 +203,9 @@ export function Clara({
               send(input);
             }
           }}
-          rows={1}
+          rows={4}
           placeholder="Ask Clara, or tell her to run something…"
-          className="max-h-32 flex-1 resize-none bg-transparent px-1 py-1.5 text-[13.5px] font-light text-foreground outline-none placeholder:text-muted-foreground/70"
+          className="max-h-40 flex-1 resize-none bg-transparent px-1 py-1.5 text-[13.5px] font-light text-foreground outline-none placeholder:text-muted-foreground/70"
         />
         <button
           type="submit"
