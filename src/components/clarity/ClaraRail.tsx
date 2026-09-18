@@ -1,4 +1,5 @@
 import { MessageSquare, X } from "lucide-react";
+import { useEffect, useState } from "react";
 import { Clara } from "./Clara";
 
 /**
@@ -15,6 +16,12 @@ export function ClaraRail({
   businessId: string;
   section?: string | null;
 }) {
+  const [expanded, setExpanded] = useState(false);
+
+  useEffect(() => {
+    if (!open) setExpanded(false);
+  }, [open]);
+
   return (
     <>
       {!open ? (
@@ -43,7 +50,9 @@ export function ClaraRail({
 
       <aside
         aria-hidden={!open}
-        className={`fixed right-0 top-0 z-50 h-dvh w-full max-w-[400px] border-l border-border bg-card shadow-2xl transition-transform duration-300 ${
+        className={`fixed right-0 top-0 z-50 h-dvh w-full border-l border-border bg-card shadow-2xl transition-[width,transform] duration-300 ${
+          expanded ? "lg:w-[min(900px,calc(100vw-5rem))]" : "max-w-[400px]"
+        } ${
           open ? "translate-x-0" : "pointer-events-none translate-x-full"
         }`}
       >
@@ -59,7 +68,12 @@ export function ClaraRail({
             </button>
           </div>
           <div className="min-h-0 flex-1">
-            <Clara businessId={businessId} section={section ?? null} />
+            <Clara
+              businessId={businessId}
+              section={section ?? null}
+              expanded={expanded}
+              onToggleExpand={() => setExpanded((value) => !value)}
+            />
           </div>
         </div>
       </aside>

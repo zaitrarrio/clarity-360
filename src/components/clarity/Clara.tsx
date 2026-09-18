@@ -1,5 +1,5 @@
 import { useQueryClient } from "@tanstack/react-query";
-import { Maximize2, Minimize2 } from "lucide-react";
+import { Expand, Maximize2, Minimize2, Shrink } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { Markdown } from "./Markdown";
 
@@ -18,12 +18,16 @@ export function Clara({
   compact = false,
   collapsed = false,
   onToggleCollapse,
+  expanded = false,
+  onToggleExpand,
 }: {
   businessId: string;
   section?: string | null;
   compact?: boolean;
   collapsed?: boolean;
   onToggleCollapse?: () => void;
+  expanded?: boolean;
+  onToggleExpand?: () => void;
 }) {
   const qc = useQueryClient();
   const [messages, setMessages] = useState<Msg[]>([
@@ -105,16 +109,29 @@ export function Clara({
           <div className="truncate text-[11px] font-light text-muted-foreground">{statusText}</div>
         </div>
       </div>
-      {onToggleCollapse ? (
-        <button
-          type="button"
-          onClick={onToggleCollapse}
-          aria-label={collapsed ? "Expand Clara" : "Collapse Clara"}
-          className="shrink-0 rounded-lg p-1.5 text-muted-foreground transition-colors hover:bg-parchment hover:text-foreground"
-        >
-          {collapsed ? <Maximize2 className="h-4 w-4" /> : <Minimize2 className="h-4 w-4" />}
-        </button>
-      ) : null}
+      <div className="flex shrink-0 items-center gap-1">
+        {onToggleExpand ? (
+          <button
+            type="button"
+            onClick={onToggleExpand}
+            aria-label={expanded ? "Restore Clara window" : "Expand Clara window"}
+            title={expanded ? "Restore window" : "Expand window"}
+            className="rounded-lg p-1.5 text-muted-foreground transition-colors hover:bg-parchment hover:text-foreground"
+          >
+            {expanded ? <Shrink className="h-4 w-4" /> : <Expand className="h-4 w-4" />}
+          </button>
+        ) : null}
+        {onToggleCollapse ? (
+          <button
+            type="button"
+            onClick={onToggleCollapse}
+            aria-label={collapsed ? "Expand Clara" : "Collapse Clara"}
+            className="rounded-lg p-1.5 text-muted-foreground transition-colors hover:bg-parchment hover:text-foreground"
+          >
+            {collapsed ? <Maximize2 className="h-4 w-4" /> : <Minimize2 className="h-4 w-4" />}
+          </button>
+        ) : null}
+      </div>
     </div>
   );
 
@@ -149,8 +166,8 @@ export function Clara({
       <div ref={scrollRef} className="flex-1 space-y-4 overflow-y-auto px-4 py-4">
         {messages.map((m, i) =>
           m.role === "user" ? (
-            <div key={i} className="ml-auto max-w-[85%] rounded-xl rounded-br-sm bg-ink px-3.5 py-2.5 text-[13.5px] font-light text-background">
-              {m.content}
+            <div key={i} className="ml-auto max-w-[85%] rounded-xl rounded-br-sm border border-border bg-parchment px-3.5 py-2.5">
+              <Markdown className="text-[13.5px]">{m.content}</Markdown>
             </div>
           ) : (
             <div key={i} className="max-w-[95%]">
