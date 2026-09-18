@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { Logo } from "@/components/clarity/AppHeader";
 import { DetailToggle } from "@/components/clarity/DetailToggle";
 import { Gloss, GlossaryProvider } from "@/components/clarity/Glossary";
+import { OTHER_KEY, OtherChoice } from "@/components/clarity/OtherChoice";
 import { supabase } from "@/integrations/supabase/client";
 import { buildPlanFromIntake } from "@/lib/clarity.functions";
 import { nextDraftRound } from "@/lib/onboarding.functions";
@@ -60,6 +61,8 @@ function DraftPage() {
   const [pass, setPass] = useState(1);
   const [corrections, setCorrections] = useState<Correction[]>([]);
   const [picked, setPicked] = useState<Record<string, { label: string; result: string }>>({});
+  const [otherOpen, setOtherOpen] = useState<Record<string, boolean>>({});
+  const [otherText, setOtherText] = useState<Record<string, string>>({});
   const [busy, setBusy] = useState(true);
   const [building, setBuilding] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -305,6 +308,27 @@ function DraftPage() {
                               <span><Gloss>{fix.label}</Gloss></span>
                             </button>
                           ))}
+                          <OtherChoice
+                            variant="row"
+                            number={flag.fixes.length + 1}
+                            selected={!!otherOpen[flag.id]}
+                            onSelect={() => setOtherOpen((o) => ({ ...o, [flag.id]: true }))}
+                            value={otherText[flag.id] ?? ""}
+                            onChange={(next) => setOtherText((t) => ({ ...t, [flag.id]: next }))}
+                            onSubmit={() => {
+                              const text = (otherText[flag.id] ?? "").trim();
+                              if (!text) return;
+                              pick(
+                                flag.id,
+                                flag.where,
+                                flag.assumed,
+                                `Other — ${text}`,
+                                `You corrected this yourself: ${text}`,
+                              );
+                              setOtherOpen((o) => ({ ...o, [flag.id]: false }));
+                            }}
+                            submitLabel="Use my correction"
+                          />
                         </div>
                       )}
                     </div>

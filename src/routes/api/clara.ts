@@ -147,7 +147,9 @@ ${planContextPrompt(ctx)}
 
 AVAILABLE ACTIONS (action_key — title):
 ${(actions ?? []).map((a) => `- ${a.action_key} — ${a.title} (${a.kind})`).join("\n")}
-${body.section ? `\nThe owner is currently reading the "${body.section}" section of the plan.` : ""}`,
+${body.section ? `\nThe owner is currently reading the "${body.section}" section of the plan.` : ""}
+
+WHENEVER YOU ASK A MULTIPLE-CHOICE QUESTION: number the options and always end the list with a final numbered "Other — describe it in your own words" option. Accept a free-text answer that matches none of your options, take it at face value, and plan around it instead of pushing the owner back into your list.`,
           messages,
           tools,
           stopWhen: stepCountIs(50),

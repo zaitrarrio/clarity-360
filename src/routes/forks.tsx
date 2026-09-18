@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { Logo } from "@/components/clarity/AppHeader";
 import { DetailToggle } from "@/components/clarity/DetailToggle";
 import { Gloss, GlossaryProvider } from "@/components/clarity/Glossary";
+import { OTHER_KEY, OtherChoice } from "@/components/clarity/OtherChoice";
 import { supabase } from "@/integrations/supabase/client";
 import { buildPlanFromIntake } from "@/lib/clarity.functions";
 import { nextForkRound } from "@/lib/onboarding.functions";
@@ -46,6 +47,7 @@ function ForksPage() {
   const [index, setIndex] = useState(0);
   const [decisions, setDecisions] = useState<Decision[]>([]);
   const [choice, setChoice] = useState<string | null>(null);
+  const [otherText, setOtherText] = useState("");
   const [busy, setBusy] = useState(true);
   const [summary, setSummary] = useState(false);
   const [building, setBuilding] = useState(false);
@@ -102,6 +104,7 @@ function ForksPage() {
       setRound(result);
       setIndex(0);
       setChoice(null);
+      setOtherText("");
     } catch (e) {
       setError(e instanceof Error ? e.message : "Clara couldn't frame the next decision. Try again.");
     } finally {
@@ -114,12 +117,16 @@ function ForksPage() {
     const fork = round.forks[index];
     if (!fork) return;
     const option = fork.options.find((o) => o.key === choice);
+    const answer =
+      choice === OTHER_KEY ? `Other — ${otherText.trim()}` : (option?.label ?? choice);
+    if (choice === OTHER_KEY && !otherText.trim()) return;
     const next: Decision[] = [
       ...decisions,
-      { forkId: fork.id, question: fork.question, choice: option?.label ?? choice },
+      { forkId: fork.id, question: fork.question, choice: answer },
     ];
     setDecisions(next);
     setChoice(null);
+    setOtherText("");
     if (index + 1 < round.forks.length) {
       setIndex(index + 1);
     } else if (round.coverage >= TARGET) {
@@ -343,8 +350,16 @@ function ForksPage() {
                     ) : null}
                   </button>
                 );
-              })}
+               })}
+              <OtherChoice
+                number={fork.options.length + 1}
+                selected={choice === OTHER_KEY}
+                onSelect={() => setChoice(OTHER_KEY)}
+                value={otherText}
+                onChange={setOtherText}
+              />
             </div>
+
 
             {round?.inferred.length ? (
               <div className="mt-8 rounded-2xl bg-linen p-5">
@@ -372,7 +387,7 @@ function ForksPage() {
             <div className="mt-8 flex flex-wrap items-center gap-4">
               <button
                 onClick={advance}
-                disabled={!choice}
+                disabled={!choice || (choice === OTHER_KEY && !otherText.trim())}
                 className="rounded-full bg-ember px-6 py-3 text-[14px] font-medium text-on-ember disabled:opacity-55"
               >
                 {index + 1 < (round?.forks.length ?? 0)
