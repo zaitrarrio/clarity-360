@@ -15,6 +15,7 @@ import { Route as ActionsRouteImport } from './routes/actions'
 import { Route as AgendaRouteImport } from './routes/agenda'
 import { Route as AgentsRouteImport } from './routes/agents'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as BriefingRouteImport } from './routes/briefing'
 import { Route as ContentRouteImport } from './routes/content'
 import { Route as DraftRouteImport } from './routes/draft'
 import { Route as ForksRouteImport } from './routes/forks'
@@ -26,6 +27,7 @@ import { Route as TSlugRouteImport } from './routes/t.$slug'
 import { Route as AuthenticatedAdminTenantsRouteImport } from './routes/_authenticated/admin.tenants'
 import { Route as AuthenticatedSettingsBrandingRouteImport } from './routes/_authenticated/settings.branding'
 import { Route as ApiPublicAgentsTickRouteImport } from './routes/api/public/agents-tick'
+import { Route as ApiPublicBriefingTickRouteImport } from './routes/api/public/briefing-tick'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -54,6 +56,11 @@ const AgentsRoute = AgentsRouteImport.update({
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BriefingRoute = BriefingRouteImport.update({
+  id: '/briefing',
+  path: '/briefing',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ContentRoute = ContentRouteImport.update({
@@ -113,6 +120,11 @@ const ApiPublicAgentsTickRoute = ApiPublicAgentsTickRouteImport.update({
   path: '/api/public/agents-tick',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicBriefingTickRoute = ApiPublicBriefingTickRouteImport.update({
+  id: '/api/public/briefing-tick',
+  path: '/api/public/briefing-tick',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -120,6 +132,7 @@ export interface FileRoutesByFullPath {
   '/agenda': typeof AgendaRoute
   '/agents': typeof AgentsRoute
   '/auth': typeof AuthRoute
+  '/briefing': typeof BriefingRoute
   '/content': typeof ContentRoute
   '/draft': typeof DraftRoute
   '/forks': typeof ForksRoute
@@ -131,6 +144,7 @@ export interface FileRoutesByFullPath {
   '/admin/tenants': typeof AuthenticatedAdminTenantsRoute
   '/settings/branding': typeof AuthenticatedSettingsBrandingRoute
   '/api/public/agents-tick': typeof ApiPublicAgentsTickRoute
+  '/api/public/briefing-tick': typeof ApiPublicBriefingTickRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -138,6 +152,7 @@ export interface FileRoutesByTo {
   '/agenda': typeof AgendaRoute
   '/agents': typeof AgentsRoute
   '/auth': typeof AuthRoute
+  '/briefing': typeof BriefingRoute
   '/content': typeof ContentRoute
   '/draft': typeof DraftRoute
   '/forks': typeof ForksRoute
@@ -149,6 +164,7 @@ export interface FileRoutesByTo {
   '/admin/tenants': typeof AuthenticatedAdminTenantsRoute
   '/settings/branding': typeof AuthenticatedSettingsBrandingRoute
   '/api/public/agents-tick': typeof ApiPublicAgentsTickRoute
+  '/api/public/briefing-tick': typeof ApiPublicBriefingTickRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -158,6 +174,7 @@ export interface FileRoutesById {
   '/agenda': typeof AgendaRoute
   '/agents': typeof AgentsRoute
   '/auth': typeof AuthRoute
+  '/briefing': typeof BriefingRoute
   '/content': typeof ContentRoute
   '/draft': typeof DraftRoute
   '/forks': typeof ForksRoute
@@ -169,6 +186,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/tenants': typeof AuthenticatedAdminTenantsRoute
   '/_authenticated/settings/branding': typeof AuthenticatedSettingsBrandingRoute
   '/api/public/agents-tick': typeof ApiPublicAgentsTickRoute
+  '/api/public/briefing-tick': typeof ApiPublicBriefingTickRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -178,6 +196,7 @@ export interface FileRouteTypes {
     | '/agenda'
     | '/agents'
     | '/auth'
+    | '/briefing'
     | '/content'
     | '/draft'
     | '/forks'
@@ -189,6 +208,7 @@ export interface FileRouteTypes {
     | '/admin/tenants'
     | '/settings/branding'
     | '/api/public/agents-tick'
+    | '/api/public/briefing-tick'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -196,6 +216,7 @@ export interface FileRouteTypes {
     | '/agenda'
     | '/agents'
     | '/auth'
+    | '/briefing'
     | '/content'
     | '/draft'
     | '/forks'
@@ -207,6 +228,7 @@ export interface FileRouteTypes {
     | '/admin/tenants'
     | '/settings/branding'
     | '/api/public/agents-tick'
+    | '/api/public/briefing-tick'
   id:
     | '__root__'
     | '/'
@@ -215,6 +237,7 @@ export interface FileRouteTypes {
     | '/agenda'
     | '/agents'
     | '/auth'
+    | '/briefing'
     | '/content'
     | '/draft'
     | '/forks'
@@ -226,6 +249,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/tenants'
     | '/_authenticated/settings/branding'
     | '/api/public/agents-tick'
+    | '/api/public/briefing-tick'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -235,6 +259,7 @@ export interface RootRouteChildren {
   AgendaRoute: typeof AgendaRoute
   AgentsRoute: typeof AgentsRoute
   AuthRoute: typeof AuthRoute
+  BriefingRoute: typeof BriefingRoute
   ContentRoute: typeof ContentRoute
   DraftRoute: typeof DraftRoute
   ForksRoute: typeof ForksRoute
@@ -244,6 +269,7 @@ export interface RootRouteChildren {
   ApiClaraRoute: typeof ApiClaraRoute
   TSlugRoute: typeof TSlugRoute
   ApiPublicAgentsTickRoute: typeof ApiPublicAgentsTickRoute
+  ApiPublicBriefingTickRoute: typeof ApiPublicBriefingTickRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -288,6 +314,13 @@ declare module '@tanstack/react-router' {
       path: '/auth'
       fullPath: '/auth'
       preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/briefing': {
+      id: '/briefing'
+      path: '/briefing'
+      fullPath: '/briefing'
+      preLoaderRoute: typeof BriefingRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/content': {
@@ -367,6 +400,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicAgentsTickRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/briefing-tick': {
+      id: '/api/public/briefing-tick'
+      path: '/api/public/briefing-tick'
+      fullPath: '/api/public/briefing-tick'
+      preLoaderRoute: typeof ApiPublicBriefingTickRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -390,6 +430,7 @@ const rootRouteChildren: RootRouteChildren = {
   AgendaRoute: AgendaRoute,
   AgentsRoute: AgentsRoute,
   AuthRoute: AuthRoute,
+  BriefingRoute: BriefingRoute,
   ContentRoute: ContentRoute,
   DraftRoute: DraftRoute,
   ForksRoute: ForksRoute,
@@ -399,6 +440,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiClaraRoute: ApiClaraRoute,
   TSlugRoute: TSlugRoute,
   ApiPublicAgentsTickRoute: ApiPublicAgentsTickRoute,
+  ApiPublicBriefingTickRoute: ApiPublicBriefingTickRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

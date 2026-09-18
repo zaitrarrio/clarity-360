@@ -42,6 +42,11 @@ export const Route = createFileRoute("/api/clara")({
           .select("action_key, title, description, kind, agent_key")
           .eq("business_id", businessId)
           .order("ordinal");
+        const { data: readinessItems } = await db
+          .from("business_readiness_items")
+          .select("item_key, category, title, status, objective")
+          .eq("business_id", businessId)
+          .order("priority");
 
         const tools = {
           live_indicators: tool({
@@ -137,6 +142,16 @@ export const Route = createFileRoute("/api/clara")({
               return { ok: true };
             },
           }),
+          review_readiness: tool({
+            description:
+              "Review the business readiness checklist (My Actions) against everything known about the business and sharpen or add to it. Call this when the conversation has surfaced something specific enough to make a checklist item more precise, or a genuinely new must-have the current list is missing — not on every message.",
+            inputSchema: z.object({}),
+            execute: async () => {
+              const { refineReadinessItems } = await import("@/lib/readiness.server");
+              const result = await refineReadinessItems(businessId);
+              return result;
+            },
+          }),
         };
 
         const result = streamText({
@@ -147,6 +162,12 @@ ${planContextPrompt(ctx)}
 
 AVAILABLE ACTIONS (action_key — title):
 ${(actions ?? []).map((a) => `- ${a.action_key} — ${a.title} (${a.kind})`).join("\n")}
+
+READINESS CHECKLIST (My Actions — item_key [status] title, agent objective):
+${(readinessItems ?? []).map((i) => `- ${i.item_key} [${i.status}] ${i.title}${i.objective ? ` — ${i.objective}` : ""}`).join("\n")}
+When the conversation reveals something specific enough to sharpen an item or surfaces a genuinely
+new must-have, call review_readiness rather than just describing it — that's what actually updates
+the checklist the owner sees on My Actions.
 ${body.section ? `\nThe owner is currently reading the "${body.section}" section of the plan.` : ""}
 
 WHENEVER YOU ASK A MULTIPLE-CHOICE QUESTION: number the options and always end the list with a final numbered "Other — describe it in your own words" option. Accept a free-text answer that matches none of your options, take it at face value, and plan around it instead of pushing the owner back into your list.`,

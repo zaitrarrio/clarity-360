@@ -1,5 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Bot, CalendarDays, FileStack, ListChecks, NotebookTabs } from "lucide-react";
+import { Bot, CalendarDays, FileStack, ListChecks, NotebookTabs, Sparkles } from "lucide-react";
 import type { ReactNode } from "react";
 import { AppHeader, Logo } from "@/components/clarity/AppHeader";
 import {
@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/sidebar";
 
 const WORKSPACE_LINKS = [
+  { to: "/briefing", label: "My Briefing", icon: Sparkles },
   { to: "/plan", label: "My Operating Plan", icon: NotebookTabs },
   { to: "/content", label: "My Content", icon: FileStack },
   { to: "/agenda", label: "My Agenda", icon: CalendarDays },

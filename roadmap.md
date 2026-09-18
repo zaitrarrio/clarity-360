@@ -8,3 +8,7 @@
 - [ ] Connect payment collection to a real payment onboarding and fulfillment flow.
 - [x] Verify navigation, signed-in states, checklist persistence, and responsive layouts.
 - [x] Replace the signed-out header logo with a hamburger menu for site navigation.
+- [x] Let Clara sharpen and extend the readiness checklist as she learns more about the business, instead of a static seed (`readiness.server.ts` refineReadinessItems, `review_readiness` Clara tool, "Refresh with Clara" on My Actions).
+- [x] Give agent-kind readiness items a real, agent-executable objective and wire them into the existing actions/agent_schedules engine so they run autonomously (`ensureAgentAction`).
+- [x] Add My Briefing: a daily, plan-grounded summary with 1-3 spotlighted readiness items, generated once per business per day.
+- [ ] Schedule `/api/public/agents-tick` and `/api/public/briefing-tick` to actually run (pg_cron + pg_net extensions are enabled but no `cron.schedule` call exists yet — needs the deployed project URL, which isn't available from inside the repo).
