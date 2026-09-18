@@ -82,6 +82,8 @@ function PlanPage() {
   const businessId = useActiveBusinessId();
   const { data: business } = useBusiness(businessId);
   const { data: sections, isLoading } = usePlanSections(businessId);
+  const { data: versions } = usePlanVersions(businessId);
+  const latest = versions?.[0];
   const [active, setActive] = useState<string>("market");
   const [claraOpen, setClaraOpen] = useState(() => {
     if (typeof window === "undefined") return true;
