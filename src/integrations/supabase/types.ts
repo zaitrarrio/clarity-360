@@ -258,7 +258,10 @@ export type Database = {
           help_target: string | null
           id: string
           item_key: string
+          last_reviewed_at: string | null
+          objective: string | null
           priority: number
+          source: string
           status: string
           title: string
           updated_at: string
@@ -272,7 +275,10 @@ export type Database = {
           help_target?: string | null
           id?: string
           item_key: string
+          last_reviewed_at?: string | null
+          objective?: string | null
           priority?: number
+          source?: string
           status?: string
           title: string
           updated_at?: string
@@ -286,7 +292,10 @@ export type Database = {
           help_target?: string | null
           id?: string
           item_key?: string
+          last_reviewed_at?: string | null
+          objective?: string | null
           priority?: number
+          source?: string
           status?: string
           title?: string
           updated_at?: string
@@ -294,6 +303,47 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "business_readiness_items_business_id_fkey"
+            columns: ["business_id"]
+            isOneToOne: false
+            referencedRelation: "businesses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      business_briefings: {
+        Row: {
+          body: string
+          briefing_date: string
+          business_id: string
+          created_at: string
+          focus_item_keys: string[]
+          headline: string
+          id: string
+          updated_at: string
+        }
+        Insert: {
+          body: string
+          briefing_date?: string
+          business_id: string
+          created_at?: string
+          focus_item_keys?: string[]
+          headline: string
+          id?: string
+          updated_at?: string
+        }
+        Update: {
+          body?: string
+          briefing_date?: string
+          business_id?: string
+          created_at?: string
+          focus_item_keys?: string[]
+          headline?: string
+          id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "business_briefings_business_id_fkey"
             columns: ["business_id"]
             isOneToOne: false
             referencedRelation: "businesses"

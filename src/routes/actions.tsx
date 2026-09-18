@@ -1,12 +1,13 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { Bot, Check, Circle, HandHelping, Sparkles } from "lucide-react";
+import { Bot, Check, Circle, HandHelping, Sparkles, Wand2 } from "lucide-react";
 import { useState } from "react";
 import { WorkspaceShell } from "@/components/clarity/WorkspaceShell";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { getReadiness, setReadinessStatus } from "@/lib/readiness.functions";
+import { getReadiness, refreshReadinessWithClara, setReadinessStatus } from "@/lib/readiness.functions";
 import type { ReadinessItem, ReadinessStatus } from "@/lib/readiness";
 import { useActiveBusinessId, useBusiness } from "@/lib/useWorkspace";
 
@@ -46,9 +47,11 @@ function ActionsPage() {
   const { data: business } = useBusiness(businessId);
   const fetchReadiness = useServerFn(getReadiness);
   const saveStatus = useServerFn(setReadinessStatus);
+  const refreshWithClara = useServerFn(refreshReadinessWithClara);
   const qc = useQueryClient();
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [refreshNote, setRefreshNote] = useState<string | null>(null);
   const { data: items = [], isLoading } = useQuery({
     queryKey: ["readiness", businessId],
     queryFn: () => fetchReadiness({ data: { businessId } }),
@@ -72,16 +75,42 @@ function ActionsPage() {
     }
   }
 
+  async function onRefresh() {
+    setBusy("refresh");
+    setError(null);
+    setRefreshNote(null);
+    try {
+      const result = await refreshWithClara({ data: { businessId } });
+      await qc.invalidateQueries({ queryKey: ["readiness", businessId] });
+      setRefreshNote(
+        result.added || result.refined
+          ? `Clara sharpened ${result.refined} item${result.refined === 1 ? "" : "s"} and added ${result.added} new one${result.added === 1 ? "" : "s"}.`
+          : "Clara reviewed the plan — nothing new to add right now.",
+      );
+    } catch (cause) {
+      setError(cause instanceof Error ? cause.message : "Clara could not review the checklist just now.");
+    } finally {
+      setBusy(null);
+    }
+  }
+
   return (
     <WorkspaceShell businessName={business?.name}>
       <main className="mx-auto w-full max-w-6xl px-5 py-7 md:px-7">
         <div className="grid gap-6 border-b border-border pb-7 md:grid-cols-[minmax(0,1fr)_300px] md:items-end">
           <div>
-            <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-ember">Business readiness</p>
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-ember">Business readiness</p>
+              <Button size="sm" variant="outline" disabled={busy === "refresh"} onClick={onRefresh}>
+                <Wand2 className={busy === "refresh" ? "animate-pulse" : ""} />
+                {busy === "refresh" ? "Reviewing…" : "Refresh with Clara"}
+              </Button>
+            </div>
             <h1 className="mt-2 text-balance font-display text-[38px] leading-tight font-normal text-foreground">My Actions</h1>
             <p className="mt-2 max-w-2xl text-pretty text-[14.5px] font-light leading-relaxed text-muted-foreground">
               What {business?.name ?? "your business"} has handled, what comes next, and where you want help.
             </p>
+            {refreshNote ? <p className="mt-2 text-[12.5px] font-light text-ember">{refreshNote}</p> : null}
           </div>
           <div className="rounded-lg border border-border bg-card p-4">
             <div className="flex items-end justify-between gap-4">
@@ -113,8 +142,20 @@ function ActionsPage() {
                         <div className="flex items-center gap-2">
                           {item.status === "complete" ? <Check className="h-4 w-4 text-ember" /> : item.status === "needs_help" ? <HandHelping className="h-4 w-4 text-ember" /> : <Circle className="h-4 w-4 text-muted-foreground" />}
                           <h3 className="text-balance text-[15px] font-medium text-foreground">{item.title}</h3>
+                          {item.source === "clara" ? (
+                            <Badge variant="outline" className="border-ember/40 text-ember">
+                              <Sparkles className="mr-1 h-3 w-3" />
+                              Clara found this
+                            </Badge>
+                          ) : null}
                         </div>
                         <p className="mt-1.5 max-w-2xl text-pretty text-[13px] font-light leading-relaxed text-muted-foreground">{item.description}</p>
+                        {item.objective ? (
+                          <p className="mt-1 max-w-2xl text-pretty text-[12px] font-light leading-relaxed text-muted-foreground/80">
+                            <span className="font-medium text-muted-foreground">Agent objective — </span>
+                            {item.objective}
+                          </p>
+                        ) : null}
                       </div>
                       <div className="flex flex-wrap items-center gap-2">
                         <div className="flex rounded-md border border-border bg-background p-0.5">
