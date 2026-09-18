@@ -387,7 +387,7 @@ function ForksPage() {
             <div className="mt-8 flex flex-wrap items-center gap-4">
               <button
                 onClick={advance}
-                disabled={!choice}
+                disabled={!choice || (choice === OTHER_KEY && !otherText.trim())}
                 className="rounded-full bg-ember px-6 py-3 text-[14px] font-medium text-on-ember disabled:opacity-55"
               >
                 {index + 1 < (round?.forks.length ?? 0)
