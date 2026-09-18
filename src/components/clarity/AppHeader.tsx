@@ -1,6 +1,8 @@
 import { Link } from "@tanstack/react-router";
+import { CalendarDays, FileStack, ListChecks, Menu, NotebookTabs } from "lucide-react";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,7 +12,23 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { SidebarTrigger } from "@/components/ui/sidebar";
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import { brandInitial, brandWordmark, useTenant } from "@/lib/tenant";
+
+const WORKSPACE_LINKS = [
+  { to: "/plan", label: "My Operating Plan", icon: NotebookTabs },
+  { to: "/content", label: "My Content", icon: FileStack },
+  { to: "/agenda", label: "My Agenda", icon: CalendarDays },
+  { to: "/actions", label: "My Actions", icon: ListChecks },
+] as const;
 
 export function Logo({ size = "md" }: { size?: "sm" | "md" }) {
   const tenant = useTenant();
@@ -41,6 +59,39 @@ export function Logo({ size = "md" }: { size?: "sm" | "md" }) {
   );
 }
 
+export function HeaderLead({ signedIn }: { signedIn: boolean }) {
+  if (!signedIn) return <Logo size="sm" />;
+
+  return (
+    <Sheet>
+      <SheetTrigger asChild>
+        <Button type="button" variant="ghost" size="icon" aria-label="Open workspace navigation" className="h-8 w-8">
+          <Menu aria-hidden="true" />
+        </Button>
+      </SheetTrigger>
+      <SheetContent side="left" className="w-[280px] bg-sidebar p-0 text-sidebar-foreground sm:max-w-[280px]">
+        <SheetHeader className="border-b border-sidebar-border px-5 py-5 text-left">
+          <SheetTitle><Logo size="sm" /></SheetTitle>
+          <SheetDescription className="sr-only">Workspace navigation</SheetDescription>
+        </SheetHeader>
+        <nav aria-label="Workspace" className="space-y-1 p-3">
+          {WORKSPACE_LINKS.map((item) => (
+            <SheetClose asChild key={item.to}>
+              <Link
+                to={item.to}
+                className="flex h-10 items-center gap-3 rounded-md px-3 text-[13.5px] text-sidebar-foreground no-underline transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+              >
+                <item.icon className="h-4 w-4" aria-hidden="true" />
+                <span>{item.label}</span>
+              </Link>
+            </SheetClose>
+          ))}
+        </nav>
+      </SheetContent>
+    </Sheet>
+  );
+}
+
 export function AppHeader({
   businessName,
   workspace = false,
@@ -60,7 +111,7 @@ export function AppHeader({
 
   return (
     <header className="sticky top-0 z-50 flex flex-wrap items-center gap-4 border-b border-border bg-background/90 px-5 py-3 backdrop-blur-md md:px-7">
-      {workspace ? <SidebarTrigger aria-label="Toggle workspace navigation" /> : <Logo size="sm" />}
+      {workspace ? <SidebarTrigger aria-label="Toggle workspace navigation" /> : <HeaderLead signedIn={Boolean(email)} />}
       {workspace ? <div className="md:hidden"><Logo size="sm" /></div> : null}
       <div className="flex-1" />
       {businessName ? (
