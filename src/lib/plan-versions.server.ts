@@ -1,4 +1,5 @@
 import { generateText } from "ai";
+import type { Json } from "@/integrations/supabase/types";
 import { admin, gateway, CLARA_MODEL, loadPlanContext, planContextPrompt } from "./clarity.server";
 
 type SectionRow = {
