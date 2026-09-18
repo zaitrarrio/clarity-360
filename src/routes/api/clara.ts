@@ -5,6 +5,44 @@ import { z } from "zod";
 export const Route = createFileRoute("/api/clara")({
   server: {
     handlers: {
+      GET: async ({ request }) => {
+        const { assertBusinessAccess, admin } = await import("@/lib/clarity.server");
+        const businessId = new URL(request.url).searchParams.get("businessId") ?? "";
+        if (!businessId) return Response.json({ messages: [] }, { status: 400 });
+
+        try {
+          await assertBusinessAccess(businessId);
+        } catch (error) {
+          return new Response(error instanceof Error ? error.message : "Forbidden", { status: 403 });
+        }
+
+        const db = await admin();
+        const authorization = request.headers.get("authorization") ?? "";
+        const token = authorization.startsWith("Bearer ") ? authorization.slice(7) : "";
+        const { data: userData } = token ? await db.auth.getUser(token) : { data: { user: null } };
+        const userId = userData.user?.id;
+        if (!userId) return Response.json({ messages: [] });
+
+        const { data: conversation } = await db
+          .from("conversations")
+          .select("id")
+          .eq("business_id", businessId)
+          .eq("user_id", userId)
+          .order("created_at", { ascending: false })
+          .limit(1)
+          .maybeSingle();
+        if (!conversation) return Response.json({ messages: [] });
+
+        const { data: savedMessages, error } = await db
+          .from("messages")
+          .select("role, content")
+          .eq("conversation_id", conversation.id)
+          .in("role", ["user", "assistant"])
+          .order("created_at", { ascending: true })
+          .limit(200);
+        if (error) return new Response("Could not load Clara's history", { status: 500 });
+        return Response.json({ messages: savedMessages ?? [] });
+      },
       POST: async ({ request }) => {
         const {
           gateway,
@@ -29,13 +67,49 @@ export const Route = createFileRoute("/api/clara")({
           return new Response("Bad request", { status: 400 });
         }
 
+        let business;
         try {
-          await assertBusinessAccess(businessId);
+          business = await assertBusinessAccess(businessId);
         } catch (error) {
           return new Response(error instanceof Error ? error.message : "Forbidden", { status: 403 });
         }
 
         const db = await admin();
+        const authorization = request.headers.get("authorization") ?? "";
+        const token = authorization.startsWith("Bearer ") ? authorization.slice(7) : "";
+        const { data: userData } = token ? await db.auth.getUser(token) : { data: { user: null } };
+        const userId = userData.user?.id;
+        let conversationId: string | null = null;
+
+        if (userId) {
+          const { data: existingConversation } = await db
+            .from("conversations")
+            .select("id")
+            .eq("business_id", businessId)
+            .eq("user_id", userId)
+            .order("created_at", { ascending: false })
+            .limit(1)
+            .maybeSingle();
+          conversationId = existingConversation?.id ?? null;
+          if (!conversationId) {
+            const { data: createdConversation } = await db
+              .from("conversations")
+              .insert({ business_id: businessId, user_id: userId, title: `Clara · ${business.name}` })
+              .select("id")
+              .single();
+            conversationId = createdConversation?.id ?? null;
+          }
+          const latestUserMessage = [...messages].reverse().find((message) => message.role === "user");
+          if (conversationId && latestUserMessage) {
+            await db.from("messages").insert({
+              conversation_id: conversationId,
+              business_id: businessId,
+              role: "user",
+              content: latestUserMessage.content,
+            });
+          }
+        }
+
         const ctx = await loadPlanContext(businessId);
         const { data: actions } = await db
           .from("actions")
@@ -189,6 +263,15 @@ WHENEVER YOU ASK A MULTIPLE-CHOICE QUESTION: number the options and always end t
           tools,
           stopWhen: stepCountIs(50),
           abortSignal: request.signal,
+          onFinish: async ({ text }) => {
+            if (!conversationId) return;
+            await db.from("messages").insert({
+              conversation_id: conversationId,
+              business_id: businessId,
+              role: "assistant",
+              content: text.trim() || "Done — check My Actions and My Agenda.",
+            });
+          },
         });
 
         return result.toTextStreamResponse();

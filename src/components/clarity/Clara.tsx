@@ -5,6 +5,12 @@ import { Markdown } from "./Markdown";
 
 type Msg = { role: "user" | "assistant"; content: string };
 
+const WELCOME: Msg = {
+  role: "assistant",
+  content:
+    "I hold the whole plan. Ask me what to do next, or tell me to run something — I can make the artifact, put it on a schedule, or flag what I find.",
+};
+
 const SUGGESTIONS = [
   "What should I do this week?",
   "Write today's post",
@@ -30,17 +36,52 @@ export function Clara({
   onToggleExpand?: () => void;
 }) {
   const qc = useQueryClient();
-  const [messages, setMessages] = useState<Msg[]>([
-    {
-      role: "assistant",
-      content:
-        "I hold the whole plan. Ask me what to do next, or tell me to run something — I can make the artifact, put it on a schedule, or flag what I find.",
-    },
-  ]);
+  const [messages, setMessages] = useState<Msg[]>([WELCOME]);
   const [input, setInput] = useState("");
   const [busy, setBusy] = useState(false);
+  const [historyReady, setHistoryReady] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    let active = true;
+    const storageKey = `clara-history:${businessId}`;
+    const local = localStorage.getItem(storageKey);
+    if (local) {
+      try {
+        const parsed = JSON.parse(local) as Msg[];
+        if (parsed.length) setMessages(parsed);
+      } catch {
+        localStorage.removeItem(storageKey);
+      }
+    }
+
+    void (async () => {
+      try {
+        const { supabase } = await import("@/integrations/supabase/client");
+        const { data: sessionData } = await supabase.auth.getSession();
+        const token = sessionData.session?.access_token;
+        const response = await fetch(`/api/clara?businessId=${encodeURIComponent(businessId)}`, {
+          headers: token ? { authorization: `Bearer ${token}` } : {},
+        });
+        if (!response.ok) return;
+        const data = (await response.json()) as { messages?: Msg[] };
+        if (active && data.messages?.length) setMessages(data.messages);
+      } finally {
+        if (active) setHistoryReady(true);
+      }
+    })();
+
+    return () => {
+      active = false;
+    };
+  }, [businessId]);
+
+  useEffect(() => {
+    if (!historyReady) return;
+    const completeMessages = messages.filter((message) => message.content.trim());
+    localStorage.setItem(`clara-history:${businessId}`, JSON.stringify(completeMessages.slice(-200)));
+  }, [businessId, historyReady, messages]);
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
@@ -226,7 +267,7 @@ export function Clara({
         />
         <button
           type="submit"
-          disabled={busy || !input.trim()}
+          disabled={busy || !historyReady || !input.trim()}
           className="rounded-full bg-ember px-3.5 py-1.5 text-[12.5px] font-medium text-on-ember disabled:opacity-55"
         >
           Send
