@@ -11,19 +11,19 @@ import { useActions, useActiveBusinessId, useBusiness, useRuns, useSchedules } f
 export const Route = createFileRoute("/agents")({
   head: () => ({
     meta: [
-      { title: "Actions & agents — Clarity 360" },
+      { title: "My Agents — Clarity 360" },
       {
         name: "description",
         content:
           "Run the plan: generate a pitch deck, build the site, post today, or hand a recurring watch to a domain agent.",
       },
-      { property: "og:title", content: "Actions & agents — Clarity 360" },
+      { property: "og:title", content: "My Agents — Clarity 360" },
       { property: "og:description", content: "Every part of the plan is something an agent can actually do." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
-  component: ActionsPage,
+  component: AgentsPage,
 });
 
 const CADENCES = [
@@ -33,7 +33,7 @@ const CADENCES = [
   { key: "monthly", label: "Monthly" },
 ] as const;
 
-function ActionsPage() {
+function AgentsPage() {
   const businessId = useActiveBusinessId();
   const qc = useQueryClient();
   const { data: business } = useBusiness(businessId);
@@ -80,7 +80,7 @@ function ActionsPage() {
       <div className="mx-auto grid max-w-[1500px] gap-8 px-5 py-7 md:px-7 xl:grid-cols-[minmax(0,1fr)_380px]">
         <main className="min-w-0">
           <h1 className="font-display text-[38px] leading-tight font-normal tracking-tight text-foreground">
-            Actions
+            My Agents
           </h1>
           <p className="mt-2 max-w-2xl text-[14.5px] font-light text-muted-foreground">
             Run something once, or hand it to its agent on a cadence. Results land here and on your agenda.

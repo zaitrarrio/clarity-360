@@ -1,16 +1,7 @@
 import { Link } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { brandInitial, brandWordmark, useTenant } from "@/lib/tenant";
+import { HeaderAccountControls } from "./HeaderAccountControls";
 
 export function Logo({ size = "md" }: { size?: "sm" | "md" }) {
   const tenant = useTenant();
@@ -48,16 +39,6 @@ export function AppHeader({
   businessName?: string | undefined;
   workspace?: boolean;
 }) {
-  const [email, setEmail] = useState<string | null>(null);
-
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => setEmail(data.session?.user.email ?? null));
-    const { data: sub } = supabase.auth.onAuthStateChange((_e, session) => {
-      setEmail(session?.user.email ?? null);
-    });
-    return () => sub.subscription.unsubscribe();
-  }, []);
-
   return (
     <header className="sticky top-0 z-50 flex flex-wrap items-center gap-4 border-b border-border bg-background/90 px-5 py-3 backdrop-blur-md md:px-7">
       {workspace ? <SidebarTrigger aria-label="Toggle workspace navigation" /> : <Logo size="sm" />}
@@ -66,67 +47,14 @@ export function AppHeader({
       {businessName ? (
         <span className="hidden text-[12.5px] font-light text-muted-foreground lg:inline">{businessName}</span>
       ) : null}
-      {email ? (
-        <Link
-          to="/plan"
-          className="rounded-full border border-ember/40 bg-ember/10 px-3 py-1.5 text-[12.5px] font-medium text-foreground no-underline hover:bg-ember/20"
-        >
-          My workspace
-        </Link>
-      ) : (
-        <Link
-          to="/intake"
-          className="rounded-full border border-ember/40 bg-ember/10 px-3 py-1.5 text-[12.5px] font-medium text-foreground no-underline hover:bg-ember/20"
-        >
-          Build a plan
-        </Link>
-      )}
-
-
-      {email ? (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <button
-              aria-label="Account menu"
-              className="grid h-8 w-8 place-items-center rounded-full border border-border bg-card text-[12px] font-medium uppercase text-foreground transition-colors hover:border-ember/40 hover:bg-ember/10"
-            >
-              {email.charAt(0)}
-            </button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-60">
-            <DropdownMenuLabel className="font-normal">
-              <span className="block text-[11px] uppercase tracking-wide text-muted-foreground">
-                Signed in as
-              </span>
-              <span className="block truncate text-[13px] text-foreground">{email}</span>
-            </DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem asChild>
-              <Link to="/settings/branding">Workspace branding</Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem asChild>
-              <Link to="/admin/tenants">Platform admin</Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem asChild>
-              <Link to="/plan">My workspace</Link>
-            </DropdownMenuItem>
-            <DropdownMenuItem asChild>
-              <Link to="/intake" search={{ new: true }}>Build a new plan</Link>
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem onSelect={() => void supabase.auth.signOut()}>
-              Sign out
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      ) : (
-        <Link
-          to="/auth"
-          className="rounded-full bg-ember-soft px-4 py-1.5 text-[12.5px] font-semibold text-on-ember no-underline shadow-ember hover:bg-ember hover:text-on-ember"
-        >
-          Sign in
-        </Link>
-      )}
+      <HeaderAccountControls
+        signedOut={(
+          <>
+            <Link to="/intake" className="text-[12.5px] font-medium text-foreground no-underline">Build a plan</Link>
+            <Link to="/auth" className="rounded-full bg-ember-soft px-4 py-1.5 text-[12.5px] font-semibold text-on-ember no-underline shadow-ember">Sign in</Link>
+          </>
+        )}
+      />
     </header>
   );
 }
