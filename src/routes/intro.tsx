@@ -1,5 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import aurora from "@/assets/intro-aurora.jpg";
+import { HeaderAccountControls } from "@/components/clarity/HeaderAccountControls";
 import { marketComplete, readStoredSeed } from "@/lib/industries";
 import { brandName, brandWordmark, useTenant } from "@/lib/tenant";
 
@@ -81,12 +82,9 @@ function Intro() {
             {lead} {tail ? <span className="text-ember">{tail}</span> : null}
           </span>
           <span className="flex-1" />
-          <Link
-            to="/"
-            className="rounded-full border border-border/70 px-3 py-1.5 text-[12.5px] text-muted-foreground no-underline hover:text-foreground"
-          >
-            Explore the plan
-          </Link>
+          <HeaderAccountControls signedOut={(
+            <Link to="/" className="rounded-full border border-border/70 px-3 py-1.5 text-[12.5px] text-muted-foreground no-underline hover:text-foreground">Explore the plan</Link>
+          )} />
         </header>
 
         <main className="flex flex-1 flex-col justify-center py-16">

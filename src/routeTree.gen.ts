@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as ActionsRouteImport } from './routes/actions'
 import { Route as AgendaRouteImport } from './routes/agenda'
+import { Route as AgentsRouteImport } from './routes/agents'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ContentRouteImport } from './routes/content'
 import { Route as DraftRouteImport } from './routes/draft'
@@ -43,6 +44,11 @@ const ActionsRoute = ActionsRouteImport.update({
 const AgendaRoute = AgendaRouteImport.update({
   id: '/agenda',
   path: '/agenda',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AgentsRoute = AgentsRouteImport.update({
+  id: '/agents',
+  path: '/agents',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRoute = AuthRouteImport.update({
@@ -112,6 +118,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/actions': typeof ActionsRoute
   '/agenda': typeof AgendaRoute
+  '/agents': typeof AgentsRoute
   '/auth': typeof AuthRoute
   '/content': typeof ContentRoute
   '/draft': typeof DraftRoute
@@ -129,6 +136,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/actions': typeof ActionsRoute
   '/agenda': typeof AgendaRoute
+  '/agents': typeof AgentsRoute
   '/auth': typeof AuthRoute
   '/content': typeof ContentRoute
   '/draft': typeof DraftRoute
@@ -148,6 +156,7 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/actions': typeof ActionsRoute
   '/agenda': typeof AgendaRoute
+  '/agents': typeof AgentsRoute
   '/auth': typeof AuthRoute
   '/content': typeof ContentRoute
   '/draft': typeof DraftRoute
@@ -167,6 +176,7 @@ export interface FileRouteTypes {
     | '/'
     | '/actions'
     | '/agenda'
+    | '/agents'
     | '/auth'
     | '/content'
     | '/draft'
@@ -184,6 +194,7 @@ export interface FileRouteTypes {
     | '/'
     | '/actions'
     | '/agenda'
+    | '/agents'
     | '/auth'
     | '/content'
     | '/draft'
@@ -202,6 +213,7 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/actions'
     | '/agenda'
+    | '/agents'
     | '/auth'
     | '/content'
     | '/draft'
@@ -221,6 +233,7 @@ export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   ActionsRoute: typeof ActionsRoute
   AgendaRoute: typeof AgendaRoute
+  AgentsRoute: typeof AgentsRoute
   AuthRoute: typeof AuthRoute
   ContentRoute: typeof ContentRoute
   DraftRoute: typeof DraftRoute
@@ -261,6 +274,13 @@ declare module '@tanstack/react-router' {
       path: '/agenda'
       fullPath: '/agenda'
       preLoaderRoute: typeof AgendaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/agents': {
+      id: '/agents'
+      path: '/agents'
+      fullPath: '/agents'
+      preLoaderRoute: typeof AgentsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth': {
@@ -368,6 +388,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   ActionsRoute: ActionsRoute,
   AgendaRoute: AgendaRoute,
+  AgentsRoute: AgentsRoute,
   AuthRoute: AuthRoute,
   ContentRoute: ContentRoute,
   DraftRoute: DraftRoute,

@@ -1,5 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { CalendarDays, FileStack, ListChecks, NotebookTabs } from "lucide-react";
+import { Bot, CalendarDays, FileStack, ListChecks, NotebookTabs } from "lucide-react";
 import type { ReactNode } from "react";
 import { AppHeader, Logo } from "@/components/clarity/AppHeader";
 import {
@@ -23,6 +23,7 @@ const WORKSPACE_LINKS = [
   { to: "/content", label: "My Content", icon: FileStack },
   { to: "/agenda", label: "My Agenda", icon: CalendarDays },
   { to: "/actions", label: "My Actions", icon: ListChecks },
+  { to: "/agents", label: "My Agents", icon: Bot },
 ] as const;
 
 function WorkspaceSidebar() {
